@@ -140,7 +140,10 @@
             });
 
             fetchBranch();
-            fetchRouters();
+            $('#branchSelect').on('change', function () {
+                const selectedBranchId = $(this).val();
+                fetchRouters(selectedBranchId);
+            })
 
             $(document).ready(function () {
                 $('#hotspotFrom').on('submit', function (e) {

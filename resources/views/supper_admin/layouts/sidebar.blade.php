@@ -64,7 +64,6 @@
 					</a>
 					<ul class="treeview-menu">		
 						<li><a href="{{ route('supper_admin.mikrotik-devices.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Add Router</a></li>
-						<li><a href=""><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Mac Binding</a></li>
 					</ul>
 				</li>
 				<li class="treeview">

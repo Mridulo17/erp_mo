@@ -64,9 +64,9 @@
                     <tr>
                         <th style="">Action</th>
                         <th style="">Serial</th>
-                        <th style="">Employee Code</th>
+                        <th style="">Code</th>
                         <th style="">Image</th>
-                        <th style="">Employee Name</th>
+                        <th style="">Name</th>
                         <th style="">Qualifications</th>
                         <th style="">History</th>
                         <th style="">Traning</th>

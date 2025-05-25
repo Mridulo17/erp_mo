@@ -16,7 +16,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="branchSelect" class="font-weight-bold text-dark" style="font-size: 14px;">Select Branch</label>
-                        <select name="branch_id" id="branchSelect" class="form-control" required>
+                        <select name="branch_id" id="branchSelect" class="form-control select2" required>
                             <option value="" disabled selected>Select a Branch</option>
                         </select>
                     </div>

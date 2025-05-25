@@ -12,9 +12,7 @@ use Illuminate\Validation\ValidationException;
 
 class AgentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         $user = Auth::user();
@@ -22,6 +20,12 @@ class AgentController extends Controller
         return view('backend.pages.people.agent', compact('agents'));
     }
 
+    public function Activeindex()
+    {
+        $user = Auth::user();
+        $agents = Agent::with('branch')->where('company_id', $user->company_id)->where('status', 1)->get();
+        return response()->json($agents);
+    }
 
     public function create()
     {

@@ -23,7 +23,19 @@
 				  <ul class="treeview-menu">
 					<li><a href=""><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Candidates</a></li>
 					<li><a href="{{route('admin.agents.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Agents</a></li>
-					<li><a href=""><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Investor</a></li>	
+					<li><a href=""><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Investor</a></li>
+					<li class="treeview">
+						<a href="#">
+							<i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Delegates
+							<span class="pull-right-container">
+								<i class="fa fa-angle-right pull-right"></i>
+							</span>
+						</a>
+						<ul class="treeview-menu">
+							<li><a href="{{route('admin.delegates.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Manage Delegates</a></li>
+							<li><a href="{{route('admin.delegateOffice.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Delegates Office</a></li>
+						</ul>
+					</li>
 				  </ul>
 				</li>
 				<li class="treeview">
@@ -52,20 +64,6 @@
 					<ul class="treeview-menu">		
 						<li><a href=""><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Add Customer</a></li>
 						<li><a href=""><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Customer List</a></li>
-					</ul>
-				</li>
-
-				<li class="treeview">
-					<a href="#">
-					  <i class="fas fa-people-carry"><span class="path1"></span><span class="path2"></span></i>
-					  <span>Delegates</span>
-					  <span class="pull-right-container">
-						<i class="fa fa-angle-right pull-right"></i>
-					  </span>
-					</a>
-					<ul class="treeview-menu">		
-						<li><a href=""><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Manage Delegates</a></li>
-						<li><a href=""><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Delegates Office</a></li>
 					</ul>
 				</li>
 				<li class="treeview">

@@ -26,6 +26,8 @@ use App\Http\Controllers\Admin\Mikrotik\MacController;
 use App\Http\Controllers\Supper_Admin\MikrotikServiceController;
 use App\Http\Controllers\Supper_Admin\Mikrotik\MikrotikDeviceController;
 use App\Http\Controllers\Admin\People\AgentController;
+use App\Http\Controllers\Admin\People\DelegateController;
+use App\Http\Controllers\Admin\People\DelegateOfficeController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -109,6 +111,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::match(['get', 'post'], '/employee/{id}/finger', [EmployeeController::class, 'finger'])->name('employee.finger');
     Route::match(['get', 'post'], '/employee/{id}/card', [EmployeeController::class, 'accessCard'])->name('employee.card');
     Route::get('/router/active', [MikrotikDeviceController::class, 'Activeindex'])->name('router.active');
+    Route::get('/agent/active', [AgentController::class, 'Activeindex'])->name('agent.active');
+    Route::get('/delegate/active', [DelegateController::class, 'Activeindex'])->name('delegate.active');
 
     Route::resource('branches', BranchController::class);
     Route::resource('departments', DepartmentController::class);
@@ -121,6 +125,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('agents', AgentController::class);
     Route::resource('hotspots', HotspotController::class);
     Route::resource('mac-address', MacController::class);
+    Route::resource('delegates', DelegateController::class);
+    Route::resource('delegateOffice', DelegateOfficeController::class);
 });
 
 

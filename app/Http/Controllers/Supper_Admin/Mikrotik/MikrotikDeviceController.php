@@ -17,10 +17,18 @@ class MikrotikDeviceController extends Controller
         return view('supper_admin.pages.microtik.router', compact('routers'));
     }
 
-    public function Activeindex()
+    public function Activeindex(Request $request)
     {
         $user = Auth::user();
-        $routers = MikrotikDevice::where('company_id', $user->company_id)->where('status', 2)->get();
+        $branchId = $request->input('branch_id');
+        if (!$branchId) {
+            return response()->json(['error' => 'Please select a Branch.'], 400);
+        }
+        $routers = MikrotikDevice::where('branch_id', $branchId)    
+                                ->where('company_id', $user->company_id)
+                                ->where('status', 1)
+                                ->get();
+
         return response()->json($routers);
     }
 
@@ -50,7 +58,7 @@ class MikrotikDeviceController extends Controller
                 'user'            => $request->input('user'),
                 'password'        => $request->input('password'),
                 'port'            => $request->input('port'),
-                'status'          => $request->input('status'),
+                'status'          => $request->input('status') ? 1 : 0,
                 'user_id'         => $user->id,
             ]);
             return response()->json(['status' => 'success', 'message' => 'Mikrotik added Successfully']);

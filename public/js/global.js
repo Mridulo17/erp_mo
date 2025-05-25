@@ -1,22 +1,6 @@
 
 //global countires api--------
-// function fetchCountriess(selectId = '#countriesSelect') {
-//     $.ajax({
-//         url: window.routes.countryActive,
-//         method: "GET",
-//         success: function(data) {
-//             let select = $(selectId);
-//             select.empty();
-//             select.append('<option value="" disabled selected>Select a country</option>');
-//             data.forEach(function(country) {
-//                 select.append(`<option value="${country.id}">${country.name}</option>`);
-//             });
-//         },
-//         error: function(xhr) {
-//             console.error("Failed to fetch countries:", xhr);
-//         }
-//     });
-// }
+
 
 function fetchCountriess(selectId = '#countriesSelect') {
     $.ajax({
@@ -68,23 +52,6 @@ function fetchDivisions(selectId = '#divisionsSelect') {
     });
 }
 
-// function fetchDistricts(selectId = '#districtsSelect') {
-//     $.ajax({
-//         url: window.routes.districtActive,
-//         method: "GET",
-//         success: function(data) {
-//             let select = $(selectId);
-//             select.empty();
-//             select.append('<option value="" disabled selected>Select a district</option>');
-//             data.forEach(function(district) {
-//                 select.append(`<option value="${district.id}">${district.name}</option>`);
-//             });
-//         },
-//         error: function(xhr) {
-//             console.error("Failed to fetch district:", xhr);
-//         }
-//     });
-// }
 
 function fetchDistricts(selectId = '#districtsSelect') {
     $.ajax({
@@ -145,6 +112,42 @@ function fetchEmployees(selectId = '#employeesSelect') {
     });
 }
 
+function fetchAgents(selectId = '#agentSelect') {
+    $.ajax({
+        url: window.routes.agentActive,
+        method: "GET",
+        success: function(data) {
+            let select = $(selectId);
+            select.empty();
+            select.append('<option value="" disabled selected>Select a Agent</option>');
+            data.forEach(function(agent) {
+                select.append(`<option value="${agent.id}">${agent.first_name} ${agent.last_name}</option>`);
+            });
+        },
+        error: function(xhr) {
+            console.error("Failed to fetch employee:", xhr);
+        }
+    });
+}
+
+function fetchDelegates(selectId = '#delegateSelect') {
+    $.ajax({
+        url: window.routes.delegateActive,
+        method: "GET",
+        success: function(data) {
+            let select = $(selectId);
+            select.empty();
+            select.append('<option value="" disabled selected>Select a Agent</option>');
+            data.forEach(function(agent) {
+                select.append(`<option value="${agent.id}">${agent.first_name} ${agent.last_name}</option>`);
+            });
+        },
+        error: function(xhr) {
+            console.error("Failed to fetch employee:", xhr);
+        }
+    });
+}
+
 function fetchBranch(selectId = '#branchSelect') {
     $.ajax({
         url: window.routes.branchActive,
@@ -184,23 +187,45 @@ function fetchBranchData(companyId, selectId = '#branchSelect') {
     });
 }
 
-function fetchRouters(selectId = '#routerSelect') {
+function fetchRouters(branchId, selectId = '#routerSelect') {
+    if (!branchId) return;
+
     $.ajax({
         url: window.routes.routerActive,
         method: "GET",
+        data: { branch_id: branchId },
         success: function(data) {
             let select = $(selectId);
             select.empty();
             select.append('<option value="" disabled selected>Select a router</option>');
             data.forEach(function(router) {
-                select.append(`<option value="${router.id}">${router.host} <span class="text-danger">(PORT-${router.port})</span> </option>`);
+                select.append(`<option value="${router.id}">${router.host} (PORT-${router.port})</option>`);
             });
         },
         error: function(xhr) {
-            console.error("Failed to fetch branch:", xhr);
+            console.error("Failed to fetch routers:", xhr);
         }
     });
 }
+
+
+// function fetchRouters(selectId = '#routerSelect') {
+//     $.ajax({
+//         url: window.routes.routerActive,
+//         method: "GET",
+//         success: function(data) {
+//             let select = $(selectId);
+//             select.empty();
+//             select.append('<option value="" disabled selected>Select a router</option>');
+//             data.forEach(function(router) {
+//                 select.append(`<option value="${router.id}">${router.host} <span class="text-danger">(PORT-${router.port})</span> </option>`);
+//             });
+//         },
+//         error: function(xhr) {
+//             console.error("Failed to fetch branch:", xhr);
+//         }
+//     });
+// }
 
 function fetchCompanyData(selectId = '#companySelect') {
     $.ajax({
@@ -235,3 +260,4 @@ $(document).ready(function () {
         }
     });
 });
+

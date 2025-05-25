@@ -28,6 +28,8 @@
 			employeeActive: "{{ route('admin.employee.active') }}",
 			branchActive: "{{ route('admin.branch.active') }}",
 			routerActive: "{{ route('admin.router.active') }}",
+			agentActive: "{{ route('admin.agent.active') }}",
+			delegateActive: "{{ route('admin.delegate.active') }}",
         };
     </script>
   </head>
