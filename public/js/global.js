@@ -148,6 +148,8 @@ function fetchDelegates(selectId = '#delegateSelect') {
     });
 }
 
+
+
 function fetchBranch(selectId = '#branchSelect') {
     $.ajax({
         url: window.routes.branchActive,
@@ -209,24 +211,6 @@ function fetchRouters(branchId, selectId = '#routerSelect') {
 }
 
 
-// function fetchRouters(selectId = '#routerSelect') {
-//     $.ajax({
-//         url: window.routes.routerActive,
-//         method: "GET",
-//         success: function(data) {
-//             let select = $(selectId);
-//             select.empty();
-//             select.append('<option value="" disabled selected>Select a router</option>');
-//             data.forEach(function(router) {
-//                 select.append(`<option value="${router.id}">${router.host} <span class="text-danger">(PORT-${router.port})</span> </option>`);
-//             });
-//         },
-//         error: function(xhr) {
-//             console.error("Failed to fetch branch:", xhr);
-//         }
-//     });
-// }
-
 function fetchCompanyData(selectId = '#companySelect') {
     $.ajax({
         url: window.routes.companyActive,
@@ -260,4 +244,41 @@ $(document).ready(function () {
         }
     });
 });
+
+
+function fetchProcessCategory(selectId = '#processCategorySelect') {
+    $.ajax({
+        url: window.routes.processCategoryActive,
+        method: "GET",
+        success: function(data) {
+            let select = $(selectId);
+            select.empty();
+            select.append('<option value="" disabled selected>Select a Process Category</option>');
+            data.forEach(function(process) {
+                select.append(`<option value="${process.id}">${process.name}</option>`);
+            });
+        },
+        error: function(xhr) {
+            console.error("Failed to fetch employee:", xhr);
+        }
+    });
+}
+
+function fetchJobCategory(selectId = '#jobCategorySelect') {
+    $.ajax({
+        url: window.routes.jobCategoryActive,
+        method: "GET",
+        success: function(data) {
+            let select = $(selectId);
+            select.empty();
+            select.append('<option value="" disabled selected>Select a Job Category</option>');
+            data.forEach(function(job) {
+                select.append(`<option value="${job.id}">${job.name}</option>`);
+            });
+        },
+        error: function(xhr) {
+            console.error("Failed to fetch employee:", xhr);
+        }
+    });
+}
 

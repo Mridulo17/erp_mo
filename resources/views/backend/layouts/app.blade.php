@@ -30,6 +30,8 @@
 			routerActive: "{{ route('admin.router.active') }}",
 			agentActive: "{{ route('admin.agent.active') }}",
 			delegateActive: "{{ route('admin.delegate.active') }}",
+			processCategoryActive: "{{ route('admin.processCategory.active') }}",
+			jobCategoryActive: "{{ route('admin.jobCategory.active') }}",
         };
     </script>
   </head>

@@ -28,6 +28,11 @@ use App\Http\Controllers\Supper_Admin\Mikrotik\MikrotikDeviceController;
 use App\Http\Controllers\Admin\People\AgentController;
 use App\Http\Controllers\Admin\People\DelegateController;
 use App\Http\Controllers\Admin\People\DelegateOfficeController;
+use App\Http\Controllers\Admin\Process\CandidateTypeController;
+use App\Http\Controllers\Admin\Process\ProcessCategoryController;
+use App\Http\Controllers\Admin\Process\JobCategoryController;
+use App\Http\Controllers\Admin\Process\JobListController;
+use App\Http\Controllers\Admin\Process\ProcessStepController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -113,6 +118,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('/router/active', [MikrotikDeviceController::class, 'Activeindex'])->name('router.active');
     Route::get('/agent/active', [AgentController::class, 'Activeindex'])->name('agent.active');
     Route::get('/delegate/active', [DelegateController::class, 'Activeindex'])->name('delegate.active');
+    Route::get('/processCategory/active', [ProcessCategoryController::class, 'Activeindex'])->name('processCategory.active');
+    Route::get('/jobCategory/active', [JobCategoryController::class, 'Activeindex'])->name('jobCategory.active');
+
 
     Route::resource('branches', BranchController::class);
     Route::resource('departments', DepartmentController::class);
@@ -127,6 +135,12 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('mac-address', MacController::class);
     Route::resource('delegates', DelegateController::class);
     Route::resource('delegateOffice', DelegateOfficeController::class);
+    Route::resource('candidateTypes', CandidateTypeController::class);
+    Route::resource('processCategory', ProcessCategoryController::class);
+    Route::resource('jobCategory', JobCategoryController::class);
+    Route::resource('jobLists', JobListController::class);
+    Route::resource('processSteps', ProcessStepController::class);
+
 });
 
 

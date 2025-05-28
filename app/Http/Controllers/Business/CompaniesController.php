@@ -91,6 +91,7 @@ class CompaniesController extends Controller
             'company_id' => $company->id,
             'name'       => $validatedData['owner_name'] ?? 'Unknown',
             'username'   => $company->company_code,
+            'role'       => 'admin',
             'email'      => $validatedData['email'],
             'password'   => Hash::make($validatedData['password']),
             'isActive'   => $company->status,

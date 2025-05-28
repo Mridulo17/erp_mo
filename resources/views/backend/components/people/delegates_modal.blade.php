@@ -62,12 +62,12 @@
                         </div>
                         <div class="form-group col-md-4">
                             <label for="sponsor_type" class="font-weight-bold text-dark" style="font-size: 14px;">
-                                Sponsor Type
+                                Reference Type
                             </label>
                             <select name="sponsor_type" id="sponsor_type" class="form-control">
                                 <option value="agent">Agent</option>
                                 <option value="employee">Employee</option>
-                                <option value="prime_sponsor" selected>Prime Sponsor</option>
+                                <option value="prime_sponsor" selected>Prime Reference</option>
                             </select>
                         </div>
 

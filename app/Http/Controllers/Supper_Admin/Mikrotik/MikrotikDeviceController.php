@@ -26,7 +26,7 @@ class MikrotikDeviceController extends Controller
         }
         $routers = MikrotikDevice::where('branch_id', $branchId)    
                                 ->where('company_id', $user->company_id)
-                                ->where('status', 1)
+                                ->where('status', 2)
                                 ->get();
 
         return response()->json($routers);
