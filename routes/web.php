@@ -33,6 +33,9 @@ use App\Http\Controllers\Admin\Process\ProcessCategoryController;
 use App\Http\Controllers\Admin\Process\JobCategoryController;
 use App\Http\Controllers\Admin\Process\JobListController;
 use App\Http\Controllers\Admin\Process\ProcessStepController;
+use App\Http\Controllers\Admin\Process\ProcessOfficeController;
+use App\Http\Controllers\Admin\Process\AsignJobToOfficeController;
+use App\Http\Controllers\Admin\Process\AirlineOfficeController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -120,6 +123,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('/delegate/active', [DelegateController::class, 'Activeindex'])->name('delegate.active');
     Route::get('/processCategory/active', [ProcessCategoryController::class, 'Activeindex'])->name('processCategory.active');
     Route::get('/jobCategory/active', [JobCategoryController::class, 'Activeindex'])->name('jobCategory.active');
+    Route::get('/jobLists/active', [JobListController::class, 'Activeindex'])->name('jobLists.active');
+    Route::get('/processOffices/active', [ProcessOfficeController::class, 'Activeindex'])->name('processOffices.active');
 
 
     Route::resource('branches', BranchController::class);
@@ -140,7 +145,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('jobCategory', JobCategoryController::class);
     Route::resource('jobLists', JobListController::class);
     Route::resource('processSteps', ProcessStepController::class);
-
+    Route::resource('processOffices', ProcessOfficeController::class);
+    Route::resource('asignjobtoOffice', AsignJobToOfficeController::class);
+    Route::resource('airlineOffices', AirlineOfficeController::class);
 });
 
 

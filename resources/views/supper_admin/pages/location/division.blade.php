@@ -138,24 +138,7 @@
             });
 
             $(document).ready(function () {
-                fetchcountriess();
-                function fetchcountriess() {
-                    $.ajax({
-                        url: "{{ route('supper_admin.country.active') }}",
-                        method: "GET",
-                        success: function(data) {
-                            let select = $('#countriesSelect');
-                            select.empty();
-                            select.append('<option value="" disabled selected>Select a countries</option>');
-                            data.forEach(function(country) {
-                                select.append('<option value="' + country.id + '">' + country.name + '</option>');
-                            });
-                        },
-                        error: function(xhr) {
-                            console.error("Failed to fetch countriess:", xhr);
-                        }
-                    });
-                }
+                fetchDatacountriess();
 
                 $('#divisionFrom').on('submit', function (e) {
                     e.preventDefault();

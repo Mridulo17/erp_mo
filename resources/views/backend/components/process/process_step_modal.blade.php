@@ -21,56 +21,49 @@
 
                     <div class="form-group">
                         <label for="name" class="font-weight-bold text-dark" style="font-size: 14px;">Select Country</label>
-                        <select class="form-control select2" multiple="multiple" data-placeholder="Select a State"
+                        <select name="country_id[]" id="countriesSelect" class="form-control select2" multiple="multiple" data-placeholder="Select a Country"
                                 style="width: 100%;">
-                            <option>Alabama</option>
-                            <option>Alaska</option>
-                            <option>California</option>
-                            <option>Delaware</option>
-                            <option>Tennessee</option>
-                            <option>Texas</option>
-                            <option>Washington</option>
+                                <option value="" disabled>Select a Country</option>
                         </select>
                     </div>
 
-                      
                     <div class="form-group">
                         <label for="name" class="font-weight-bold text-dark" style="font-size: 14px;">Select Gender</label>
-                        <select class="form-control select2" multiple="multiple" data-placeholder="Select a State"
+                        <select name="gender[]" id="gender" class="form-control select2" multiple="multiple" data-placeholder="Select a Gender"
                                 style="width: 100%;">
-                            <option>Alabama</option>
-                            <option>Alaska</option>
-                            <option>California</option>
-                            <option>Delaware</option>
-                            <option>Tennessee</option>
-                            <option>Texas</option>
-                            <option>Washington</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Genderqueer">Genderqueer</option>
+                            <option value="Two-Spirit">Two-Spirit</option>
+                            <option value="Others">Others</option>
                         </select>
                     </div>
 
 
                     <div class="form-group">
                         <label for="name" class="font-weight-bold text-dark" style="font-size: 14px;">Select Process Category</label>
-                        <select class="form-control select2" multiple="multiple" data-placeholder="Select a State"
+                        <select name="process_category_id[]" id="processCategorySelect" class="form-control select2" multiple="multiple" data-placeholder="Select a process Category"
                                 style="width: 100%;">
-                            <option>Alabama</option>
-                            <option>Alaska</option>
-                            <option>California</option>
-                            <option>Delaware</option>
-                            <option>Tennessee</option>
-                            <option>Texas</option>
-                            <option>Washington</option>
+                                <option value="" disabled>Select a Country</option>
                         </select>
                     </div>
 
+                    <input type="hidden" name="is_document" value="0">
                     <div class="form-group form-check" style="padding-left: 0px !important">
-                        <input type="checkbox" id="is_document" name="is_document" class="form-check-input" value="0" >
+                        <input type="checkbox" id="is_document" name="is_document" class="form-check-input" value="1" >
                         <label class="form-check-label" for="is_document">Need Document</label>
                     </div>
 
+                    <input type="hidden" name="is_scheduled" value="0">
                     <div class="form-group form-check" style="padding-left: 0px !important">
-                        <input type="checkbox" id="is_scheduled" name="is_scheduled" class="form-check-input" value="0">
+                        <input type="checkbox" id="is_scheduled" name="is_scheduled" class="form-check-input" value="1">
                         <label class="form-check-label" for="is_scheduled">Need Scheduled</label>
+                    </div>
+
+                    <input type="hidden" name="is_youtube_link" value="0">
+                    <div class="form-group form-check" style="padding-left: 0px !important">
+                        <input type="checkbox" id="is_youtube_link" name="is_youtube_link" class="form-check-input" value="1">
+                        <label class="form-check-label" for="is_youtube_link">Need Youtube Link</label>
                     </div>
 
 

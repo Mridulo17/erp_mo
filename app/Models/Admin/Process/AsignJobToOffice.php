@@ -3,25 +3,22 @@
 namespace App\Models\Admin\Process;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Admin\MyOffice\Branch;
+
 use App\Models\Business\Company;
 use App\Models\User;
-
-class ProcessStep extends Model
+class AsignJobToOffice extends Model
 {
     protected $fillable =
     [
         'company_id',
-        'name', 
-        'country_id', 
-        'gender',
+        'user_id', 
+        'processing_cost', 
+        'proces_office_id',
         'process_category_id',
-        'is_document',
-        'is_scheduled',
-        'is_youtube_link',
+        'job_category_id',
+        'job_list_id',
         'note',
         'status',
-        'user_id',
     ];
 
     public function user()
@@ -33,12 +30,20 @@ class ProcessStep extends Model
     {
         return $this->belongsTo(Company::class, 'company_id');
     }
-    public function country()
+    public function processOffice()
     {
-        return $this->belongsTo(Branch::class, 'country_id');
+        return $this->belongsTo(ProcessOffice::class, 'proces_office_id');
     }
-        public function processCategory()
+    public function processCategory()
     {
         return $this->belongsTo(ProcessCategory::class, 'process_category_id');
+    }
+    public function jobCategory()
+    {
+        return $this->belongsTo(JobCategory::class, 'job_category_id');
+    }
+    public function jobList()
+    {
+        return $this->belongsTo(JobList::class, 'job_list_id');
     }
 }

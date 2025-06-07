@@ -32,6 +32,9 @@
 			delegateActive: "{{ route('admin.delegate.active') }}",
 			processCategoryActive: "{{ route('admin.processCategory.active') }}",
 			jobCategoryActive: "{{ route('admin.jobCategory.active') }}",
+			jobListActive: "{{route('admin.jobLists.active')}}",
+			processOfficeActive: "{{route('admin.processOffices.active')}}",
+
         };
     </script>
   </head>

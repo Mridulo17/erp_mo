@@ -25,7 +25,7 @@ class ProcessCategoryController extends Controller
         $ProcessCategorys = ProcessCategory::where('company_id', $user->company_id)->where('status', 1)->get();
         return response()->json($ProcessCategorys);
     }
-
+    
     public function create()
     {
         //

@@ -33,6 +33,24 @@ function fetchCountriess(selectId = '#countriesSelect') {
     });
 }
 
+function fetchDatacountriess(selectId = '#countriesSelect') {
+    $.ajax({
+        url: window.routes.countryActive,
+        method: "GET",
+        success: function(data) {
+            let select = $(selectId);
+            select.empty();
+            // select.append('<option value="" disabled selected>Select a country</option>');
+            data.forEach(function(country) {
+                select.append(`<option value="${country.id}">${country.name}</option>`);
+            });
+        },
+        error: function(xhr) {
+            console.error("Failed to fetch division:", xhr);
+        }
+    });
+}
+
 
 function fetchDivisions(selectId = '#divisionsSelect') {
     $.ajax({
@@ -274,6 +292,65 @@ function fetchJobCategory(selectId = '#jobCategorySelect') {
             select.append('<option value="" disabled selected>Select a Job Category</option>');
             data.forEach(function(job) {
                 select.append(`<option value="${job.id}">${job.name}</option>`);
+            });
+        },
+        error: function(xhr) {
+            console.error("Failed to fetch employee:", xhr);
+        }
+    });
+}
+
+function fetchJobCategoryData(ProcessCategoryId, selectId = '#jobCategorySelect') {
+    if (!ProcessCategoryId) return;
+
+    $.ajax({
+        url: window.routes.jobCategoryActive,
+        method: "GET",
+        data: { process_category_id: ProcessCategoryId },
+        success: function(data) {
+            let select = $(selectId);
+            select.empty();
+            select.append('<option value="" disabled selected>Select a Process Category</option>');
+            data.forEach(function(job) {
+                select.append(`<option value="${job.id}">${job.name}</option>`);
+            });
+        },
+        error: function(xhr) {
+            console.error("Failed to fetch branch:", xhr);
+        }
+    });
+}
+
+function fetchJobList(jobCategoryId, selectId = '#jobListSelect') {
+    if (!jobCategoryId) return;
+    $.ajax({
+        url: window.routes.jobListActive,
+        method: "GET",
+        data: { job_category_id: jobCategoryId },
+        success: function(data) {
+            let select = $(selectId);
+            select.empty();
+            select.append('<option value="" disabled selected>Select a Job List</option>');
+            data.forEach(function(job) {
+                select.append(`<option value="${job.id}">${job.name}</option>`);
+            });
+        },
+        error: function(xhr) {
+            console.error("Failed to fetch employee:", xhr);
+        }
+    });
+}
+
+function fetchprocessOffice(selectId = '#processOfficeSelect') {
+    $.ajax({
+        url: window.routes.processOfficeActive,
+        method: "GET",
+        success: function(data) {
+            let select = $(selectId);
+            select.empty();
+            select.append('<option value="" disabled selected>Select a process Office</option>');
+            data.forEach(function(process) {
+                select.append(`<option value="${process.id}">${process.name}</option>`);
             });
         },
         error: function(xhr) {

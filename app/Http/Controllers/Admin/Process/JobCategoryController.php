@@ -19,12 +19,28 @@ class JobCategoryController extends Controller
         return view('backend.pages.process.job_category', compact('JobCategorys'));
     }
 
-    public function Activeindex()
+    // public function Activeindex()
+    // {
+    //     $user = Auth::user();
+    //     $JobCategorys = JobCategory::where('company_id', $user->company_id)->where('status', 1)->get();
+    //     return response()->json($JobCategorys);
+    // }
+
+    public function Activeindex(Request $request)
     {
         $user = Auth::user();
-        $JobCategorys = JobCategory::where('company_id', $user->company_id)->where('status', 1)->get();
-        return response()->json($JobCategorys);
+        $processCategoryId = $request->input('process_category_id');
+        if (!$processCategoryId && $user->role === 'admin') {
+            return response()->json(['error' => 'Please select a Process category.'], 400);
+        }
+        $query = JobCategory::where('company_id', $user->company_id)->where('status', 1);
+        if ($processCategoryId) {
+            $query->where('process_category_id', $processCategoryId);
+        }
+        $jobCategories = $query->get();
+        return response()->json($jobCategories);
     }
+
 
     public function create()
     {

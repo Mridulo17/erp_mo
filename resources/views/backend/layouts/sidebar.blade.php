@@ -101,19 +101,22 @@
 						<li><a href="{{route('admin.jobCategory.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Job Category</a></li>
 						<li><a href="{{route('admin.jobLists.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Job List</a></li>
 						<li><a href="{{route('admin.processSteps.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Process Step</a></li>
+						<li><a href="{{route('admin.airlineOffices.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Airlines Office</a></li>
+
+
 						<li class="treeview">
 							<a href="#">
-								<i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Processing Office
+								<i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Agency & Processing office
 								<span class="pull-right-container">
 									<i class="fa fa-angle-right pull-right"></i>
 								</span>
 							</a>
 							<ul class="treeview-menu">
-								<li><a href=""><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Add Office</a></li>
-								<li><a href=""><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Asign Job To Office</a></li>
+								<li><a href="{{route('admin.processOffices.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Add Office</a></li>
+								<li><a href="{{route('admin.asignjobtoOffice.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Asign Job To Office</a></li>
 							</ul>
 						</li>
-						<li class="treeview">
+						{{-- <li class="treeview">
 							<a href="#">
 								<i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Air Lines Office
 								<span class="pull-right-container">
@@ -124,7 +127,7 @@
 								<li><a href=""><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Add Office</a></li>
 								<li><a href=""><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Asign Job To Office</a></li>
 							</ul>
-						</li>
+						</li> --}}
 
 					</ul>
 				</li>

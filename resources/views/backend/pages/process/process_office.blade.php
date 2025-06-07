@@ -1,5 +1,5 @@
 @extends('backend.layouts.app')
-@section('title', config('app.name') . ' - Process Step')
+@section('title', config('app.name') . ' - Process Office')
 
 @section('style')
     <style>
@@ -44,15 +44,15 @@
     <!-- Header Section -->
     <div class="box-header with-border d-flex justify-content-between align-items-center">
         <div>
-            <h3 class="box-title">Process Steps</h3>
-            <h6 class="box-subtitle">This is all Process Steps List</h6>
+            <h3 class="box-title">Agency and Processing Office</h3>
+            <h6 class="box-subtitle">This is all Agency and Processing Office List</h6>
         </div>
-        <button type="button" class="btn btn-warning addprocessStepsButton" data-toggle="modal" data-target="#modal-center">
+        <button type="button" class="btn btn-warning addProcessOfficesButton" data-toggle="modal" data-target="#modal-center">
             <i class="fa-solid fa-plus"></i> Add Data
         </button>
     </div>
 
-    @include('backend.components.process.process_step_modal')
+    @include('backend.components.process.process_office_modal')
 
     <div class="box-body">
         <div class="table-responsive">
@@ -61,13 +61,15 @@
                     <tr>
                         <th style="">Action</th>
                         <th style="">Serial</th>
-                        <th style="">Category Name</th>
+                        <th style="">Office Name</th>
+                        <th style="">Phone</th>
+                        <th style="">License Number</th>
                         <th style="">Note</th>
                         <th style="">Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($ProcessSteps as $key =>$serivice)
+                    @foreach($ProcessOffices as $key =>$serivice)
                     <tr>
                         <td>
                             <div class="btn-group">
@@ -79,13 +81,9 @@
                                     <a href="#" class="dropdown-item editBlogButton" data-toggle="modal" data-target="#modal-center" data-id="{{ $serivice->id }}">
                                         <i class="fa fa-edit"></i> Edit
                                     </a>
-
-                                    <a href="#" class="dropdown-item copyProcessButton" data-toggle="modal" data-target="#modal-center" data-id="{{ $serivice->id }}">
-                                        <i class="fa fa-copy"></i> Duplicate
-                                    </a>
                                     
                                     <button type="button"
-                                            class="dropdown-item text-danger deleteprocessStepsBtn"
+                                            class="dropdown-item text-danger deleteProcessOfficesBtn"
                                             data-id="{{ $serivice->id }}">
                                         <i class="fa fa-trash"></i> Delete
                                     </button>
@@ -95,6 +93,8 @@
                         
                         <td>{{ $key + 1 }}</td>
                         <td class="wrap-text">{{ $serivice->name  }}</td>
+                        <td class="wrap-text">{{ $serivice->phone_number  }}</td>
+                        <td class="wrap-text">{{ $serivice->license_number  }}</td>
                         <td class="wrap-text">{{ $serivice->note ?? ''}}</td>
                         <td>
                             <span class="badge {{ $serivice->status == 1 ? 'badge-success' : 'badge-danger' }}">
@@ -112,16 +112,16 @@
 
     @section('script')
         <script>
-            function fetchCandidateType() {
+            function fetchProcessOffices() {
                 $.ajax({
-                    url: '{{ route("admin.processSteps.index") }}',
+                    url: '{{ route("admin.processOffices.index") }}',
                     type: 'GET',
                     success: function (data) {
                         let newBody = $(data).find('table tbody').html();
                         $('#customDataTable tbody').html(newBody);
                     },
                     error: function () {
-                        console.error('Failed to refresh Process Category table.');
+                        console.error('Failed to refresh Process Office table.');
                     }
                 });
             }
@@ -135,26 +135,23 @@
                 $('.wrapper').attr('aria-hidden', 'true');
             });
 
-            fetchDatacountriess();
-            fetchProcessCategory();
-
             $(document).ready(function () {
-                $('#processStepsForm').on('submit', function (e) {
+                $('#ProcessOfficesForm').on('submit', function (e) {
                     e.preventDefault();
-                    let isEdit = $('#process_step_id').val() !== '';
+                    let isEdit = $('#process_office_id').val() !== '';
                     let formData = new FormData(this);
-                    let id = $('#process_step_id').val();
+                    let id = $('#process_office_id').val();
 
                     let url = isEdit
-                        ? `{{ route('admin.processSteps.update', ['processStep' => '__id__']) }}`.replace('__id__', id)
-                        : `{{ route('admin.processSteps.store') }}`;
+                        ? `{{ route('admin.processOffices.update', ['processOffice' => '__id__']) }}`.replace('__id__', id)
+                        : `{{ route('admin.processOffices.store') }}`;
 
                     if (isEdit) {
                         formData.append('_method', 'PUT');
                     }
 
                     Swal.fire({
-                        title: isEdit ? "Update Process Step?" : "Add Process Step?",
+                        title: isEdit ? "Update Process Office?" : "Add Process Office?",
                         icon: "question",
                         showCancelButton: true,
                         confirmButtonText: "Yes, proceed"
@@ -170,9 +167,9 @@
                                     if (response.status === 'success') {
                                         $('#modal-center').modal('hide');
                                         Swal.fire('Success!', response.message, 'success');
-                                        $('#processStepsForm')[0].reset();
-                                        $('#process_step_id').val('');
-                                        fetchCandidateType();
+                                        $('#ProcessOfficesForm')[0].reset();
+                                        $('#process_office_id').val('');
+                                        fetchProcessOffices();
                                     } else {
                                         Swal.fire('Error!', response.message, 'error');
                                     }
@@ -200,82 +197,49 @@
 
 
 
-                $(document).on('click', '.addprocessStepsButton', function () {
-                    $('#processStepsForm')[0].reset();
-                    $('#process_step_id').val('');
-                    $('#countriesSelect').val('').trigger('change');
-                    $('#gender').val('').trigger('change');
-                    $('#processCategorySelect').val('').trigger('change');
-                    $('#modalTitle').text('Add Process Step');
+                $(document).on('click', '.addProcessOfficesButton', function () {
+                    $('#ProcessOfficesForm')[0].reset();
+                    $('#process_office_id').val('');
+                    $('#modalTitle').text('Add Process Office');
                     $('#modal-center').modal('show');
                 });
 
                 $(document).on('click', '.editBlogButton', function () {
                     const id = $(this).data('id');
-                    const url = '{{ route("admin.processSteps.edit", ":id") }}'.replace(':id', id);
+                    const url = '{{ route("admin.processOffices.edit", ":id") }}'.replace(':id', id);
 
                     $.ajax({
                         url: url,
                         type: 'GET',
                         success: function (res) {
                             console.log(res);
-                            $('#process_step_id').val(id);
+                            $('#process_office_id').val(id);
                             $('#name').val(res.name);
+                            $('#email').val(res.email);
+                            $('#license_number').val(res.license_number);
+                            $('#phone_number').val(res.phone_number);
+                            $('#email').val(res.email);
+                            $('#opening_balance').val(res.opening_balance);
+                            $('#address').val(res.address);
                             $('#note').val(res.note);
                             $('#status').prop('checked', res.status == 1);
-                            $('#is_document').prop('checked', res.is_document == 1);
-                            $('#is_scheduled').prop('checked', res.is_scheduled == 1);
-                            $('#is_youtube_link	').prop('checked', res.is_youtube_link == 1);
-                            $('#countriesSelect').val(res.country_id).trigger('change');
-                            $('#gender').val(res.gender).trigger('change');
-                            $('#processCategorySelect').val(res.process_category_id).trigger('change');
-
-                            $('#modalTitle').text('Edit Process Step');
+                            $('#modalTitle').text('Edit Process Office');
                             $('#modal-center').modal('show');
+                            $('#countriesSelect').val(res.process_office_id).trigger('change');
                         },
                         error: function () {
-                            Swal.fire('Error', 'Could not load Process Category data.', 'error');
-                        }
-                    });
-                });
-
-                $(document).on('click', '.copyProcessButton', function () {
-                    const id = $(this).data('id');
-                    const url = '{{ route("admin.processSteps.edit", ":id") }}'.replace(':id', id);
-
-                    $.ajax({
-                        url: url,
-                        type: 'GET',
-                        success: function (res) {
-
-                            $('#process_step_id').val('');
-                            $('#name').val(res.name + ' (Copy)');
-                            $('#note').val(res.note);
-                            $('#status').prop('checked', res.status == 1);
-                            $('#is_document').prop('checked', res.is_document == 1);
-                            $('#is_scheduled').prop('checked', res.is_scheduled == 1);
-                            $('#is_youtube_link').prop('checked', res.is_youtube_link == 1);
-                            $('#countriesSelect').val(res.country_id).trigger('change');
-                            $('#gender').val(res.gender).trigger('change');
-                            $('#processCategorySelect').val(res.process_category_id).trigger('change');
-
-                            $('#modalTitle').text('Duplicate Process Step');
-                            $('#modal-center').modal('show');
-                        },
-                        error: function () {
-                            Swal.fire('Error', 'Could not load Process Step data.', 'error');
+                            Swal.fire('Error', 'Could not load Process Office data.', 'error');
                         }
                     });
                 });
 
 
-
-                $(document).on('click', '.deleteprocessStepsBtn', function () {
+                $(document).on('click', '.deleteProcessOfficesBtn', function () {
                     const id = $(this).data('id');
-                    const url = '{{ route("admin.processSteps.destroy", ":id") }}'.replace(':id', id);
+                    const url = '{{ route("admin.processOffices.destroy", ":id") }}'.replace(':id', id);
 
                     Swal.fire({
-                        title: 'Delete Process Category?',
+                        title: 'Delete Process Office?',
                         text: "This action cannot be undone.",
                         icon: 'warning',
                         showCancelButton: true,
@@ -292,7 +256,7 @@
                                 success: function (res) {
                                     if (res.status === 'success') {
                                         Swal.fire('Deleted!', res.message, 'success');
-                                        fetchCandidateType();
+                                        fetchProcessOffices();
                                     } else {
                                         Swal.fire('Error!', res.message, 'error');
                                     }

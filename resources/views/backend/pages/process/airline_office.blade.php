@@ -1,5 +1,5 @@
 @extends('backend.layouts.app')
-@section('title', config('app.name') . ' - Process Step')
+@section('title', config('app.name') . ' - Airlines Office')
 
 @section('style')
     <style>
@@ -44,15 +44,15 @@
     <!-- Header Section -->
     <div class="box-header with-border d-flex justify-content-between align-items-center">
         <div>
-            <h3 class="box-title">Process Steps</h3>
-            <h6 class="box-subtitle">This is all Process Steps List</h6>
+            <h3 class="box-title">Airlines Office</h3>
+            <h6 class="box-subtitle">This is all Airlines Office List</h6>
         </div>
-        <button type="button" class="btn btn-warning addprocessStepsButton" data-toggle="modal" data-target="#modal-center">
+        <button type="button" class="btn btn-warning addButton" data-toggle="modal" data-target="#modal-center">
             <i class="fa-solid fa-plus"></i> Add Data
         </button>
     </div>
 
-    @include('backend.components.process.process_step_modal')
+    @include('backend.components.process.airline_office_modal')
 
     <div class="box-body">
         <div class="table-responsive">
@@ -61,13 +61,13 @@
                     <tr>
                         <th style="">Action</th>
                         <th style="">Serial</th>
-                        <th style="">Category Name</th>
+                        <th style="">Ariline Name</th>
                         <th style="">Note</th>
                         <th style="">Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($ProcessSteps as $key =>$serivice)
+                    @foreach($AirlineOffices as $key =>$service)
                     <tr>
                         <td>
                             <div class="btn-group">
@@ -76,17 +76,13 @@
                                 </button>
                                 <div class="dropdown-menu">
                                     <!-- Edit Button inside Dropdown -->
-                                    <a href="#" class="dropdown-item editBlogButton" data-toggle="modal" data-target="#modal-center" data-id="{{ $serivice->id }}">
+                                    {{-- <a href="#" class="dropdown-item editButton" data-toggle="modal" data-target="#modal-center" data-id="{{ $service->id }}">
                                         <i class="fa fa-edit"></i> Edit
-                                    </a>
-
-                                    <a href="#" class="dropdown-item copyProcessButton" data-toggle="modal" data-target="#modal-center" data-id="{{ $serivice->id }}">
-                                        <i class="fa fa-copy"></i> Duplicate
-                                    </a>
+                                    </a> --}}
                                     
                                     <button type="button"
-                                            class="dropdown-item text-danger deleteprocessStepsBtn"
-                                            data-id="{{ $serivice->id }}">
+                                            class="dropdown-item text-danger deleteProcessCategoryBtn"
+                                            data-id="{{ $service->id }}">
                                         <i class="fa fa-trash"></i> Delete
                                     </button>
                                 </div>
@@ -94,11 +90,11 @@
                         </td>
                         
                         <td>{{ $key + 1 }}</td>
-                        <td class="wrap-text">{{ $serivice->name  }}</td>
-                        <td class="wrap-text">{{ $serivice->note ?? ''}}</td>
+                        <td class="wrap-text">{{ $service->name  }}</td>
+                        <td class="wrap-text">{{ $service->note ?? ''}}</td>
                         <td>
-                            <span class="badge {{ $serivice->status == 1 ? 'badge-success' : 'badge-danger' }}">
-                                {{ $serivice->status == 1 ? 'Active' : 'Inactive' }}
+                            <span class="badge {{ $service->status == 1 ? 'badge-success' : 'badge-danger' }}">
+                                {{ $service->status == 1 ? 'Active' : 'Inactive' }}
                             </span>
                         </td>
                     </tr>
@@ -114,7 +110,7 @@
         <script>
             function fetchCandidateType() {
                 $.ajax({
-                    url: '{{ route("admin.processSteps.index") }}',
+                    url: '{{ route("admin.airlineOffices.index") }}',
                     type: 'GET',
                     success: function (data) {
                         let newBody = $(data).find('table tbody').html();
@@ -135,26 +131,23 @@
                 $('.wrapper').attr('aria-hidden', 'true');
             });
 
-            fetchDatacountriess();
-            fetchProcessCategory();
-
             $(document).ready(function () {
-                $('#processStepsForm').on('submit', function (e) {
+                $('#airlineOfficeForm').on('submit', function (e) {
                     e.preventDefault();
-                    let isEdit = $('#process_step_id').val() !== '';
+                    let isEdit = $('#airline_office_id').val() !== '';
                     let formData = new FormData(this);
-                    let id = $('#process_step_id').val();
+                    let id = $('#airline_office_id').val();
 
                     let url = isEdit
-                        ? `{{ route('admin.processSteps.update', ['processStep' => '__id__']) }}`.replace('__id__', id)
-                        : `{{ route('admin.processSteps.store') }}`;
+                        ? `{{ route('admin.airlineOffices.update', ['airlineOffice' => '__id__']) }}`.replace('__id__', id)
+                        : `{{ route('admin.airlineOffices.store') }}`;
 
                     if (isEdit) {
                         formData.append('_method', 'PUT');
                     }
 
                     Swal.fire({
-                        title: isEdit ? "Update Process Step?" : "Add Process Step?",
+                        title: isEdit ? "Update Airline Office?" : "Add Airline Office?",
                         icon: "question",
                         showCancelButton: true,
                         confirmButtonText: "Yes, proceed"
@@ -170,8 +163,8 @@
                                     if (response.status === 'success') {
                                         $('#modal-center').modal('hide');
                                         Swal.fire('Success!', response.message, 'success');
-                                        $('#processStepsForm')[0].reset();
-                                        $('#process_step_id').val('');
+                                        $('#airlineOfficeForm')[0].reset();
+                                        $('#airline_office_id').val('');
                                         fetchCandidateType();
                                     } else {
                                         Swal.fire('Error!', response.message, 'error');
@@ -200,38 +193,29 @@
 
 
 
-                $(document).on('click', '.addprocessStepsButton', function () {
-                    $('#processStepsForm')[0].reset();
-                    $('#process_step_id').val('');
-                    $('#countriesSelect').val('').trigger('change');
-                    $('#gender').val('').trigger('change');
-                    $('#processCategorySelect').val('').trigger('change');
-                    $('#modalTitle').text('Add Process Step');
+                $(document).on('click', '.addButton', function () {
+                    $('#airlineOfficeForm')[0].reset();
+                    $('#airline_office_id').val('');
+                    $('#modalTitle').text('Add Airlines Office');
                     $('#modal-center').modal('show');
                 });
 
-                $(document).on('click', '.editBlogButton', function () {
+                $(document).on('click', '.editButton', function () {
                     const id = $(this).data('id');
-                    const url = '{{ route("admin.processSteps.edit", ":id") }}'.replace(':id', id);
+                    const url = '{{ route("admin.airlineOffices.edit", ":id") }}'.replace(':id', id);
 
                     $.ajax({
                         url: url,
                         type: 'GET',
                         success: function (res) {
                             console.log(res);
-                            $('#process_step_id').val(id);
+                            $('#airline_office_id').val(id);
                             $('#name').val(res.name);
                             $('#note').val(res.note);
                             $('#status').prop('checked', res.status == 1);
-                            $('#is_document').prop('checked', res.is_document == 1);
-                            $('#is_scheduled').prop('checked', res.is_scheduled == 1);
-                            $('#is_youtube_link	').prop('checked', res.is_youtube_link == 1);
-                            $('#countriesSelect').val(res.country_id).trigger('change');
-                            $('#gender').val(res.gender).trigger('change');
-                            $('#processCategorySelect').val(res.process_category_id).trigger('change');
-
-                            $('#modalTitle').text('Edit Process Step');
+                            $('#modalTitle').text('Edit Process Category');
                             $('#modal-center').modal('show');
+                            $('#countriesSelect').val(res.airline_office_id).trigger('change');
                         },
                         error: function () {
                             Swal.fire('Error', 'Could not load Process Category data.', 'error');
@@ -239,43 +223,13 @@
                     });
                 });
 
-                $(document).on('click', '.copyProcessButton', function () {
+
+                $(document).on('click', '.deleteProcessCategoryBtn', function () {
                     const id = $(this).data('id');
-                    const url = '{{ route("admin.processSteps.edit", ":id") }}'.replace(':id', id);
-
-                    $.ajax({
-                        url: url,
-                        type: 'GET',
-                        success: function (res) {
-
-                            $('#process_step_id').val('');
-                            $('#name').val(res.name + ' (Copy)');
-                            $('#note').val(res.note);
-                            $('#status').prop('checked', res.status == 1);
-                            $('#is_document').prop('checked', res.is_document == 1);
-                            $('#is_scheduled').prop('checked', res.is_scheduled == 1);
-                            $('#is_youtube_link').prop('checked', res.is_youtube_link == 1);
-                            $('#countriesSelect').val(res.country_id).trigger('change');
-                            $('#gender').val(res.gender).trigger('change');
-                            $('#processCategorySelect').val(res.process_category_id).trigger('change');
-
-                            $('#modalTitle').text('Duplicate Process Step');
-                            $('#modal-center').modal('show');
-                        },
-                        error: function () {
-                            Swal.fire('Error', 'Could not load Process Step data.', 'error');
-                        }
-                    });
-                });
-
-
-
-                $(document).on('click', '.deleteprocessStepsBtn', function () {
-                    const id = $(this).data('id');
-                    const url = '{{ route("admin.processSteps.destroy", ":id") }}'.replace(':id', id);
+                    const url = '{{ route("admin.airlineOffices.destroy", ":id") }}'.replace(':id', id);
 
                     Swal.fire({
-                        title: 'Delete Process Category?',
+                        title: 'Delete Airlines Office?',
                         text: "This action cannot be undone.",
                         icon: 'warning',
                         showCancelButton: true,

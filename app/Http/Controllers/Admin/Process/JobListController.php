@@ -17,10 +17,25 @@ class JobListController extends Controller
         return view('backend.pages.process.job_list', compact('JobLists'));
     }
 
-    public function Activeindex()
+    // public function Activeindex()
+    // {
+    //     $user = Auth::user();
+    //     $JobLists = JobList::where('company_id', $user->company_id)->where('status', 1)->get();
+    //     return response()->json($JobLists);
+    // }
+
+    public function Activeindex(Request $request)
     {
         $user = Auth::user();
-        $JobLists = JobList::where('company_id', $user->company_id)->where('status', 1)->get();
+        $jobCategoryId = $request->input('job_category_id');
+        if (!$jobCategoryId && $user->role === 'admin') {
+            return response()->json(['error' => 'Please select a Job category.'], 400);
+        }
+        $query = JobList::where('company_id', $user->company_id)->where('status', 1);
+        if ($jobCategoryId) {
+            $query->where('job_category_id', $jobCategoryId);
+        }
+        $JobLists = $query->get();
         return response()->json($JobLists);
     }
 

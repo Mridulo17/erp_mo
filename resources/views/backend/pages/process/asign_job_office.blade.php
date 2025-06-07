@@ -1,5 +1,5 @@
 @extends('backend.layouts.app')
-@section('title', config('app.name') . ' - Process Step')
+@section('title', config('app.name') . ' - Asign Job to Office')
 
 @section('style')
     <style>
@@ -44,15 +44,15 @@
     <!-- Header Section -->
     <div class="box-header with-border d-flex justify-content-between align-items-center">
         <div>
-            <h3 class="box-title">Process Steps</h3>
-            <h6 class="box-subtitle">This is all Process Steps List</h6>
+            <h3 class="box-title">Asign Job to Office </h3>
+            <h6 class="box-subtitle">This is all Asign Job to Office List</h6>
         </div>
-        <button type="button" class="btn btn-warning addprocessStepsButton" data-toggle="modal" data-target="#modal-center">
+        <button type="button" class="btn btn-warning addAsignButton" data-toggle="modal" data-target="#modal-center">
             <i class="fa-solid fa-plus"></i> Add Data
         </button>
     </div>
 
-    @include('backend.components.process.process_step_modal')
+    @include('backend.components.process.asign_to_job_modal')
 
     <div class="box-body">
         <div class="table-responsive">
@@ -61,13 +61,15 @@
                     <tr>
                         <th style="">Action</th>
                         <th style="">Serial</th>
-                        <th style="">Category Name</th>
-                        <th style="">Note</th>
+                        <th style="">Process Office</th>
+                        <th style="">Job Name Office</th>
+                        <th style="">Job Type</th>
+                        <th style="">P.Cost</th>
                         <th style="">Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($ProcessSteps as $key =>$serivice)
+                    @foreach($AsignJobToOffices as $key =>$service)
                     <tr>
                         <td>
                             <div class="btn-group">
@@ -75,18 +77,13 @@
                                     <i class="fa fa-bars"></i> Action
                                 </button>
                                 <div class="dropdown-menu">
-                                    <!-- Edit Button inside Dropdown -->
-                                    <a href="#" class="dropdown-item editBlogButton" data-toggle="modal" data-target="#modal-center" data-id="{{ $serivice->id }}">
+                                    <a href="#" class="dropdown-item editBlogButton" data-toggle="modal" data-target="#modal-center" data-id="{{ $service->id }}">
                                         <i class="fa fa-edit"></i> Edit
-                                    </a>
-
-                                    <a href="#" class="dropdown-item copyProcessButton" data-toggle="modal" data-target="#modal-center" data-id="{{ $serivice->id }}">
-                                        <i class="fa fa-copy"></i> Duplicate
                                     </a>
                                     
                                     <button type="button"
-                                            class="dropdown-item text-danger deleteprocessStepsBtn"
-                                            data-id="{{ $serivice->id }}">
+                                            class="dropdown-item text-danger deleteAsignBtn"
+                                            data-id="{{ $service->id }}">
                                         <i class="fa fa-trash"></i> Delete
                                     </button>
                                 </div>
@@ -94,11 +91,13 @@
                         </td>
                         
                         <td>{{ $key + 1 }}</td>
-                        <td class="wrap-text">{{ $serivice->name  }}</td>
-                        <td class="wrap-text">{{ $serivice->note ?? ''}}</td>
+                        <td class="wrap-text">{{ $service->processOffice->name  }}</td>
+                        <td class="wrap-text">{{ $service->jobList->name  }}</td>
+                        <td class="wrap-text">{{ $service->jobList->job_type  }}</td>
+                        <td class="wrap-text">{{ $service->processing_cost  }}</td>
                         <td>
-                            <span class="badge {{ $serivice->status == 1 ? 'badge-success' : 'badge-danger' }}">
-                                {{ $serivice->status == 1 ? 'Active' : 'Inactive' }}
+                            <span class="badge {{ $service->status == 1 ? 'badge-success' : 'badge-danger' }}">
+                                {{ $service->status == 1 ? 'Active' : 'Inactive' }}
                             </span>
                         </td>
                     </tr>
@@ -114,7 +113,7 @@
         <script>
             function fetchCandidateType() {
                 $.ajax({
-                    url: '{{ route("admin.processSteps.index") }}',
+                    url: '{{ route("admin.asignjobtoOffice.index") }}',
                     type: 'GET',
                     success: function (data) {
                         let newBody = $(data).find('table tbody').html();
@@ -134,27 +133,36 @@
             $('#modal-center').on('hidden.bs.modal', function () {
                 $('.wrapper').attr('aria-hidden', 'true');
             });
-
-            fetchDatacountriess();
             fetchProcessCategory();
+            fetchprocessOffice();
+            $('#processCategorySelect').on('change', function () {
+                const selectedProcessCategoryId = $(this).val();
+                fetchJobCategoryData(selectedProcessCategoryId);
+            })
+
+            $('#jobCategorySelect').on('change', function () {
+                const selectedPJobCategoryId = $(this).val();
+                fetchJobList(selectedPJobCategoryId);
+            })
+
 
             $(document).ready(function () {
-                $('#processStepsForm').on('submit', function (e) {
+                $('#asignJobOfficeForm').on('submit', function (e) {
                     e.preventDefault();
-                    let isEdit = $('#process_step_id').val() !== '';
+                    let isEdit = $('#asign_job_office_id').val() !== '';
                     let formData = new FormData(this);
-                    let id = $('#process_step_id').val();
+                    let id = $('#asign_job_office_id').val();
 
                     let url = isEdit
-                        ? `{{ route('admin.processSteps.update', ['processStep' => '__id__']) }}`.replace('__id__', id)
-                        : `{{ route('admin.processSteps.store') }}`;
+                        ? `{{ route('admin.asignjobtoOffice.update', ['asignjobtoOffice' => '__id__']) }}`.replace('__id__', id)
+                        : `{{ route('admin.asignjobtoOffice.store') }}`;
 
                     if (isEdit) {
                         formData.append('_method', 'PUT');
                     }
 
                     Swal.fire({
-                        title: isEdit ? "Update Process Step?" : "Add Process Step?",
+                        title: isEdit ? "Update Asign Job To Office?" : "Add Asign Job To Office?",
                         icon: "question",
                         showCancelButton: true,
                         confirmButtonText: "Yes, proceed"
@@ -170,8 +178,8 @@
                                     if (response.status === 'success') {
                                         $('#modal-center').modal('hide');
                                         Swal.fire('Success!', response.message, 'success');
-                                        $('#processStepsForm')[0].reset();
-                                        $('#process_step_id').val('');
+                                        $('#asignJobOfficeForm')[0].reset();
+                                        $('#asign_job_office_id').val('');
                                         fetchCandidateType();
                                     } else {
                                         Swal.fire('Error!', response.message, 'error');
@@ -200,38 +208,34 @@
 
 
 
-                $(document).on('click', '.addprocessStepsButton', function () {
-                    $('#processStepsForm')[0].reset();
-                    $('#process_step_id').val('');
-                    $('#countriesSelect').val('').trigger('change');
-                    $('#gender').val('').trigger('change');
-                    $('#processCategorySelect').val('').trigger('change');
-                    $('#modalTitle').text('Add Process Step');
+                $(document).on('click', '.addAsignButton', function () {
+                    $('#asignJobOfficeForm')[0].reset();
+                    $('#asign_job_office_id').val('');
+                    $('#modalTitle').text('Add Process Category');
                     $('#modal-center').modal('show');
                 });
 
                 $(document).on('click', '.editBlogButton', function () {
                     const id = $(this).data('id');
-                    const url = '{{ route("admin.processSteps.edit", ":id") }}'.replace(':id', id);
+                    const url = '{{ route("admin.asignjobtoOffice.edit", ":id") }}'.replace(':id', id);
 
                     $.ajax({
                         url: url,
                         type: 'GET',
                         success: function (res) {
                             console.log(res);
-                            $('#process_step_id').val(id);
-                            $('#name').val(res.name);
+                            $('#asign_job_office_id').val(id);
+                            $('#processing_cost').val(res.processing_cost);
                             $('#note').val(res.note);
                             $('#status').prop('checked', res.status == 1);
-                            $('#is_document').prop('checked', res.is_document == 1);
-                            $('#is_scheduled').prop('checked', res.is_scheduled == 1);
-                            $('#is_youtube_link	').prop('checked', res.is_youtube_link == 1);
-                            $('#countriesSelect').val(res.country_id).trigger('change');
-                            $('#gender').val(res.gender).trigger('change');
-                            $('#processCategorySelect').val(res.process_category_id).trigger('change');
-
-                            $('#modalTitle').text('Edit Process Step');
+                            $('#modalTitle').text('Edit Process Category');
                             $('#modal-center').modal('show');
+                            $('#processOfficeSelect').val(res.proces_office_id).trigger('change');
+
+                            $('#processCategorySelect').val(res.process_category_id).trigger('change');
+                            $('#jobCategorySelect').val(res.job_category_id).trigger('change');
+                            $('#jobListSelect').val(res.job_list_id).trigger('change');
+
                         },
                         error: function () {
                             Swal.fire('Error', 'Could not load Process Category data.', 'error');
@@ -239,40 +243,10 @@
                     });
                 });
 
-                $(document).on('click', '.copyProcessButton', function () {
+
+                $(document).on('click', '.deleteAsignBtn', function () {
                     const id = $(this).data('id');
-                    const url = '{{ route("admin.processSteps.edit", ":id") }}'.replace(':id', id);
-
-                    $.ajax({
-                        url: url,
-                        type: 'GET',
-                        success: function (res) {
-
-                            $('#process_step_id').val('');
-                            $('#name').val(res.name + ' (Copy)');
-                            $('#note').val(res.note);
-                            $('#status').prop('checked', res.status == 1);
-                            $('#is_document').prop('checked', res.is_document == 1);
-                            $('#is_scheduled').prop('checked', res.is_scheduled == 1);
-                            $('#is_youtube_link').prop('checked', res.is_youtube_link == 1);
-                            $('#countriesSelect').val(res.country_id).trigger('change');
-                            $('#gender').val(res.gender).trigger('change');
-                            $('#processCategorySelect').val(res.process_category_id).trigger('change');
-
-                            $('#modalTitle').text('Duplicate Process Step');
-                            $('#modal-center').modal('show');
-                        },
-                        error: function () {
-                            Swal.fire('Error', 'Could not load Process Step data.', 'error');
-                        }
-                    });
-                });
-
-
-
-                $(document).on('click', '.deleteprocessStepsBtn', function () {
-                    const id = $(this).data('id');
-                    const url = '{{ route("admin.processSteps.destroy", ":id") }}'.replace(':id', id);
+                    const url = '{{ route("admin.processCategory.destroy", ":id") }}'.replace(':id', id);
 
                     Swal.fire({
                         title: 'Delete Process Category?',
