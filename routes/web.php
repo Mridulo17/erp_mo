@@ -38,6 +38,7 @@ use App\Http\Controllers\Admin\Process\AsignJobToOfficeController;
 use App\Http\Controllers\Admin\Process\AirlineOfficeController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Admin\Process\CandidateController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -141,6 +142,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('delegates', DelegateController::class);
     Route::resource('delegateOffice', DelegateOfficeController::class);
     Route::resource('candidateTypes', CandidateTypeController::class);
+    Route::resource('candidates', CandidateController::class);
     Route::resource('processCategory', ProcessCategoryController::class);
     Route::resource('jobCategory', JobCategoryController::class);
     Route::resource('jobLists', JobListController::class);
