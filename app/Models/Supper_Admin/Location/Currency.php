@@ -9,12 +9,13 @@ class Currency extends Model
 {
     protected $fillable =
     [
-        'name', 
+        'name',
         'code',
-        'symbol', 
+        'symbol',
         'status',
         'country_id',
         'user_id',
+        'bdt_amount',
     ];
 
     public function user()
