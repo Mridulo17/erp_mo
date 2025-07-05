@@ -36,8 +36,8 @@ class ExpenseCategoryController extends Controller
         try {
             $request->validate([
                 'account_type'    => 'required|in:Assets,Expense',
-                'expense_category_name'      => 'required|string|unique|max:255',
-                'expense_category_code'      => 'required|string|unique|max:255',
+                'expense_category_name'      => 'required|string|max:255|unique:expense_categories,expense_category_name',
+                'expense_category_code'      => 'required|string|max:255|unique:expense_categories,expense_category_code',
                 'opening_balance_sheet' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240', // 10MB max
                 'status'    => 'required|in:Active,Inactive'
             ]);
@@ -100,8 +100,8 @@ class ExpenseCategoryController extends Controller
         try {
             $request->validate([
                 'account_type'    => 'required|in:Assets,Expense',
-                'expense_category_name'      => 'required|string|unique|max:255',
-                'expense_category_code'      => 'required|string|unique|max:255',
+                'expense_category_name'      => 'required|string|max:255|unique:expense_categories,expense_category_name'. $id,
+                'expense_category_code'      => 'required|string|max:255|unique:expense_categories,expense_category_code'. $id,
                 'opening_balance_sheet' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240', // 10MB max
                 'status'    => 'required|in:Active,Inactive'
             ]);

@@ -44,10 +44,10 @@
     <!-- Header Section -->
     <div class="box-header with-border d-flex justify-content-between align-items-center">
         <div>
-            <h3 class="box-title">Continents</h3>
-            <h6 class="box-subtitle">This is all Continents List</h6>
+            <h3 class="box-title">Expense Categories</h3>
+            <h6 class="box-subtitle">This is all Expense Categories List</h6>
         </div>
-        <button type="button" class="btn btn-warning addBlogButton" data-toggle="modal" data-target="#expense-category-modal">
+        <button type="button" class="btn btn-warning addBlogButton" data-toggle="modal" data-target="#modal-center">
             <i class="fa-solid fa-plus"></i> Add Data
         </button>
     </div>
@@ -61,15 +61,18 @@
                     <tr>
                         <th style="">Action</th>
                         <th style="">DB.Id</th>
-                        <th style="">Name</th>
-                        <th style="">Code</th>
+                        <th style="">Account Type</th>
+                        <th style="">Expense Category Name</th>
+                        <th style="">Expense Category Code</th>
+                        <th style="">Balance</th>
+                        <th style="">Opening Balance</th>
                         <th style="">Status</th>
-                        <th style="">Created At</th>
+                        <th style="">Entry Date</th>
 
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($continents as $key =>$serivice)
+                    @foreach($expenseCategories as $key =>$category)
                     <tr>
                         <td>
                             <div class="btn-group">
@@ -78,14 +81,14 @@
                                 </button>
                                 <div class="dropdown-menu">
                                     <!-- Edit Button inside Dropdown -->
-                                    <a href="#" class="dropdown-item editBlogButton" data-toggle="modal" data-target="#modal-center" data-id="{{ $serivice->id }}">
+                                    <a href="#" class="dropdown-item editBlogButton" data-toggle="modal" data-target="#modal-center" data-id="{{ $category->id }}">
                                         <i class="fa fa-edit"></i> Edit
                                     </a>
 
                                     <!-- Delete Form inside Dropdown -->
                                     <button type="button"
                                             class="dropdown-item text-danger deleteContinentBtn"
-                                            data-id="{{ $serivice->id }}">
+                                            data-id="{{ $category->id }}">
                                         <i class="fa fa-trash"></i> Delete
                                     </button>
                                 </div>
@@ -93,15 +96,18 @@
                         </td>
 
                         <td>{{ $key + 1 }}</td>
-                        <td>{{ $serivice->name}}</td>
+                        <td>{{ $category->account_type}}</td>
 
-                        <td class="wrap-text">{{ $serivice->code  }}</td>
+                        <td class="wrap-text">{{ $category->expense_category_name  }}</td>
+                        <td class="wrap-text">{{ $category->expense_category_code  }}</td>
+                        <td>{{ $category->opening_balance}}</td>
+                        <td>{{ $category->opening_balance}}</td>
                         <td>
-                            <span class="badge {{ $serivice->status == 'Active' ? 'badge-success' : 'badge-danger' }}">
-                                {{ $serivice->status == 'Active' ? 'Active' : 'Inactive' }}
+                            <span class="badge {{ $category->status == 'Active' ? 'badge-success' : 'badge-danger' }}">
+                                {{ $category->status == 'Active' ? 'Active' : 'Inactive' }}
                             </span>
                         </td>
-                        <td class="wrap-text">{{ $serivice->created_at->format('F d, Y') }}</td>
+                        <td class="wrap-text">{{ $category->created_at->format('F d, Y') }}</td>
 
                     </tr>
                     @endforeach
@@ -114,9 +120,9 @@
 
     @section('script')
         <script>
-            function fetchContinents() {
+            function fetchExpenseCategories() {
                 $.ajax({
-                    url: '{{ route("supper_admin.continents.index") }}',
+                    url: '{{ route("supper_admin.expense-categories.index") }}',
                     type: 'GET',
                     success: function (data) {
                         let newBody = $(data).find('table tbody').html();
@@ -141,15 +147,18 @@
 
             $(document).ready(function () {
 
-                $('#continentForm').on('submit', function (e) {
+                $('#expenseCategoryForm').on('submit', function (e) {
                     e.preventDefault();
 
-                    let isEdit = $('#continent_id').val() !== '';
+                    let isEdit = $('#expense_category_id').val() !== '';
                     let formData = new FormData(this);
-                    let id = $('#continent_id').val();
+                    let id = $('#expense_category_id').val();
+
+                    const baseUpdateUrl = "{{ url('supper_admin/expense-categories') }}";
+
                     let url = isEdit
-                        ? `{{ route('supper_admin.continents.update', ['continent' => '__id__']) }}`.replace('__id__', id)
-                        : `{{ route('supper_admin.continents.store') }}`;
+                        ? `${baseUpdateUrl}/${id}`
+                        : `{{ route('supper_admin.expense-categories.store') }}`;
 
                     let method = isEdit ? 'POST' : 'POST';
                     if (isEdit) {
@@ -157,7 +166,7 @@
                     }
 
                     Swal.fire({
-                        title: isEdit ? "Update Continent?" : "Add Continent?",
+                        title: isEdit ? "Update Expense Category?" : "Add Expense Category?",
                         icon: "question",
                         showCancelButton: true,
                         confirmButtonText: "Yes, proceed"
@@ -173,15 +182,15 @@
                                     if (response.status === 'success') {
                                         $('#modal-center').modal('hide');
                                         Swal.fire('Success!', response.message, 'success');
-                                        $('#continentForm')[0].reset();
-                                        $('#continent_id').val('');
-                                        fetchContinents();
+                                        $('#expenseCategoryForm')[0].reset();
+                                        $('#expense_category_id').val('');
+                                        fetchExpenseCategories();
                                     } else {
                                         Swal.fire('Error!', response.message, 'error');
                                     }
                                 },
                                 error: function () {
-                                    Swal.fire('Error!', 'Failed to save continent.', 'error');
+                                    Swal.fire('Error!', 'Failed to save expense category.', 'error');
                                 }
                             });
                         }
@@ -189,39 +198,43 @@
                 });
 
                 $(document).on('click', '.addBlogButton', function () {
-                    $('#continentForm')[0].reset();
-                    $('#continent_id').val('');
-                    $('#modalTitle').text('Add Continent');
+                    $('#expenseCategoryForm')[0].reset();
+                    $('#expense_category_id').val('');
+                    $('#modalTitle').text('Add Expense Category');
                     $('#modal-center').modal('show');
                 });
 
                 $(document).on('click', '.editBlogButton', function () {
                     const id = $(this).data('id');
-                    const url = '{{ route("supper_admin.continents.edit", ":id") }}'.replace(':id', id);
+                    const url = '{{ route("supper_admin.expense-categories.edit", ":id") }}'.replace(':id', id);
 
                     $.ajax({
                         url: url,
                         type: 'GET',
                         success: function (res) {
-                            $('#continent_id').val(id);
-                            $('#name').val(res.name);
-                            $('#code').val(res.code);
+                            $('#expense_category_id').val(id);
+                            $('#account_type').val(res.account_type);
+                            $('#expense_category_name').val(res.expense_category_name);
+                            $('#expense_category_code').val(res.expense_category_code);
+                            $('#opening_balance').val(res.opening_balance);
+                            $('#opening_balance_sheet').val(res.opening_balance_sheet);
+                            $('#note').val(res.note);
                             $('#status').prop('checked', res.status === 'Active');
                             $('#modalTitle').text('Edit Continent');
                             $('#modal-center').modal('show');
                         },
                         error: function () {
-                            Swal.fire('Error', 'Could not load continent data.', 'error');
+                            Swal.fire('Error', 'Could not load expense category data.', 'error');
                         }
                     });
                 });
 
                 $(document).on('click', '.deleteContinentBtn', function () {
                     const id = $(this).data('id');
-                    const url = '{{ route("supper_admin.continents.destroy", ":id") }}'.replace(':id', id);
+                    const url = '{{ route("supper_admin.expense-categories.destroy", ":id") }}'.replace(':id', id);
 
                     Swal.fire({
-                        title: 'Delete Continent?',
+                        title: 'Delete Expense Category?',
                         text: "This action cannot be undone.",
                         icon: 'warning',
                         showCancelButton: true,
@@ -238,7 +251,7 @@
                                 success: function (res) {
                                     if (res.status === 'success') {
                                         Swal.fire('Deleted!', res.message, 'success');
-                                        fetchContinents();
+                                        fetchExpenseCategories();
                                     } else {
                                         Swal.fire('Error!', res.message, 'error');
                                     }
