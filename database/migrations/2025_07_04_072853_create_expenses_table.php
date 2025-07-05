@@ -12,7 +12,22 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('expenses', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
+            $table->integer('expense_category_id')->unsigned();
+            $table->foreign('expense_category_id')->references('id')->on('expense_categories')->onDelete('cascade');
+            $table->integer('expense_item_id')->unsigned();
+            $table->foreign('expense_item_id')->references('id')->on('expense_items')->onDelete('cascade');
+            $table->enum('payment_method', ['Bank Account', 'Cash in Hand', 'Mobile Banking', 'Office Assets']);
+            $table->integer('currency_id')->unsigned();
+            $table->foreign('currency_id')->references('id')->on('currencies')->onDelete('cascade');
+            $table->decimal('amount', 25, 2);
+            $table->decimal('bdt_amount', 25, 2);
+            $table->string('attachment')->nullable();
+            $table->string('month_year')->nullable();
+            $table->integer('is_expire')->default('0');
+            $table->date('expiry_date')->nullable();
+            $table->string('transaction_note', 2000)->nullable();
+            $table->string('note', 2000)->nullable();
             $table->timestamps();
         });
     }

@@ -3,6 +3,9 @@
 use App\Http\Controllers\Admin\HRM\EmployeeController;
 use App\Http\Controllers\Business\CompaniesController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Supper_Admin\Expense\ExpenseCategoryController;
+use App\Http\Controllers\Supper_Admin\Expense\ExpenseController;
+use App\Http\Controllers\Supper_Admin\Expense\ExpenseItemController;
 use App\Http\Controllers\Supper_Admin\Location\ContinentController;
 use App\Http\Controllers\Supper_Admin\Location\CurrencyController;
 use App\Http\Controllers\Supper_Admin\Location\CountryController;
@@ -102,7 +105,10 @@ Route::middleware(['auth', 'verified'])->prefix('supper_admin')->name('supper_ad
     Route::resource('currencies', CurrencyController::class);
     Route::resource('mikrotik-devices', MikrotikDeviceController::class);
 
-
+    //Resource routes for payroll under super_admin
+    Route::resource('expense-categories', ExpenseCategoryController::class);
+    Route::resource('expense-items', ExpenseItemController::class);
+    Route::resource('expenses', ExpenseController::class);
 
 });
 
@@ -160,4 +166,4 @@ Route::middleware('auth')->group(function () {
 });
 
 // Include authentication routes
-require __DIR__.'/auth.php'; 
+require __DIR__.'/auth.php';

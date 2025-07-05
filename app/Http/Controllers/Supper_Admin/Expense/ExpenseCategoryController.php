@@ -7,20 +7,21 @@ use App\Models\Supper_Admin\Location\Continent;
 use App\Models\Supper_Admin\Payroll\Expense\ExpenseCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class ExpenseCategoryController extends Controller
 {
     public function index()
     {
-        $continents = Continent::get();
-        return view('supper_admin.pages.location.continent', compact('continents'));
+        $expenseCategories = ExpenseCategory::get();
+        return view('supper_admin.pages.expense.expense-category', compact('expenseCategories'));
     }
 
     public function Activeindex()
     {
-        $continents = Continent::where('status', 'Active')->get();
-        return response()->json($continents);
+        $expenseCategories = ExpenseCategory::where('status', 'Active')->get();
+        return response()->json($expenseCategories);
     }
 
 
@@ -34,19 +35,39 @@ class ExpenseCategoryController extends Controller
     {
         try {
             $request->validate([
-                'code'      => 'required|string|max:255',
-                'name'      => 'required|string|max:255',
+                'account_type'    => 'required|in:Assets,Expense',
+                'expense_category_name'      => 'required|string|unique|max:255',
+                'expense_category_code'      => 'required|string|unique|max:255',
+                'opening_balance_sheet' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240', // 10MB max
                 'status'    => 'required|in:Active,Inactive'
             ]);
 
-            $user_id = Auth::id();
-            $continent = Continent::create([
-                'code'      => $request->input('code'),
-                'name'      => $request->input('name'),
-                'user_id'   => $user_id,
+            $openingBalanceSheetPath = null;
+
+            if ($request->hasFile('opening_balance_sheet')) {
+//                $file = $request->file('opening_balance_sheet');
+//
+//                $filename = time() . '_' . $file->getClientOriginalName();
+//                $openingBalanceSheetPath = $file->store('expense_categories', $filename, 'public');
+
+
+//                $file_name = time() . $file->getClientOriginalName();
+//                Storage::disk('public')->put('expense_categories/' . $file_name,  File::get($file));
+//                $openingBalanceSheetPath = 'uploads/expense_categories/'. $file_name;
+
+                $openingBalanceSheetPath = $request->file('opening_balance_sheet')->store('expense_categories', 'public');
+            }
+
+            ExpenseCategory::create([
+                'account_type'      => $request->input('account_type'),
+                'expense_category_name'  => $request->input('expense_category_name'),
+                'expense_category_code'  => $request->input('expense_category_code'),
+                'opening_balance'  => $request->input('opening_balance'),
+                'opening_balance_sheet'         => $openingBalanceSheetPath,
+                'note'  => $request->input('note'),
                 'status'    => $request->input('status')
             ]);
-            return response()->json(['status' => 'success', 'message' => 'Continent added Successfully']);
+            return response()->json(['status' => 'success', 'message' => 'Expense category added Successfully']);
         } catch (ValidationException $e) {
             return response()->json(['status' => 'fail', 'message' => $e->validator->errors()]);
         } catch (\Exception $e) {
@@ -67,8 +88,8 @@ class ExpenseCategoryController extends Controller
      */
     public function edit(string $id)
     {
-        $continent = Continent::findOrFail($id);
-        return response()->json($continent);
+        $expenseCategory = ExpenseCategory::findOrFail($id);
+        return response()->json($expenseCategory);
     }
 
     /**
@@ -76,14 +97,47 @@ class ExpenseCategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $continent = Continent::findOrFail($id);
-        $continent->name = $request->name;
-        $continent->code = $request->code;
-        $continent->status = $request->status ? 'Active' : 'Inactive';
+        try {
+            $request->validate([
+                'account_type'    => 'required|in:Assets,Expense',
+                'expense_category_name'      => 'required|string|unique|max:255',
+                'expense_category_code'      => 'required|string|unique|max:255',
+                'opening_balance_sheet' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240', // 10MB max
+                'status'    => 'required|in:Active,Inactive'
+            ]);
 
-        $continent->save();
+            $openingBalanceSheetPath = null;
+            if ($request->hasFile('opening_balance_sheet')) {
+//                $file = $request->file('opening_balance_sheet');
+//
+//                $filename = time() . '_' . $file->getClientOriginalName();
+//                $openingBalanceSheetPath = $file->store('expense_categories', $filename, 'public');
 
-        return response()->json(['status' => 'success', 'message' => 'Continent updated successfully']);
+
+//                $file_name = time() . $file->getClientOriginalName();
+//                Storage::disk('public')->put('expense_categories/' . $file_name,  File::get($file));
+//                $openingBalanceSheetPath = 'uploads/expense_categories/'. $file_name;
+
+                $openingBalanceSheetPath = $request->file('opening_balance_sheet')->store('expense_categories', 'public');
+            }
+
+            $expenseCategory = ExpenseCategory::findOrFail($id);
+            $expenseCategory->account_type = $request->account_type;
+            $expenseCategory->expense_category_name = $request->expense_category_name;
+            $expenseCategory->expense_category_code = $request->expense_category_code;
+            $expenseCategory->opening_balance = $request->opening_balance;
+            $expenseCategory->opening_balance_sheet = $openingBalanceSheetPath;
+            $expenseCategory->note = $request->note;
+            $expenseCategory->status = $request->status;
+
+            $expenseCategory->save();
+
+            return response()->json(['status' => 'success', 'message' => 'Expense category updated successfully']);
+        } catch (ValidationException $e) {
+            return response()->json(['status' => 'fail', 'message' => $e->validator->errors()]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
+        }
     }
 
     /**
@@ -92,9 +146,9 @@ class ExpenseCategoryController extends Controller
     public function destroy(string $id)
     {
         try {
-            $continent = Continent::findOrFail($id);
-            $continent->delete();
-            return response()->json(['status' => 'success', 'message' => 'Continent deleted successfully']);
+            $expenseCategory = ExpenseCategory::findOrFail($id);
+            $expenseCategory->delete();
+            return response()->json(['status' => 'success', 'message' => 'Expense category deleted successfully']);
         } catch (\Exception $e) {
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
         }

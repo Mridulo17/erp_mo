@@ -13,4 +13,9 @@ class ExpenseItem extends Model
             'note',
             'status'
         ];
+
+    public function expenseCategory()
+    {
+        return $this->belongsTo(ExpenseCategory::class);
+    }
 }

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->decimal('opening_balance', 25, 2)->nullable();
             $table->string('opening_balance_sheet')->nullable();
             $table->string('note', 2000)->nullable();
-            $table->integer('status')->default(1);
+            $table->enum('status', ['Active', 'Inactive'])->default('Active');
             $table->timestamps();
         });
     }
