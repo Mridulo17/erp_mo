@@ -153,6 +153,7 @@
                     let isEdit = $('#expense_category_id').val() !== '';
                     let formData = new FormData(this);
                     let id = $('#expense_category_id').val();
+                    formData.set('status', $('#status').is(':checked') ? 'Active' : 'Inactive');
 
                     const baseUpdateUrl = "{{ url('supper_admin/expense-categories') }}";
 
@@ -217,8 +218,32 @@
                             $('#expense_category_name').val(res.expense_category_name);
                             $('#expense_category_code').val(res.expense_category_code);
                             $('#opening_balance').val(res.opening_balance);
-                            $('#opening_balance_sheet').val(res.opening_balance_sheet);
+                            // $('#opening_balance_sheet').val(res.opening_balance_sheet);
                             $('#note').val(res.note);
+
+                            // Show existing file
+                            if (res.opening_balance_sheet) {
+                                const filePath = res.opening_balance_sheet; // example: expense_categories/filename.pdf
+                                const ext = filePath.split('.').pop().toLowerCase();
+
+                                // Prepend Laravel's public storage path
+                                const fileUrl = `/storage/${filePath}`;
+
+                                let previewHtml = '';
+
+                                if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
+                                    previewHtml = `<img src="${fileUrl}" alt="Uploaded File" class="img-thumbnail" style="max-height: 200px;">`;
+                                } else {
+                                    previewHtml = `<a href="${fileUrl}" target="_blank" class="btn btn-outline-primary btn-sm">View File</a>`;
+                                }
+
+                                $('#existing-file-preview').html(previewHtml);
+                                $('#remove-file-section').removeClass('d-none');
+                            } else {
+                                $('#existing-file-preview').empty();
+                                $('#remove-file-section').addClass('d-none');
+                                $('#remove_file').prop('checked', false);
+                            }
                             $('#status').prop('checked', res.status === 'Active');
                             $('#modalTitle').text('Edit Continent');
                             $('#modal-center').modal('show');

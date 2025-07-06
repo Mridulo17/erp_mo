@@ -8,6 +8,7 @@ use App\Models\Supper_Admin\Payroll\Expense\ExpenseCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class ExpenseCategoryController extends Controller
@@ -45,18 +46,9 @@ class ExpenseCategoryController extends Controller
             $openingBalanceSheetPath = null;
 
             if ($request->hasFile('opening_balance_sheet')) {
-//                $file = $request->file('opening_balance_sheet');
-//
-//                $filename = time() . '_' . $file->getClientOriginalName();
-//                $openingBalanceSheetPath = $file->store('expense_categories', $filename, 'public');
-
-
-//                $file_name = time() . $file->getClientOriginalName();
-//                Storage::disk('public')->put('expense_categories/' . $file_name,  File::get($file));
-//                $openingBalanceSheetPath = 'uploads/expense_categories/'. $file_name;
-
                 $openingBalanceSheetPath = $request->file('opening_balance_sheet')->store('expense_categories', 'public');
             }
+
 
             ExpenseCategory::create([
                 'account_type'      => $request->input('account_type'),
@@ -65,7 +57,7 @@ class ExpenseCategoryController extends Controller
                 'opening_balance'  => $request->input('opening_balance'),
                 'opening_balance_sheet'         => $openingBalanceSheetPath,
                 'note'  => $request->input('note'),
-                'status'    => $request->input('status')
+                'status'    => $request->input('status') === 'Active' ? 'Active' : 'Inactive'
             ]);
             return response()->json(['status' => 'success', 'message' => 'Expense category added Successfully']);
         } catch (ValidationException $e) {
@@ -100,35 +92,47 @@ class ExpenseCategoryController extends Controller
         try {
             $request->validate([
                 'account_type'    => 'required|in:Assets,Expense',
-                'expense_category_name'      => 'required|string|max:255|unique:expense_categories,expense_category_name'. $id,
-                'expense_category_code'      => 'required|string|max:255|unique:expense_categories,expense_category_code'. $id,
+                'expense_category_name' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    Rule::unique('expense_categories')->ignore($id),
+                ],
+                'expense_category_code' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    Rule::unique('expense_categories')->ignore($id),
+                ],
                 'opening_balance_sheet' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240', // 10MB max
                 'status'    => 'required|in:Active,Inactive'
             ]);
-
-            $openingBalanceSheetPath = null;
-            if ($request->hasFile('opening_balance_sheet')) {
-//                $file = $request->file('opening_balance_sheet');
-//
-//                $filename = time() . '_' . $file->getClientOriginalName();
-//                $openingBalanceSheetPath = $file->store('expense_categories', $filename, 'public');
-
-
-//                $file_name = time() . $file->getClientOriginalName();
-//                Storage::disk('public')->put('expense_categories/' . $file_name,  File::get($file));
-//                $openingBalanceSheetPath = 'uploads/expense_categories/'. $file_name;
-
-                $openingBalanceSheetPath = $request->file('opening_balance_sheet')->store('expense_categories', 'public');
-            }
 
             $expenseCategory = ExpenseCategory::findOrFail($id);
             $expenseCategory->account_type = $request->account_type;
             $expenseCategory->expense_category_name = $request->expense_category_name;
             $expenseCategory->expense_category_code = $request->expense_category_code;
             $expenseCategory->opening_balance = $request->opening_balance;
+            // If user asked to remove file
+            if ($request->has('remove_file') && $request->remove_file) {
+                if ($expenseCategory->opening_balance_sheet) {
+                    Storage::disk('public')->delete($expenseCategory->opening_balance_sheet);
+                }
+            }
+
+            // If a new file was uploaded
+            $openingBalanceSheetPath = null;
+            if ($request->hasFile('opening_balance_sheet')) {
+
+                if ($expenseCategory->opening_balance_sheet) {
+                    Storage::disk('public')->delete($expenseCategory->opening_balance_sheet);
+                }
+                $openingBalanceSheetPath = $request->file('opening_balance_sheet')->store('expense_categories', 'public');
+            }
+
             $expenseCategory->opening_balance_sheet = $openingBalanceSheetPath;
             $expenseCategory->note = $request->note;
-            $expenseCategory->status = $request->status;
+            $expenseCategory->status = $request->status === 'Active' ? 'Active' : 'Inactive';
 
             $expenseCategory->save();
 

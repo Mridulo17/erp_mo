@@ -36,6 +36,14 @@
                     <div class="form-group">
                         <label for="opening_balance_sheet" class="font-weight-bold text-dark" style="font-size: 14px;">Opening Balance Sheet</label>
                         <input type="file" id="opening_balance_sheet" name="opening_balance_sheet" class="form-control form-control-lg">
+                        <!-- Existing file preview -->
+                        <div id="existing-file-preview" style="margin-top: 10px;"></div>
+
+                        <!-- Remove file toggle -->
+                        <div id="remove-file-section" class="form-check mt-2 d-none">
+                            <input type="checkbox" class="form-check-input" id="remove_file" name="remove_file" value="1">
+                            <label class="form-check-label" for="remove_file">Remove existing file</label>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="note" class="font-weight-bold text-dark" style="font-size: 14px;">Note</label>
