@@ -39,6 +39,8 @@ use App\Http\Controllers\Admin\Process\AirlineOfficeController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\Process\CandidateController;
+use App\Http\Controllers\Admin\Enquiry\PhoneCallController;
+use App\Http\Controllers\Admin\Enquiry\VisitorBookController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -143,6 +145,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('delegateOffice', DelegateOfficeController::class);
     Route::resource('candidateTypes', CandidateTypeController::class);
     Route::resource('candidates', CandidateController::class);
+    Route::resource('enquiry/phone-calls', PhoneCallController::class);
+    Route::resource('enquiry/visitor-books', VisitorBookController::class);
     Route::resource('processCategory', ProcessCategoryController::class);
     Route::resource('jobCategory', JobCategoryController::class);
     Route::resource('jobLists', JobListController::class);

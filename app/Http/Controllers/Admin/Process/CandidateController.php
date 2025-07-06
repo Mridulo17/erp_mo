@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Process;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Process\Candidate;
+use Illuminate\Support\Facades\Auth;
 
 class CandidateController extends Controller
 {
@@ -13,7 +14,9 @@ class CandidateController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+        $candidates = Candidate::all();
+        return view('backend.pages.process.candidates.index', compact('candidates'));
     }
 
     /**
