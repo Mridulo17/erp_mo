@@ -4,6 +4,7 @@ namespace App\Models\Supper_Admin\Location;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Admin\Process\CandidateLocation;
 
 class PostOffice extends Model
 {
@@ -24,4 +25,10 @@ class PostOffice extends Model
     {
         return $this->belongsTo(District::class, 'district_id');
     }
+
+    public function candidateLocations()
+    {
+        return $this->hasMany(CandidateLocation::class);
+    }
+
 }

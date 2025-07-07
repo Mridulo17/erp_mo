@@ -11,6 +11,7 @@ use App\Models\Supper_Admin\Location\Division;
 use App\Models\Supper_Admin\Location\Thana;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Admin\Process\Candidate;
 
 class Agent extends Model
 {
@@ -77,5 +78,10 @@ class Agent extends Model
     public function employee()
     {
         return $this->belongsTo(Employee::class, 'employee_id');
+    }
+
+    public function candidates()
+    {
+        return $this->hasMany(Candidate::class);
     }
 }

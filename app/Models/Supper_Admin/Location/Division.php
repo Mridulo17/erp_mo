@@ -3,6 +3,7 @@
 namespace App\Models\Supper_Admin\Location;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Admin\Process\CandidateLocation;
 
 class Division extends Model
 {
@@ -23,4 +24,10 @@ class Division extends Model
     {
         return $this->belongsTo(Country::class, 'country_id');
     }
+
+    public function candidateLocations()
+    {
+        return $this->hasMany(CandidateLocation::class);
+    }
+
 }

@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('work_permits', function (Blueprint $table) {
+        Schema::create('professions', function (Blueprint $table) {
             $table->id();
+            $table->string('name', 255)->comment('Profession Name');
+            $table->string('code', 10)->unique()->comment('Profession Code');
+            $table->enum('status', ['Active', 'Inactive'])->default('Active')->comment('Status of the Profession');
             $table->timestamps();
         });
     }
@@ -22,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('work_permits');
+        Schema::dropIfExists('professions');
     }
 };
