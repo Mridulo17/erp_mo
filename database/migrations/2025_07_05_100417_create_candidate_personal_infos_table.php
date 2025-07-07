@@ -37,7 +37,6 @@ return new class extends Migration
 
             // Nominee
             $table->string('nominee_name')->nullable();
-            $table->string('relation_with_nominee')->nullable();
             $table->foreignId('relation_with_nominee_id')->nullable()->constrained('relations')->onDelete('set null');
 
             // Other Info
