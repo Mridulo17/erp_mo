@@ -40,11 +40,11 @@
     </div>
 
     <div class="form-group col-md-3">
-        <label for="validity_year" class="font-weight-bold text-dark" style="font-size: 14px;">Validity Year</label>
-        <select id="validity_year" name="validity_year" class="form-control">
+        <label for="validity_years" class="font-weight-bold text-dark" style="font-size: 14px;">Validity Year</label>
+        <select id="validity_years" name="validity_years" class="form-control">
             <option value="">--Select One--</option>
-            <option value="5" {{ session('form.step_4.validity_year') == '5' ? 'selected' : '' }}>5 Years</option>
-            <option value="10" {{ session('form.step_4.validity_year') == '10' ? 'selected' : '' }}>10 Years</option>
+            <option value="5" {{ session('form.step_4.validity_years') == '5' ? 'selected' : '' }}>5 Years</option>
+            <option value="10" {{ session('form.step_4.validity_years') == '10' ? 'selected' : '' }}>10 Years</option>
         </select>
     </div>
 
