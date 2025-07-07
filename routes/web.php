@@ -83,6 +83,8 @@ Route::middleware(['auth', 'verified'])->prefix('supper_admin')->name('supper_ad
     Route::get('/district/active', [DistrictController::class, 'Activeindex'])->name('district.active');
     Route::get('/thana/active', [ThanaController::class, 'Activeindex'])->name('thana.active');
     Route::get('/company/active', [CompaniesController::class, 'Activeindex'])->name('company.active');
+    Route::get('/expense-categories/enabled', [ExpenseCategoryController::class, 'enabledIndex'])->name('expense-category.enabled');
+
 
 
     Route::get('/connect-router/{id}', [MikrotikServiceController::class, 'connectToRouter'])->name('mikrotik.connect');
@@ -111,8 +113,7 @@ Route::middleware(['auth', 'verified'])->prefix('supper_admin')->name('supper_ad
     Route::resource('expense-categories', ExpenseCategoryController::class);
     Route::resource('expense-items', ExpenseItemController::class);
     Route::resource('expenses', ExpenseController::class);
-
-});
+    });
 
 // Group routes for 'admin' with prefix and middleware
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {

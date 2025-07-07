@@ -16,6 +16,6 @@ class ExpenseItem extends Model
 
     public function expenseCategory()
     {
-        return $this->belongsTo(ExpenseCategory::class);
+        return $this->belongsTo(ExpenseCategory::class, 'expense_category_id', 'id');
     }
 }

@@ -1,5 +1,5 @@
 @extends('supper_admin.layouts.app')
-@section('title', config('app.name') . ' - Continent')
+@section('title', config('app.name') . ' - Expense Category')
 
 @section('style')
     <style>
@@ -66,8 +66,8 @@
                         <th style="">Expense Category Code</th>
                         <th style="">Balance</th>
                         <th style="">Opening Balance</th>
-                        <th style="">Status</th>
                         <th style="">Entry Date</th>
+                        <th style="">Status</th>
 
                     </tr>
                 </thead>
@@ -102,12 +102,12 @@
                         <td class="wrap-text">{{ $category->expense_category_code  }}</td>
                         <td>{{ $category->opening_balance}}</td>
                         <td>{{ $category->opening_balance}}</td>
+                        <td class="wrap-text">{{ $category->created_at->format('F d, Y') }}</td>
                         <td>
                             <span class="badge {{ $category->status == 'Enabled' ? 'badge-success' : 'badge-danger' }}">
                                 {{ $category->status == 'Enabled' ? 'Enabled' : 'Disabled' }}
                             </span>
                         </td>
-                        <td class="wrap-text">{{ $category->created_at->format('F d, Y') }}</td>
 
                     </tr>
                     @endforeach

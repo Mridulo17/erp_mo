@@ -19,6 +19,12 @@ class ExpenseCategoryController extends Controller
         return view('supper_admin.pages.expense.expense-category', compact('expenseCategories'));
     }
 
+    public function enabledIndex()
+    {
+        $expenseCategories = ExpenseCategory::where('status', 'Enabled')->get();
+        return response()->json($expenseCategories);
+    }
+
 
     public function create()
     {
@@ -42,7 +48,6 @@ class ExpenseCategoryController extends Controller
             if ($request->hasFile('opening_balance_sheet')) {
                 $openingBalanceSheetPath = $request->file('opening_balance_sheet')->store('expense_categories', 'public');
             }
-
 
             ExpenseCategory::create([
                 'account_type'      => $request->input('account_type'),

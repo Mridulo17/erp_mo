@@ -14,7 +14,7 @@ class ExpenseItemController extends Controller
     public function index()
     {
         $expenseItems = ExpenseItem::get();
-        return view('supper_admin.expense.expense-item', compact('expenseItems'));
+        return view('supper_admin.pages.expense.expense-item', compact('expenseItems'));
     }
 
     public function create()
@@ -27,17 +27,15 @@ class ExpenseItemController extends Controller
     {
         try {
             $request->validate([
-                'code'      => 'required|string|max:255',
-                'name'      => 'required|string|max:255',
-                'status'    => 'required|in:Active,Inactive'
+                'expense_category_id'      => 'required|integer',
+                'expense_item_name'      => 'required|string|max:255',
+                'status'    => 'required|in:Enabled,Disabled'
             ]);
-
-            $user_id = Auth::id();
             ExpenseItem::create([
-                'code'      => $request->input('code'),
-                'name'      => $request->input('name'),
-                'user_id'   => $user_id,
-                'status'    => $request->input('status')
+                'expense_category_id'      => $request->input('expense_category_id'),
+                'expense_item_name'      => $request->input('expense_item_name'),
+                'note'  => $request->input('note'),
+                'status'    => $request->input('status') === 'Enabled' ? 'Enabled' : 'Disabled'
             ]);
             return response()->json(['status' => 'success', 'message' => 'Expense item added Successfully']);
         } catch (ValidationException $e) {
@@ -70,10 +68,17 @@ class ExpenseItemController extends Controller
     public function update(Request $request, string $id)
     {
         try {
+            $request->validate([
+                'expense_category_id'      => 'required|integer',
+                'expense_item_name'      => 'required|string|max:255',
+                'status'    => 'required|in:Enabled,Disabled'
+            ]);
+
             $expenseItem = ExpenseItem::findOrFail($id);
-            $expenseItem->name = $request->name;
-            $expenseItem->code = $request->code;
-            $expenseItem->status = $request->status ? 'Active' : 'Inactive';
+            $expenseItem->expense_category_id = $request->expense_category_id;
+            $expenseItem->expense_item_name = $request->expense_item_name;
+            $expenseItem->note = $request->note;
+            $expenseItem->status = $request->status === 'Enabled' ? 'Enabled' : 'Disabled';
 
             $expenseItem->save();
 

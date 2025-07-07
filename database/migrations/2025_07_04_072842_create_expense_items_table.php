@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreign('expense_category_id')->references('id')->on('expense_categories')->onDelete('cascade');
             $table->string('expense_item_name')->unique();
             $table->string('note', 2000)->nullable();
-            $table->enum('status', ['Active', 'Inactive'])->default('Active');
+            $table->enum('status', ['Enabled', 'Disabled'])->default('Enabled');
             $table->timestamps();
         });
     }
