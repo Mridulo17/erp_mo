@@ -32,7 +32,7 @@ class Country extends Model
 
     public function candidates()
     {
-        return $this->hasMany(Candidate::class);
+        return $this->hasMany(Candidate::class, 'interested_country_id');
     }
 
     public function travelledCandidateExperiences()

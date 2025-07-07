@@ -25,19 +25,19 @@ class Candidate extends Model
     // Referral Agent relation
     public function agent()
     {
-        return $this->belongsTo(Agent::class);
+        return $this->belongsTo(Agent::class, 'referral_agent_id');
     }
 
     // Interested Country relation
     public function country()
     {
-        return $this->belongsTo(Country::class);
+        return $this->belongsTo(Country::class, 'interested_country_id');
     }
 
     // Interested Profession relation
     public function profession()
     {
-        return $this->belongsTo(Profession::class);
+        return $this->belongsTo(Profession::class, 'interested_profession_id');
     }
 
     public function personalInfo()
