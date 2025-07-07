@@ -7,6 +7,7 @@ use App\Models\Supper_Admin\Payroll\Expense\Expense;
 use App\Models\Supper_Admin\Payroll\Expense\ExpenseCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class ExpenseController extends Controller
@@ -14,7 +15,7 @@ class ExpenseController extends Controller
     public function index()
     {
         $expenses = Expense::get();
-        return view('supper_admin.expense.expense-category', compact('expenses'));
+        return view('supper_admin.pages.expense.expense', compact('expenses'));
     }
 
     public function Activeindex()
@@ -34,17 +35,34 @@ class ExpenseController extends Controller
     {
         try {
             $request->validate([
-                'code'      => 'required|string|max:255',
-                'name'      => 'required|string|max:255',
-                'status'    => 'required|in:Active,Inactive'
+                'expense_category_id'      => 'required|integer',
+                'expense_item_id'      => 'required|integer',
+                'payment_method'    => 'required|in:Bank Account,Cash in Hand,Mobile Banking,Office Assets',
+                'currency_id'      => 'required|integer',
+                'amount'      => 'required',
+                'bdt_amount'      => 'required',
+                'attachment' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240' // 10MB max
             ]);
 
-            $user_id = Auth::id();
+            $attachmentPath = null;
+
+            if ($request->hasFile('attachment')) {
+                $attachmentPath = $request->file('attachment')->store('expenses', 'public');
+            }
+
             Expense::create([
-                'code'      => $request->input('code'),
-                'name'      => $request->input('name'),
-                'user_id'   => $user_id,
-                'status'    => $request->input('status')
+                'expense_category_id'      => $request->input('expense_category_id'),
+                'expense_item_id'      => $request->input('expense_item_id'),
+                'payment_method'      => $request->input('payment_method'),
+                'currency_id'      => $request->input('currency_id'),
+                'amount'      => $request->input('amount'),
+                'bdt_amount'      => $request->input('bdt_amount'),
+                'attachment'         => $attachmentPath,
+                'month_year'  => $request->input('month_year'),
+                'is_expire'    => $request->input('is_expire') === '1' ? '1' : '0',
+                'expiry_date'  => $request->input('expiry_date'),
+                'transaction_note'  => $request->input('transaction_note'),
+                'note'  => $request->input('note'),
             ]);
             return response()->json(['status' => 'success', 'message' => 'Expense added Successfully']);
         } catch (ValidationException $e) {
@@ -76,14 +94,55 @@ class ExpenseController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $expense = Expense::findOrFail($id);
-        $expense->name = $request->name;
-        $expense->code = $request->code;
-        $expense->status = $request->status ? 'Active' : 'Inactive';
+        try {
+            $request->validate([
+                'expense_category_id'      => 'required|integer',
+                'expense_item_id'      => 'required|integer',
+                'payment_method'    => 'required|in:Bank Account,Cash in Hand,Mobile Banking,Office Assets',
+                'currency_id'      => 'required|integer',
+                'amount'      => 'required',
+                'bdt_amount'      => 'required',
+                'attachment' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240' // 10MB max
+            ]);
 
-        $expense->save();
+            $expense = Expense::findOrFail($id);
+            $expense->expense_category_id = $request->expense_category_id;
+            $expense->expense_item_id = $request->expense_item_id;
+            $expense->payment_method = $request->payment_method;
+            $expense->currency_id = $request->currency_id;
+            $expense->amount = $request->amount;
+            $expense->bdt_amount = $request->bdt_amount;
 
-        return response()->json(['status' => 'success', 'message' => 'Expense updated successfully']);
+            // If user asked to remove file
+            if ($request->has('remove_file') && $request->remove_file) {
+                if ($expense->attachment) {
+                    Storage::disk('public')->delete($expense->attachment);
+                }
+            }
+
+            // If a new file was uploaded
+            $attachmentPath = null;
+            if ($request->hasFile('attachment')) {
+
+                if ($expense->attachment) {
+                    Storage::disk('public')->delete($expense->attachment);
+                }
+                $attachmentPath = $request->file('attachment')->store('expenses', 'public');
+            }
+
+            $expense->attachment = $attachmentPath;
+            $expense->month_year = $request->month_year;
+            $expense->is_expire = $request->input('is_expire') === '1' ? '1' : '0';
+            $expense->expiry_date = $request->expiry_date;
+            $expense->transaction_note = $request->transaction_note;
+            $expense->note = $request->note;
+            $expense->save();
+            return response()->json(['status' => 'success', 'message' => 'Expense updated successfully']);
+        } catch (ValidationException $e) {
+            return response()->json(['status' => 'fail', 'message' => $e->validator->errors()]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
+        }
     }
 
     /**

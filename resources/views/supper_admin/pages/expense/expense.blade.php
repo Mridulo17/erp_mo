@@ -1,5 +1,5 @@
 @extends('supper_admin.layouts.app')
-@section('title', config('app.name') . ' - Continent')
+@section('title', config('app.name') . ' - Expense')
 
 @section('style')
     <style>
@@ -13,151 +13,215 @@
 
 @section('content')
 
-@if (session('status'))
-<div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content text-center">
-            <div class="modal-header border-0">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                @if (session('status') == 'success')
-                    <i class="fas fa-check-circle text-success"></i>
-                    <h5 class="mt-3 text-success">Success</h5>
-                @else
-                    <i class="fas fa-times-circle text-danger"></i>
-                    <h5 class="mt-3 text-danger">Error</h5>
-                @endif
-                <p class="mt-2">{{ session('message') }}</p>
-            </div>
-            <div class="modal-footer border-0">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+    @if (session('status'))
+        <div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content text-center">
+                    <div class="modal-header border-0">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @if (session('status') == 'success')
+                            <i class="fas fa-check-circle text-success"></i>
+                            <h5 class="mt-3 text-success">Success</h5>
+                        @else
+                            <i class="fas fa-times-circle text-danger"></i>
+                            <h5 class="mt-3 text-danger">Error</h5>
+                        @endif
+                        <p class="mt-2">{{ session('message') }}</p>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-@endif
+    @endif
 
-<div class="box">
-    <!-- Header Section -->
-    <div class="box-header with-border d-flex justify-content-between align-items-center">
-        <div>
-            <h3 class="box-title">Continents</h3>
-            <h6 class="box-subtitle">This is all Continents List</h6>
+    <div class="box">
+        <!-- Header Section -->
+        <div class="box-header with-border d-flex justify-content-between align-items-center">
+            <div>
+                <h3 class="box-title">Expense</h3>
+                <h6 class="box-subtitle">This is all expense List</h6>
+            </div>
+            <button type="button" class="btn btn-warning addBlogButton" data-toggle="modal" data-target="#modal-center">
+                <i class="fa-solid fa-plus"></i> Add Data
+            </button>
         </div>
-        <button type="button" class="btn btn-warning addBlogButton" data-toggle="modal" data-target="#modal-center">
-            <i class="fa-solid fa-plus"></i> Add Data
-        </button>
-    </div>
 
-    @include('supper_admin.components.location.continent_modal')
+        @include('supper_admin.components.expense.expense_modal')
 
-    <div class="box-body">
-        <div class="table-responsive">
-            <table id="customDataTable" style="table-layout: fixed; width: 100%;" class="table table-bordered table-hover display nowrap margin-top-10 w-p100">
-                <thead>
+        <div class="box-body">
+            <div class="table-responsive">
+                <table id="customDataTable" style="table-layout: fixed; width: 100%;" class="table table-bordered table-hover display nowrap margin-top-10 w-p100">
+                    <thead>
                     <tr>
                         <th style="">Action</th>
-                        <th style="">DB.Id</th>
+                        <th style="">DB:ID</th>
+                        <th style="">Year-Month</th>
+                        <th style="">Type</th>
+                        <th style="">Particular</th>
                         <th style="">Name</th>
-                        <th style="">Code</th>
-                        <th style="">Status</th>
-                        <th style="">Created At</th>
-                        
+                        <th style="">Amount</th>
+                        <th style="">Currency</th>
+                        <th style="">DBT Amount</th>
+                        <th style="">Payment Method</th>
+                        <th style="">Date</th>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach($continents as $key =>$serivice)
-                    <tr>
-                        <td>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-primary btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fa fa-bars"></i> Action
-                                </button>
-                                <div class="dropdown-menu">
-                                    <!-- Edit Button inside Dropdown -->
-                                    <a href="#" class="dropdown-item editBlogButton" data-toggle="modal" data-target="#modal-center" data-id="{{ $serivice->id }}">
-                                        <i class="fa fa-edit"></i> Edit
-                                    </a>
-                                    
-                                    <!-- Delete Form inside Dropdown -->
-                                    <button type="button"
-                                            class="dropdown-item text-danger deleteContinentBtn"
-                                            data-id="{{ $serivice->id }}">
-                                        <i class="fa fa-trash"></i> Delete
+                    </thead>
+                    <tbody>
+                    @foreach($expenses as $key => $expense)
+                        <tr>
+                            <td>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-bars"></i> Action
                                     </button>
+                                    <div class="dropdown-menu">
+                                        <!-- Edit Button inside Dropdown -->
+                                        <a href="#" class="dropdown-item editBlogButton" data-toggle="modal" data-target="#modal-center" data-id="{{ $expense->id }}">
+                                            <i class="fa fa-edit"></i> Edit
+                                        </a>
+
+                                        <!-- Delete Form inside Dropdown -->
+                                        <button type="button"
+                                                class="dropdown-item text-danger deleteWorkPermitBtn"
+                                                data-id="{{ $expense->id }}">
+                                            <i class="fa fa-trash"></i> Delete
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                        
-                        <td>{{ $key + 1 }}</td>
-                        <td>{{ $serivice->name}}</td>
+                            </td>
 
-                        <td class="wrap-text">{{ $serivice->code  }}</td>
-                        <td>
-                            <span class="badge {{ $serivice->status == 'Active' ? 'badge-success' : 'badge-danger' }}">
-                                {{ $serivice->status == 'Active' ? 'Active' : 'Inactive' }}
-                            </span>
-                        </td>
-                        <td class="wrap-text">{{ $serivice->created_at->format('F d, Y') }}</td>
+                            <td>{{ $key + 1 }}</td>
+                            <td>{{ $expense->month_year}}</td>
+                            <td>Give Payment</td>
+                            <td>Office Expense</td>
+                            <td class="wrap-text">{{ $expense->expenseCategory ? $expense->expenseCategory->expense_category_name : ''}} - {{$expense->expenseItem? $expense->expenseItem->expense_item_name  : ''}}</td>
+                            <td class="wrap-text">{{ $expense->amount}}</td>
+                            <td class="wrap-text">{{ $expense->bdt_amount  }}</td>
+                            <td class="wrap-text">{{ $expense->currency ? $expense->currency->name : '' }}</td>
+                            <td class="wrap-text">{{ $expense->created_at->format('F d, Y') }}</td>
 
-                    </tr>
+                        </tr>
                     @endforeach
-                </tbody>
-            </table>
-            
+                    </tbody>
+                </table>
+
+            </div>
         </div>
     </div>
-</div>
 
     @section('script')
         <script>
-            function fetchContinents() {
+
+            function fetchExpenses() {
                 $.ajax({
-                    url: '{{ route("supper_admin.continents.index") }}',
+                    url: '{{ route("supper_admin.expenses.index") }}',
                     type: 'GET',
                     success: function (data) {
                         let newBody = $(data).find('table tbody').html();
                         $('#customDataTable tbody').html(newBody);
                     },
                     error: function () {
-                        console.error('Failed to refresh continent table.');
+                        console.error('Failed to refresh expense table.');
                     }
                 });
             }
 
             $('#modal-center').on('shown.bs.modal', function () {
-                // Remove aria-hidden from wrapper
                 $('.wrapper').removeAttr('aria-hidden');
             });
 
             // When the modal is hidden
             $('#modal-center').on('hidden.bs.modal', function () {
-                // Optionally, add aria-hidden back to wrapper
                 $('.wrapper').attr('aria-hidden', 'true');
             });
 
             $(document).ready(function () {
 
-                $('#continentForm').on('submit', function (e) {
+                fetchCategories();
+                function fetchCategories() {
+                    $.ajax({
+                        url: "{{ route('supper_admin.expense-category.enabled') }}",
+                        method: "GET",
+                        success: function(data) {
+                            let select = $('#categorySelect');
+                            select.empty();
+                            select.append('<option value="" disabled selected>Expense Category</option>');
+
+                            data.forEach(function(category) {
+                                select.append(
+                                    '<option value="' + category.id + '">' +
+                                    category.expense_category_name + ' - ' + category.expense_category_code +
+                                    '</option>'
+                                );
+                            });
+                        },
+                        error: function(xhr) {
+                            console.error("Failed to fetch expense categories:", xhr);
+                        }
+                    });
+                }
+
+                // Fetch Countries based on Continent
+                function fetchItems(categoryId, selectedItemId) {
+                    $.ajax({
+                        url: "{{ route('supper_admin.expense-item.enabled') }}",
+                        method: "GET",
+                        data: { expense_category_id: categoryId }, // Pass expense_category_id to filter countries
+                        success: function (data) {
+                            let select = $('#itemSelect');
+                            select.empty();
+                            select.append('<option value="" disabled selected>Expense Item</option>');
+                            data.forEach(function(item) {
+                                let selected = item.id === selectedItemId ? 'selected' : '';
+                                select.append('<option value="' + item.id + '" ' + selected + '>' + item.expense_item_name + '</option>');
+                            });
+
+                            // Ensure the item dropdown value is updated after population
+                            select.val(selectedItemId).trigger('change');  // Set selected item
+                        },
+                        error: function(xhr) {
+                            console.error("Failed to fetch expense items:", xhr);
+                        }
+                    });
+                }
+
+                // Trigger the fetchItems function when a category is selected
+                $('#categorySelect').on('change', function() {
+                    const categoryId = $(this).val();
+                    if (categoryId) {
+                        fetchItems(categoryId);  // Fetch item based on the selected category
+                    } else {
+                        $('#itemSelect').empty().append('<option value="" disabled selected>Expense Item</option>');
+                    }
+                });
+
+
+                $('#expenseForm').on('submit', function (e) {
                     e.preventDefault();
+                    let isEdit = $('#expense_id').val() !== '';
+                    let formData = new FormData(this);
+                    let id = $('#expense_id').val();
+                    formData.set('status', $('#status').is(':checked') ? 'Enabled' : 'Disabled');
 
-                    let isEdit = $('#continent_id').val() !== ''; 
-                    let formData = new FormData(this); 
-                    let id = $('#continent_id').val(); 
-                    let url = isEdit 
-                        ? `{{ route('supper_admin.continents.update', ['continent' => '__id__']) }}`.replace('__id__', id) 
-                        : `{{ route('supper_admin.continents.store') }}`;
+                    const baseUpdateUrl = "{{ url('supper_admin/expenses') }}";
 
-                    let method = isEdit ? 'POST' : 'POST'; 
+                    let url = isEdit
+                        ? `${baseUpdateUrl}/${id}`
+                        : `{{ route('supper_admin.expenses.store') }}`;
+
+                    let method = isEdit ? 'POST' : 'POST';
                     if (isEdit) {
                         formData.append('_method', 'PUT');
                     }
 
                     Swal.fire({
-                        title: isEdit ? "Update Continent?" : "Add Continent?",
+                        title: isEdit ? "Update Expense?" : "Add Expense?",
                         icon: "question",
                         showCancelButton: true,
                         confirmButtonText: "Yes, proceed"
@@ -173,15 +237,15 @@
                                     if (response.status === 'success') {
                                         $('#modal-center').modal('hide');
                                         Swal.fire('Success!', response.message, 'success');
-                                        $('#continentForm')[0].reset();
-                                        $('#continent_id').val('');
-                                        fetchContinents();
+                                        $('#expenseForm')[0].reset();
+                                        $('#expense_id').val('');
+                                        fetchExpenses();
                                     } else {
                                         Swal.fire('Error!', response.message, 'error');
                                     }
                                 },
                                 error: function () {
-                                    Swal.fire('Error!', 'Failed to save continent.', 'error');
+                                    Swal.fire('Error!', 'Failed to save expense.', 'error');
                                 }
                             });
                         }
@@ -189,39 +253,72 @@
                 });
 
                 $(document).on('click', '.addBlogButton', function () {
-                    $('#continentForm')[0].reset();
-                    $('#continent_id').val('');
-                    $('#modalTitle').text('Add Continent');
+                    $('#expenseForm')[0].reset();
+                    $('#expense_id').val('');
+                    $('#categorySelect').val('').trigger('change');
+                    $('#itemSelect').empty().append('<option value="" disabled selected>Expense Item</option>');
+                    $('#preview').attr('src', '').hide();
+                    $('#modalTitle').text('Add Expense');
                     $('#modal-center').modal('show');
+
                 });
 
+                const storageBaseUrl = "{{ asset('storage') }}/";
                 $(document).on('click', '.editBlogButton', function () {
                     const id = $(this).data('id');
-                    const url = '{{ route("supper_admin.continents.edit", ":id") }}'.replace(':id', id);
+                    const url = '{{ route("supper_admin.expenses.edit", ":id") }}'.replace(':id', id);
 
                     $.ajax({
                         url: url,
                         type: 'GET',
                         success: function (res) {
-                            $('#continent_id').val(id);
+                            $('#expense_id').val(id);
                             $('#name').val(res.name);
                             $('#code').val(res.code);
-                            $('#status').prop('checked', res.status === 'Active');
-                            $('#modalTitle').text('Edit Continent');
+                            $('#salary').val(res.salary);
+                            $('#expire_date').val(res.expire_date);
+                            // Show existing file
+                            if (res.attachment) {
+                                const filePath = res.attachment; // example: expense_categories/filename.pdf
+                                const ext = filePath.split('.').pop().toLowerCase();
+
+                                // Prepend Laravel's public storage path
+                                const fileUrl = `/storage/${filePath}`;
+
+                                let previewHtml = '';
+
+                                if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
+                                    previewHtml = `<img src="${fileUrl}" alt="Uploaded File" class="img-thumbnail" style="max-height: 200px;">`;
+                                } else {
+                                    previewHtml = `<a href="${fileUrl}" target="_blank" class="btn btn-outline-primary btn-sm">View File</a>`;
+                                }
+
+                                $('#existing-file-preview').html(previewHtml);
+                                $('#remove-file-section').removeClass('d-none');
+                            } else {
+                                $('#existing-file-preview').empty();
+                                $('#remove-file-section').addClass('d-none');
+                                $('#remove_file').prop('checked', false);
+                            }
+                            $('#status').prop('checked', res.status === 'Enabled');
+                            $('#modalTitle').text('Edit Expense');
                             $('#modal-center').modal('show');
+                            $('#categorySelect').val(res.expense_category_id).trigger('change');
+                            $('#itemSelect').val(res.expense_item_id).trigger('change');
+                            fetchItems(res.expense_category_id, res.expense_item_id);
                         },
                         error: function () {
-                            Swal.fire('Error', 'Could not load continent data.', 'error');
+                            Swal.fire('Error', 'Could not load expense data.', 'error');
                         }
                     });
                 });
 
-                $(document).on('click', '.deleteContinentBtn', function () {
+                $(document).on('click', '.deleteWorkPermitBtn', function () {
                     const id = $(this).data('id');
-                    const url = '{{ route("supper_admin.continents.destroy", ":id") }}'.replace(':id', id);
+                    const url = '{{ route("supper_admin.expenses.destroy", ":id") }}'.replace(':id', id);
 
                     Swal.fire({
-                        title: 'Delete Continent?',
+                        title: 'Delete expense?',
                         text: "This action cannot be undone.",
                         icon: 'warning',
                         showCancelButton: true,
@@ -232,19 +329,19 @@
                                 url: url,
                                 type: 'POST',
                                 data: {
-                                    _token: '{{ csrf_token() }}',
-                                    _method: 'DELETE'
+                                    _method: 'DELETE',
+                                    _token: '{{ csrf_token() }}'
                                 },
-                                success: function (res) {
-                                    if (res.status === 'success') {
-                                        Swal.fire('Deleted!', res.message, 'success');
-                                        fetchContinents();
+                                success: function (response) {
+                                    if (response.status === 'success') {
+                                        Swal.fire('Deleted!', response.message, 'success');
+                                        fetchExpenses();
                                     } else {
-                                        Swal.fire('Error!', res.message, 'error');
+                                        Swal.fire('Error!', response.message, 'error');
                                     }
                                 },
                                 error: function () {
-                                    Swal.fire('Error!', 'Failed to delete.', 'error');
+                                    Swal.fire('Error!', 'Failed to delete the expense.', 'error');
                                 }
                             });
                         }
@@ -252,5 +349,6 @@
                 });
             });
         </script>
+
     @endsection
 @endsection

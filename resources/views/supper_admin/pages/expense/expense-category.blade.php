@@ -14,7 +14,7 @@
 @section('content')
 
 @if (session('status'))
-<div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel" aria-hidden="true">
+    <div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content text-center">
             <div class="modal-header border-0">
@@ -218,7 +218,6 @@
                             $('#expense_category_name').val(res.expense_category_name);
                             $('#expense_category_code').val(res.expense_category_code);
                             $('#opening_balance').val(res.opening_balance);
-                            // $('#opening_balance_sheet').val(res.opening_balance_sheet);
                             $('#note').val(res.note);
 
                             // Show existing file

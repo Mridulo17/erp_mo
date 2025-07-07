@@ -7,6 +7,7 @@ use App\Models\Supper_Admin\Payroll\Expense\ExpenseCategory;
 use App\Models\Supper_Admin\Payroll\Expense\ExpenseItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class ExpenseItemController extends Controller
@@ -15,6 +16,12 @@ class ExpenseItemController extends Controller
     {
         $expenseItems = ExpenseItem::get();
         return view('supper_admin.pages.expense.expense-item', compact('expenseItems'));
+    }
+
+    public function enabledIndex()
+    {
+        $expenseItems = ExpenseItem::where('status', 'Enabled')->get();
+        return response()->json($expenseItems);
     }
 
     public function create()
@@ -28,7 +35,7 @@ class ExpenseItemController extends Controller
         try {
             $request->validate([
                 'expense_category_id'      => 'required|integer',
-                'expense_item_name'      => 'required|string|max:255',
+                'expense_item_name'      => 'required|string|max:255|unique:expense_items,expense_item_name',
                 'status'    => 'required|in:Enabled,Disabled'
             ]);
             ExpenseItem::create([
@@ -70,7 +77,12 @@ class ExpenseItemController extends Controller
         try {
             $request->validate([
                 'expense_category_id'      => 'required|integer',
-                'expense_item_name'      => 'required|string|max:255',
+                'expense_item_name' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    Rule::unique('expense_items')->ignore($id),
+                ],
                 'status'    => 'required|in:Enabled,Disabled'
             ]);
 
