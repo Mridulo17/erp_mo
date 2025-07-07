@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('candidates', function (Blueprint $table) {
             $table->id();
             $table->foreignId('candidate_type_id')->nullable()->constrained('candidate_types')->onDelete('set null');
-            $table->foreignId('agent_id')->nullable()->constrained('agents')->onDelete('set null');
-            $table->foreignId('country_id')->nullable()->constrained('countries')->onDelete('set null');
-            $table->foreignId('profession_id')->nullable()->constrained('professions')->onDelete('set null');
+            $table->foreignId('referral_agent_id')->nullable()->constrained('agents')->onDelete('set null');
+            $table->foreignId('interested_country_id')->nullable()->constrained('countries')->onDelete('set null');
+            $table->foreignId('interested_profession_id')->nullable()->constrained('professions')->onDelete('set null');
             $table->string('nationality')->nullable();
             $table->timestamps();
         });

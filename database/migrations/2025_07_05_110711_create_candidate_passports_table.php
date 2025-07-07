@@ -32,7 +32,7 @@ return new class extends Migration
             $table->string('passport_scan_copy')->nullable();
 
             // Note
-            $table->text('note')->nullable();
+            $table->longText('note')->nullable();
 
             $table->timestamps();
         });

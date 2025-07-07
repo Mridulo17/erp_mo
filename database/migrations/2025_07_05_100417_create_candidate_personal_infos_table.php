@@ -41,9 +41,8 @@ return new class extends Migration
 
             // Other Info
             $table->foreignId('religion_id')->nullable()->constrained('religions')->onDelete('set null');
-            $table->string('blood_group')->nullable();
             $table->foreignId('blood_group_id')->nullable()->constrained('blood_groups')->onDelete('set null');
-            $table->text('note')->nullable();
+            $table->longText('note')->nullable();
 
             $table->timestamps();
         });
