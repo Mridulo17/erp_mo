@@ -14,15 +14,8 @@ class ExpenseItemController extends Controller
     public function index()
     {
         $expenseItems = ExpenseItem::get();
-        return view('supper_admin.expense.expense-category', compact('expenseItems'));
+        return view('supper_admin.expense.expense-item', compact('expenseItems'));
     }
-
-    public function Activeindex()
-    {
-        $expenseItems = ExpenseItem::where('status', 'Active')->get();
-        return response()->json($expenseItems);
-    }
-
 
     public function create()
     {
@@ -76,14 +69,20 @@ class ExpenseItemController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $expenseItem = ExpenseItem::findOrFail($id);
-        $expenseItem->name = $request->name;
-        $expenseItem->code = $request->code;
-        $expenseItem->status = $request->status ? 'Active' : 'Inactive';
+        try {
+            $expenseItem = ExpenseItem::findOrFail($id);
+            $expenseItem->name = $request->name;
+            $expenseItem->code = $request->code;
+            $expenseItem->status = $request->status ? 'Active' : 'Inactive';
 
-        $expenseItem->save();
+            $expenseItem->save();
 
-        return response()->json(['status' => 'success', 'message' => 'Expense item updated successfully']);
+            return response()->json(['status' => 'success', 'message' => 'Expense item updated successfully']);
+        } catch (ValidationException $e) {
+            return response()->json(['status' => 'fail', 'message' => $e->validator->errors()]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
+        }
     }
 
     /**

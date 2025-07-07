@@ -19,12 +19,6 @@ class ExpenseCategoryController extends Controller
         return view('supper_admin.pages.expense.expense-category', compact('expenseCategories'));
     }
 
-    public function Activeindex()
-    {
-        $expenseCategories = ExpenseCategory::where('status', 'Active')->get();
-        return response()->json($expenseCategories);
-    }
-
 
     public function create()
     {
@@ -40,7 +34,7 @@ class ExpenseCategoryController extends Controller
                 'expense_category_name'      => 'required|string|max:255|unique:expense_categories,expense_category_name',
                 'expense_category_code'      => 'required|string|max:255|unique:expense_categories,expense_category_code',
                 'opening_balance_sheet' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240', // 10MB max
-                'status'    => 'required|in:Active,Inactive'
+                'status'    => 'required|in:Enabled,Disabled'
             ]);
 
             $openingBalanceSheetPath = null;
@@ -57,7 +51,7 @@ class ExpenseCategoryController extends Controller
                 'opening_balance'  => $request->input('opening_balance'),
                 'opening_balance_sheet'         => $openingBalanceSheetPath,
                 'note'  => $request->input('note'),
-                'status'    => $request->input('status') === 'Active' ? 'Active' : 'Inactive'
+                'status'    => $request->input('status') === 'Enabled' ? 'Enabled' : 'Disabled'
             ]);
             return response()->json(['status' => 'success', 'message' => 'Expense category added Successfully']);
         } catch (ValidationException $e) {
@@ -105,7 +99,7 @@ class ExpenseCategoryController extends Controller
                     Rule::unique('expense_categories')->ignore($id),
                 ],
                 'opening_balance_sheet' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240', // 10MB max
-                'status'    => 'required|in:Active,Inactive'
+                'status'    => 'required|in:Enabled,Disabled'
             ]);
 
             $expenseCategory = ExpenseCategory::findOrFail($id);
@@ -132,7 +126,7 @@ class ExpenseCategoryController extends Controller
 
             $expenseCategory->opening_balance_sheet = $openingBalanceSheetPath;
             $expenseCategory->note = $request->note;
-            $expenseCategory->status = $request->status === 'Active' ? 'Active' : 'Inactive';
+            $expenseCategory->status = $request->status === 'Enabled' ? 'Enabled' : 'Disabled';
 
             $expenseCategory->save();
 

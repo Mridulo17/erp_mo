@@ -103,8 +103,8 @@
                         <td>{{ $category->opening_balance}}</td>
                         <td>{{ $category->opening_balance}}</td>
                         <td>
-                            <span class="badge {{ $category->status == 'Active' ? 'badge-success' : 'badge-danger' }}">
-                                {{ $category->status == 'Active' ? 'Active' : 'Inactive' }}
+                            <span class="badge {{ $category->status == 'Enabled' ? 'badge-success' : 'badge-danger' }}">
+                                {{ $category->status == 'Enabled' ? 'Enabled' : 'Disabled' }}
                             </span>
                         </td>
                         <td class="wrap-text">{{ $category->created_at->format('F d, Y') }}</td>
@@ -153,7 +153,7 @@
                     let isEdit = $('#expense_category_id').val() !== '';
                     let formData = new FormData(this);
                     let id = $('#expense_category_id').val();
-                    formData.set('status', $('#status').is(':checked') ? 'Active' : 'Inactive');
+                    formData.set('status', $('#status').is(':checked') ? 'Enabled' : 'Disabled');
 
                     const baseUpdateUrl = "{{ url('supper_admin/expense-categories') }}";
 
@@ -244,7 +244,7 @@
                                 $('#remove-file-section').addClass('d-none');
                                 $('#remove_file').prop('checked', false);
                             }
-                            $('#status').prop('checked', res.status === 'Active');
+                            $('#status').prop('checked', res.status === 'Enabled');
                             $('#modalTitle').text('Edit Continent');
                             $('#modal-center').modal('show');
                         },

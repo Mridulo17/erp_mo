@@ -50,8 +50,8 @@
                         <textarea id="note" name="note" rows="2" cols="5" class="form-control form-control-lg"></textarea>
                     </div>
                     <div class="form-group form-check">
-                        <input type="checkbox" id="status" name="status" class="form-check-input" value="Active" checked>
-                        <label class="form-check-label" for="status">Active</label>
+                        <input type="checkbox" id="status" name="status" class="form-check-input" value="Enabled" checked>
+                        <label class="form-check-label" for="status">Status</label>
                     </div>
                 </div>
 
