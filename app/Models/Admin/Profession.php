@@ -12,7 +12,7 @@ class Profession extends Model
 
     public function candidates()
     {
-        return $this->hasMany(Candidate::class);
+        return $this->hasMany(Candidate::class, 'interested_profession_id');
     }
 
     public function candidateExperiences()
