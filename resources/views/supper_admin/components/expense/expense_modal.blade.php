@@ -45,9 +45,14 @@
                         <label for="name" class="font-weight-bold text-dark" style="font-size: 14px;">Amount<small id="amount_currency"></small></label>
                         <input type="number" step="any" min="0" id="amount" name="amount" class="form-control" placeholder="Amount" required>
                     </div>
+                    <div class="row">
+                        <div class="col-sm-12" id="amount_translate">
+
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label for="salary" class="font-weight-bold text-dark" style="font-size: 14px;">BDT Amount</label>
-                        <input type="number" id="bdt_amount" name="bdt_amount" class="form-control" placeholder="BDT Amount" required readonly>
+                        <input type="number" id="bdt_amount" name="bdt_amount" class="form-control" placeholder="BDT Amount" required readonly style="color: #ff0000">
                     </div>
                     <div class="form-group">
                         <label for="opening_balance_sheet" class="font-weight-bold text-dark" style="font-size: 14px;">Attachment(If needed)</label>
