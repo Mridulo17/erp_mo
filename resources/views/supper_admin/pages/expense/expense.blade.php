@@ -53,6 +53,7 @@
         </div>
 
         @include('supper_admin.components.expense.expense_modal')
+        @include('supper_admin.components.expense.expense_transaction_modal')
 
         <div class="box-body">
             <div class="table-responsive">
@@ -67,7 +68,7 @@
                         <th style="">Name</th>
                         <th style="">Amount</th>
                         <th style="">Currency</th>
-                        <th style="">DBT Amount</th>
+                        <th style="">BDT Amount</th>
                         <th style="">Payment Method</th>
                         <th style="">Date</th>
                     </tr>
@@ -82,8 +83,8 @@
                                     </button>
                                     <div class="dropdown-menu">
                                         <!-- Edit Button inside Dropdown -->
-                                        <a href="#" class="dropdown-item editBlogButton" data-toggle="modal" data-target="#modal-center" data-id="{{ $expense->id }}">
-                                            <i class="fa fa-edit"></i> Edit
+                                        <a href="#" class="dropdown-item editBlogButton" data-toggle="modal" data-target="#expense-transaction-modal" data-id="{{ $expense->id }}">
+                                            <i class="fa fa-bars"></i> View Transactions
                                         </a>
 
                                         <!-- Delete Form inside Dropdown -->
@@ -102,8 +103,9 @@
                             <td>Office Expense</td>
                             <td class="wrap-text">{{ $expense->expenseCategory ? $expense->expenseCategory->expense_category_name : ''}} - {{$expense->expenseItem? $expense->expenseItem->expense_item_name  : ''}}</td>
                             <td class="wrap-text">{{ $expense->amount}}</td>
-                            <td class="wrap-text">{{ $expense->bdt_amount  }}</td>
                             <td class="wrap-text">{{ $expense->currency ? $expense->currency->name : '' }}</td>
+                            <td class="wrap-text">{{ $expense->bdt_amount  }}</td>
+                            <td class="wrap-text">{{ $expense->payment_method  }}</td>
                             <td class="wrap-text">{{ $expense->created_at->format('F d, Y') }}</td>
 
                         </tr>
@@ -143,6 +145,29 @@
 
             $(document).ready(function () {
 
+                fetchCurrencies();
+                function fetchCurrencies() {
+                    $.ajax({
+                        url: "{{ route('supper_admin.currency.active') }}",
+                        method: "GET",
+                        success: function(data) {
+                            let select = $('#currencySelect');
+                            select.empty();
+                            select.append('<option value="" disabled selected>Choose Currency</option>');
+                            data.forEach(function(currency) {
+                                select.append(
+                                    '<option data-bdt_amount="' + currency.bdt_amount + '" data-name="' + currency.name + '" value="' + currency.id + '">' +
+                                    currency.name + '</option>'
+                                );
+                            });
+
+                        },
+                        error: function(xhr) {
+                            console.error("Failed to fetch currencies:", xhr);
+                        }
+                    });
+                }
+
                 fetchCategories();
                 function fetchCategories() {
                     $.ajax({
@@ -168,11 +193,12 @@
                 }
 
                 // Fetch Countries based on Continent
-                function fetchItems(categoryId, selectedItemId) {
+                function fetchItems(categoryId, selectedItemId)
+                {
                     $.ajax({
                         url: "{{ route('supper_admin.expense-item.enabled') }}",
                         method: "GET",
-                        data: { expense_category_id: categoryId }, // Pass expense_category_id to filter countries
+                        data: { expense_category_id: categoryId }, // Pass expense_category_id to filter items
                         success: function (data) {
                             let select = $('#itemSelect');
                             select.empty();
@@ -201,14 +227,36 @@
                     }
                 });
 
+                $('#currencySelect').on('change', function() {
+                    const selectedOption = $(this).find('option:selected');
+                    const bdt_amount = selectedOption.data('bdt_amount');
+                    const name = selectedOption.data('name');
+                    $('#currency_details').text("(1 " + name + " = " + bdt_amount + " BDT)");
+                    $('#amount_currency').text("(" + name + ")");
+                    $('#amount').on('keyup', function() {
+                        var amount= $('#amount').val();
+                        const calculateAmount = amount * bdt_amount;
+                        $('#bdt_amount').val(calculateAmount);
+                    });
+                });
+
+                $('#is_expire').on('click', function() {
+                    var isChecked = $(this).is(':checked');
+
+                    if (isChecked) {
+                        $('#perDiv').show();
+                    } else {
+                        $('#perDiv').hide();
+                    }
+                });
+
+
 
                 $('#expenseForm').on('submit', function (e) {
                     e.preventDefault();
                     let isEdit = $('#expense_id').val() !== '';
                     let formData = new FormData(this);
                     let id = $('#expense_id').val();
-                    formData.set('status', $('#status').is(':checked') ? 'Enabled' : 'Disabled');
-
                     const baseUpdateUrl = "{{ url('supper_admin/expenses') }}";
 
                     let url = isEdit
@@ -263,7 +311,6 @@
 
                 });
 
-                const storageBaseUrl = "{{ asset('storage') }}/";
                 $(document).on('click', '.editBlogButton', function () {
                     const id = $(this).data('id');
                     const url = '{{ route("supper_admin.expenses.edit", ":id") }}'.replace(':id', id);
@@ -278,37 +325,33 @@
                             $('#salary').val(res.salary);
                             $('#expire_date').val(res.expire_date);
                             // Show existing file
-                            if (res.attachment) {
-                                const filePath = res.attachment; // example: expense_categories/filename.pdf
-                                const ext = filePath.split('.').pop().toLowerCase();
-
-                                // Prepend Laravel's public storage path
-                                const fileUrl = `/storage/${filePath}`;
-
-                                let previewHtml = '';
-
-                                if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
-                                    previewHtml = `<img src="${fileUrl}" alt="Uploaded File" class="img-thumbnail" style="max-height: 200px;">`;
-                                } else {
-                                    previewHtml = `<a href="${fileUrl}" target="_blank" class="btn btn-outline-primary btn-sm">View File</a>`;
-                                }
-
-                                $('#existing-file-preview').html(previewHtml);
-                                $('#remove-file-section').removeClass('d-none');
-                            } else {
-                                $('#existing-file-preview').empty();
-                                $('#remove-file-section').addClass('d-none');
-                                $('#remove_file').prop('checked', false);
-                            }
-                            $('#status').prop('checked', res.status === 'Enabled');
-                            $('#modalTitle').text('Edit Expense');
-                            $('#modal-center').modal('show');
-                            $('#categorySelect').val(res.expense_category_id).trigger('change');
-                            $('#itemSelect').val(res.expense_item_id).trigger('change');
-                            fetchItems(res.expense_category_id, res.expense_item_id);
+                            // if (res.attachment) {
+                            //     const filePath = res.attachment; // example: expense_categories/filename.pdf
+                            //     const ext = filePath.split('.').pop().toLowerCase();
+                            //
+                            //     // Prepend Laravel's public storage path
+                            //     const fileUrl = `/storage/${filePath}`;
+                            //
+                            //     let previewHtml = '';
+                            //
+                            //     if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
+                            //         previewHtml = `<img src="${fileUrl}" alt="Uploaded File" class="img-thumbnail" style="max-height: 200px;">`;
+                            //     } else {
+                            //         previewHtml = `<a href="${fileUrl}" target="_blank" class="btn btn-outline-primary btn-sm">View File</a>`;
+                            //     }
+                            //
+                            //     $('#existing-file-preview').html(previewHtml);
+                            //     $('#remove-file-section').removeClass('d-none');
+                            // } else {
+                            //     $('#existing-file-preview').empty();
+                            //     $('#remove-file-section').addClass('d-none');
+                            //     $('#remove_file').prop('checked', false);
+                            // }
+                            $('#modalTitle').text('Related transaction about Entertainment Cost - Mohakhali office Lunch bill');
+                            $('#expense-transaction-modal').modal('show');
                         },
                         error: function () {
-                            Swal.fire('Error', 'Could not load expense data.', 'error');
+                            Swal.fire('Error', 'Could not load expense transaction data data.', 'error');
                         }
                     });
                 });

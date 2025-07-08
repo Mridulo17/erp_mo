@@ -24,7 +24,6 @@ return new class extends Migration
             $table->decimal('bdt_amount', 25, 2);
             $table->string('attachment')->nullable();
             $table->string('month_year')->nullable();
-            $table->integer('is_expire')->default('0');
             $table->date('expiry_date')->nullable();
             $table->string('transaction_note', 2000)->nullable();
             $table->string('note', 2000)->nullable();

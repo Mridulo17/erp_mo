@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalTitle">Add Work Permit</h5>
+                <h5 class="modal-title" id="modalTitle">Add Expense</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -13,10 +13,6 @@
                 @csrf
                 <input type="hidden" id="expense_id" name="expense_id" value="">
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label for="expire_date" class="font-weight-bold text-dark" style="font-size: 14px;">Expire Date</label>
-                        <input type="date" id="expire_date" name="expire_date" class="form-control" placeholder="Enter salary" required>
-                    </div>
                     <div class="form-group">
                         <label for="name" class="font-weight-bold text-dark" style="font-size: 14px;">Expense Category </label>
                         <select name="expense_category_id" id="categorySelect" class="form-control" required>
@@ -30,42 +26,53 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="name" class="font-weight-bold text-dark" style="font-size: 14px;">Job Name</label>
-                        <input type="text" id="name" name="name" class="form-control" placeholder="Enter Country Name" required>
+                        <label class="font-weight-700 font-size-16" for="payment_method">Payment Method</label>
+                        <select name="payment_method" id="payment_method" class="form-control" required>
+                            <option value="" disabled selected>Payment Method</option>
+                            <option value="Bank Account">Bank Account</option>
+                            <option value="Cash in Hand">Cash in Hand</option>
+                            <option value="Mobile Banking">Mobile Banking</option>
+                            <option value="Office Assets">Office Assets</option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label for="salary" class="font-weight-bold text-dark" style="font-size: 14px;">Salary</label>
-                        <input type="number" id="salary" name="salary" class="form-control" placeholder="Enter salary" required>
+                        <label for="currency_id" class="font-weight-bold text-dark" style="font-size: 14px;">Currency <small id="currency_details" style="color: #ff0000"></small></label>
+                        <select name="currency_id" id="currencySelect" class="form-control" required>
+                            <option value="" disabled selected>Choose Currency</option>
+                        </select>
                     </div>
-
                     <div class="form-group">
-                        <label for="code" class="font-weight-bold text-dark" style="font-size: 14px;">Code</label>
-                        <input type="text" id="code" name="code" class="form-control" placeholder="Enter Work Permit Code" required>
+                        <label for="name" class="font-weight-bold text-dark" style="font-size: 14px;">Amount<small id="amount_currency"></small></label>
+                        <input type="number" step="any" min="0" id="amount" name="amount" class="form-control" placeholder="Amount" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="salary" class="font-weight-bold text-dark" style="font-size: 14px;">BDT Amount</label>
+                        <input type="number" id="bdt_amount" name="bdt_amount" class="form-control" placeholder="BDT Amount" required readonly>
                     </div>
                     <div class="form-group">
                         <label for="opening_balance_sheet" class="font-weight-bold text-dark" style="font-size: 14px;">Attachment(If needed)</label>
                         <input type="file" id="attachment" name="attachment" class="form-control form-control-lg">
-                        <!-- Existing file preview -->
-                        <div id="existing-file-preview" style="margin-top: 10px;"></div>
-
-                        <!-- Remove file toggle -->
-                        <div id="remove-file-section" class="form-check mt-2 d-none">
-                            <input type="checkbox" class="form-check-input" id="remove_file" name="remove_file" value="1">
-                            <label class="form-check-label" for="remove_file">Remove existing file</label>
-                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="month_year" class="font-weight-bold text-dark" style="font-size: 14px;">Month-Year</label>
+                        <input type="month" id="month_year" name="month_year" class="form-control" placeholder="Month-Year">
+                    </div>
+                    <div class="form-group form-check">
+                        <input type="checkbox" id="is_expire" class="form-check-input">
+                        <label class="form-check-label" for="is_expire">Is Expire</label>
+                    </div>
+                    <div class="form-group" id="perDiv" style=display:none;>
+                        <label for="expiry_date" class="font-weight-bold text-dark" style="font-size: 14px;">Expiry Date</label>
+                        <input type="date" id="expiry_date" name="expiry_date" class="form-control" placeholder="Expiry Date" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="image" class="font-weight-bold text-dark" style="font-size: 14px;">Poster</label>
-                        <input type="file" id="image" name="image" class="form-control" placeholder="Enter image" onchange="previewImage(event)">
-                        <div id="imagePreviewContainer" style="margin-top: 10px;">
-                            <img id="preview" src="" style="max-width: 100px; display: none;" />
-                        </div>
+                        <label for="transaction_note" class="font-weight-bold text-dark" style="font-size: 14px;">Transaction Note</label>
+                        <textarea id="transaction_note" name="transaction_note" rows="2" cols="5" class="form-control form-control-lg"></textarea>
                     </div>
-
-                    <div class="form-group form-check">
-                        <input type="checkbox" id="status" name="status" class="form-check-input" value="Active" checked>
-                        <label class="form-check-label" for="status">Active</label>
+                    <div class="form-group">
+                        <label for="note" class="font-weight-bold text-dark" style="font-size: 14px;">Note</label>
+                        <textarea id="note" name="note" rows="2" cols="5" class="form-control form-control-lg"></textarea>
                     </div>
                 </div>
 

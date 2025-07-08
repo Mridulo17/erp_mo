@@ -59,7 +59,6 @@ class ExpenseController extends Controller
                 'bdt_amount'      => $request->input('bdt_amount'),
                 'attachment'         => $attachmentPath,
                 'month_year'  => $request->input('month_year'),
-                'is_expire'    => $request->input('is_expire') === '1' ? '1' : '0',
                 'expiry_date'  => $request->input('expiry_date'),
                 'transaction_note'  => $request->input('transaction_note'),
                 'note'  => $request->input('note'),
@@ -132,7 +131,6 @@ class ExpenseController extends Controller
 
             $expense->attachment = $attachmentPath;
             $expense->month_year = $request->month_year;
-            $expense->is_expire = $request->input('is_expire') === '1' ? '1' : '0';
             $expense->expiry_date = $request->expiry_date;
             $expense->transaction_note = $request->transaction_note;
             $expense->note = $request->note;

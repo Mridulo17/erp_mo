@@ -18,9 +18,16 @@ class ExpenseItemController extends Controller
         return view('supper_admin.pages.expense.expense-item', compact('expenseItems'));
     }
 
-    public function enabledIndex()
+    public function enabledIndex(Request $request)
     {
-        $expenseItems = ExpenseItem::where('status', 'Enabled')->get();
+        if ($request->has('expense_category_id') && $request->expense_category_id) {
+            $categoryId = $request->get('expense_category_id');
+            $expenseItems = ExpenseItem::where('status', 'Enabled')
+                ->where('expense_category_id', $categoryId)
+                ->get();
+        } else {
+            $expenseItems = ExpenseItem::where('status', 'Enabled')->get();
+        }
         return response()->json($expenseItems);
     }
 

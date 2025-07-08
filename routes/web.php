@@ -83,6 +83,7 @@ Route::middleware(['auth', 'verified'])->prefix('supper_admin')->name('supper_ad
     Route::get('/district/active', [DistrictController::class, 'Activeindex'])->name('district.active');
     Route::get('/thana/active', [ThanaController::class, 'Activeindex'])->name('thana.active');
     Route::get('/company/active', [CompaniesController::class, 'Activeindex'])->name('company.active');
+    Route::get('/currency/active', [CurrencyController::class, 'Activeindex'])->name('currency.active');
     Route::get('/expense-categories/enabled', [ExpenseCategoryController::class, 'enabledIndex'])->name('expense-category.enabled');
     Route::get('/expense-items/enabled', [ExpenseItemController::class, 'enabledIndex'])->name('expense-item.enabled');
 
