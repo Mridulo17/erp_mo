@@ -50,7 +50,7 @@
 
     <div class="form-group col-md-3">
         <label for="passport_scan_copy" class="font-weight-bold text-dark" style="font-size: 14px;">Passport Scan Copy</label>
-        <input type="file" id="passport_scan_copy" name="passport_scan_copy" class="form-control" accept="image/*">
+        <input type="file" id="passport_scan_copy" name="passport_scan_copy" class="form-control">
     </div>
 
     <div class="form-group col-md-12">

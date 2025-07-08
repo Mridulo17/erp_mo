@@ -63,7 +63,7 @@
             <option value="">--Select One--</option>
             <option value="single" {{ session('form.step_2.marital_status') == 'single' ? 'selected' : '' }}>Single</option>
             <option value="married" {{ session('form.step_2.marital_status') == 'married' ? 'selected' : '' }}>Married</option>
-            <option value="separated" {{ session('form.step_2.marital_status') == 'separated' ? 'selected' : '' }}>Separated</option>
+            <option value="seperated" {{ session('form.step_2.marital_status') == 'seperated' ? 'selected' : '' }}>Seperated</option>
             <option value="widowed" {{ session('form.step_2.marital_status') == 'widowed' ? 'selected' : '' }}>Widowed</option>
             <option value="not_specified" {{ session('form.step_2.marital_status') == 'not_specified' ? 'selected' : '' }}>Not Specified</option>
         </select>

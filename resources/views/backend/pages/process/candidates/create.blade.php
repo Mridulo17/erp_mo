@@ -71,9 +71,13 @@
             contentType: false,
             success: function (res) {
                 if (res.success) {
-                    currentStep = res.step;
-                    $('#content-wrapper').html(res.html);
-                    initSelect2();
+                    if (res.redirect) {
+                        window.location.href = res.redirect;
+                    }else {
+                        currentStep = res.step;
+                        $('#content-wrapper').html(res.html);
+                        initSelect2();
+                    }
                 }
             },
             error: function (xhr) {

@@ -17,8 +17,8 @@ return new class extends Migration
             // Candidate relation
             $table->foreignId('candidate_id')->constrained('candidates')->onDelete('cascade');
 
-            $table->string('file_type');
-            $table->string('file_path');
+            $table->string('file_type')->nullable();
+            $table->string('file_path')->nullable();
 
             $table->timestamps();
         });

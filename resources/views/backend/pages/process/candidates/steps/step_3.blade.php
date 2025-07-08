@@ -3,7 +3,7 @@
     <select id="experience_type" name="experience_type" class="form-control select2">
         <option value="" disabled selected>--Select One--</option>
         <option value="fresher" {{ session('form.step_3.experience_type') == 'fresher' ? 'selected' : '' }}>Fresher</option>
-        <option value="experianced" {{ session('form.step_3.experience_type') == 'experianced' ? 'selected' : '' }}>Experianced</option>
+        <option value="experienced" {{ session('form.step_3.experience_type') == 'experienced' ? 'selected' : '' }}>Experienced</option>
     </select>
 </div>
 
@@ -38,12 +38,12 @@
 
     <div class="form-group col-md-3">
         <label for="departure_seal" class="font-weight-bold text-dark" style="font-size: 14px;">Departure Seal</label>
-        <input type="file" id="departure_seal" name="departure_seal" class="form-control" accept="image/*">
+        <input type="file" id="departure_seal" name="departure_seal" class="form-control">
     </div>
 
     <div class="form-group col-md-3">
         <label for="arrival_seal" class="font-weight-bold text-dark" style="font-size: 14px;">Arrival Seal</label>
-        <input type="file" id="arrival_seal" name="arrival_seal" class="form-control" accept="image/*">
+        <input type="file" id="arrival_seal" name="arrival_seal" class="form-control">
     </div>
 
     <div class="form-group col-md-6">
