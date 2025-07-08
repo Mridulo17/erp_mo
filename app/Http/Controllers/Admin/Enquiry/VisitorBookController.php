@@ -14,16 +14,16 @@ class VisitorBookController extends Controller
 {
     public function index(Request $request)
     {
-        $visitorBooks = VisitorBook::latest()->paginate(20);
+        $visitorBooks = VisitorBook::latest()->get();
         $candidateTypes = CandidateType::all();
 
-        return view('backend.pages.enquiry.visitor_book.index', compact('visitorBooks', 'candidateTypes'));
+        return view('backend.pages.enquiry.visitor_book', compact('visitorBooks', 'candidateTypes'));
     }
 
-    public function create()
+    public function show($id)
     {
-        $candidateTypes = CandidateType::all();
-        return view('backend.pages.enquiry.visitor_book.create', compact('candidateTypes'));
+        $visitorBook = VisitorBook::findOrFail($id);
+        return response()->json($visitorBook);
     }
 
     public function store(Request $request)
@@ -38,8 +38,7 @@ class VisitorBookController extends Controller
             'how_find_us'       => 'nullable|string',
             'entry_time'        => 'nullable|string',
         ]);
-        Log::info("storing");
-        VisitorBook::create([
+        $visitorBook = VisitorBook::create([
             'phone'             => $request->phone,
             'full_name'         => $request->full_name,
             'address'           => $request->address,
@@ -50,16 +49,10 @@ class VisitorBookController extends Controller
             'entry_time'        => $request->entry_time,
             'entry_by'          => Auth::id(),
         ]);
-
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['status' => 'success', 'message' => 'Visitor record added successfully.', 'data' => $visitorBook]);
+        }
         return redirect()->route('admin.visitor-books.index')->with('success', 'Visitor record added successfully.');
-    }
-
-    public function edit($id)
-    {
-        $visitorBook = VisitorBook::findOrFail($id);
-        $candidateTypes = CandidateType::all();
-
-        return view('backend.pages.enquiry.visitor_book.edit', compact('visitorBook', 'candidateTypes'));
     }
 
     public function update(Request $request, $id)
@@ -74,16 +67,20 @@ class VisitorBookController extends Controller
             'how_find_us'       => 'nullable|string',
             'entry_time'        => 'nullable|string',
         ]);
-
         $visitorBook = VisitorBook::findOrFail($id);
         $visitorBook->update($request->all());
-
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['status' => 'success', 'message' => 'Visitor record updated successfully.', 'data' => $visitorBook]);
+        }
         return redirect()->route('admin.visitor-books.index')->with('success', 'Visitor record updated successfully.');
     }
 
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
         VisitorBook::findOrFail($id)->delete();
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['status' => 'success', 'message' => 'Visitor record deleted successfully.']);
+        }
         return redirect()->route('admin.visitor-books.index')->with('success', 'Visitor record deleted successfully.');
     }
 }

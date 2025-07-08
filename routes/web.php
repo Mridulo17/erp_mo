@@ -41,6 +41,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\Process\CandidateController;
 use App\Http\Controllers\Admin\Enquiry\PhoneCallController;
 use App\Http\Controllers\Admin\Enquiry\VisitorBookController;
+use App\Http\Controllers\Admin\Enquiry\InterviewedCandidateController;
+use App\Http\Controllers\Admin\People\InvestorController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -139,6 +141,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('holidays', HolidayController::class);
     Route::resource('employees', EmployeeController::class);
     Route::resource('agents', AgentController::class);
+    Route::resource('investors', InvestorController::class);
     Route::resource('hotspots', HotspotController::class);
     Route::resource('mac-address', MacController::class);
     Route::resource('delegates', DelegateController::class);
@@ -154,6 +157,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('processOffices', ProcessOfficeController::class);
     Route::resource('asignjobtoOffice', AsignJobToOfficeController::class);
     Route::resource('airlineOffices', AirlineOfficeController::class);
+    Route::resource('enquiry/interviewed-candidates', InterviewedCandidateController::class);
 });
 
 
