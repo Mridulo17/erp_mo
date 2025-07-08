@@ -108,13 +108,14 @@
                                       <li><a href="{{ route('supper_admin.expenses.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Add Expense</a></li>
                                   </ul>
                               </a></li>
-                          <li><a href="{{ route('supper_admin.countries.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Country</a></li>
-                          <li><a href="{{ route('supper_admin.divisions.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Division</a></li>
-                          <li><a href="{{ route('supper_admin.districts.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>District</a></li>
-                          <li><a href="{{ route('supper_admin.thanas.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Thana</a></li>
-                          <li><a href="{{ route('supper_admin.postoffices.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Post Office</a></li>
-                          <li><a href="{{ route('supper_admin.states.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Country Wise State</a></li>
-                          <li><a href="{{ route('supper_admin.currencies.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Currency</a></li>
+                          <li><a href="{{ route('supper_admin.countries.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Salary Generate</a></li>
+                          <li><a href="{{ route('supper_admin.performance-bonuses.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Performance Bonus</a></li>
+                          <li><a href="{{ route('supper_admin.inc-and-deces.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Inc & Dec</a></li>
+                          <li><a href="{{ route('supper_admin.advance-salaries.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Advance Salary</a></li>
+                          <li><a href="{{ route('supper_admin.traveling-and-darenesses.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>TA - DA</a></li>
+                          <li><a href="{{ route('supper_admin.states.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Hold / Allowance</a></li>
+                          <li><a href="{{ route('supper_admin.mobile-allowances.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Mobile Allowance</a></li>
+                          <li><a href="{{ route('supper_admin.festival-bonuses.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Festival Bonus</a></li>
                       </ul>
                   </li>
 

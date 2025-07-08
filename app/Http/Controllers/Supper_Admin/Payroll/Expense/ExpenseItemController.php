@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Supper_Admin\Expense;
+namespace App\Http\Controllers\Supper_Admin\Payroll\Expense;
 
 use App\Http\Controllers\Controller;
-use App\Models\Supper_Admin\Payroll\Expense\ExpenseCategory;
 use App\Models\Supper_Admin\Payroll\Expense\ExpenseItem;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
