@@ -14,7 +14,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\CandidateRequest;
 use App\Models\Admin\Process\Candidate;
+use App\Http\Requests\CandidateFileRequest;
 use App\Models\Admin\Process\CandidateFile;
 use App\Models\Admin\Process\CandidateType;
 use App\Models\Supper_Admin\Location\State;
@@ -22,10 +24,14 @@ use App\Models\Supper_Admin\Location\Thana;
 use App\Models\Supper_Admin\Location\Country;
 use App\Models\Supper_Admin\Location\District;
 use App\Models\Supper_Admin\Location\Division;
+use App\Http\Requests\CandidateLocationRequest;
+use App\Http\Requests\CandidatePassportRequest;
 use App\Models\Admin\Process\CandidateLocation;
 use App\Models\Admin\Process\CandidatePassport;
 use App\Models\Supper_Admin\Location\PostOffice;
+use App\Http\Requests\CandidateExperienceRequest;
 use App\Models\Admin\Process\CandidateExperience;
+use App\Http\Requests\CandidatePersonalInfoRequest;
 use App\Models\Admin\Process\CandidatePersonalInfo;
 
 class CandidateController extends Controller
@@ -53,6 +59,23 @@ class CandidateController extends Controller
     {
         $step = (int) $request->input('step', 1);
         $isPrev = $request->has('prev');
+
+        // Step-wise validation
+        if (!$isPrev) {
+            if ($step == 1) {
+                app(CandidateRequest::class);
+            } elseif ($step == 2) {
+                app(CandidatePersonalInfoRequest::class);
+            } elseif ($step == 3) {
+                app(CandidateExperienceRequest::class);
+            } elseif ($step == 4) {
+                app(CandidatePassportRequest::class);
+            } elseif ($step == 5) {
+                app(CandidateLocationRequest::class);
+            } elseif ($step == 6) {
+                app(CandidateFileRequest::class);
+            }
+        }
 
         if ($isPrev) {
             $step = max(1, $step); // Prevent step below 1
