@@ -47,9 +47,12 @@
 							</li>
 
 							<li><a href="{{route('admin.agents.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Agents</a></li>
-						
-							<li><a href=""><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Investor</a></li>
-						
+							<li class="{{ request()->routeIs('admin.investors.index') ? 'active menu-open' : '' }}">
+								<a href="{{ route('admin.investors.index') }}">
+									<i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>
+									Investors
+								</a>
+							</li>
 							<li class="treeview">
 								<a href="#">
 									<i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Delegates
@@ -74,7 +77,7 @@
 					  </span>
 					</a>
 					<ul class="treeview-menu">	
-						<li class="treeview {{ request()->routeIs('admin.phone-calls.*') ? 'active menu-open' : '' }}">
+						{{-- <li class="treeview {{ request()->routeIs('admin.phone-calls.*') ? 'active menu-open' : '' }}">
 							<a href="#">
 								<i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>
 								Phone Calls
@@ -83,44 +86,27 @@
 								</span>
 							</a>
 							<ul class="treeview-menu" style="{{ request()->routeIs('admin.candidates.*') ? 'display: block;' : '' }}">
-								<li class="{{ request()->routeIs('admin.phone-calls.create') ? 'active' : '' }}">
-									<a href="{{ route('admin.phone-calls.create') }}">
-										<i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>
-										New Phone Call
-									</a>
-								</li>
-								<li class="{{ request()->routeIs('admin.phone-calls.index') ? 'active' : '' }}">
-									<a href="{{ route('admin.phone-calls.index') }}">
-										<i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>
-										Phone Call List
-									</a>
-								</li>
+								
 							</ul>
+						</li> --}}
+						<li class="{{ request()->routeIs('admin.phone-calls.index') ? 'active menu-open' : '' }}">
+							<a href="{{ route('admin.phone-calls.index') }}">
+								<i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>
+								Phone Calls
+							</a>
 						</li>	
-						<li class="treeview {{ request()->routeIs('admin.visitor-books.*') ? 'active menu-open' : '' }}">
-							<a href="#">
+						<li class="{{ request()->routeIs('admin.visitor-books.index') ? 'active menu-open' : '' }}">
+							<a href="{{ route('admin.visitor-books.index') }}">
 								<i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>
 								Visitor Book
-								<span class="pull-right-container">
-									<i class="fa fa-angle-right pull-right"></i>
-								</span>
 							</a>
-							<ul class="treeview-menu" style="{{ request()->routeIs('admin.candidates.*') ? 'display: block;' : '' }}">
-								<li class="{{ request()->routeIs('admin.visitor-books.create') ? 'active' : '' }}">
-									<a href="{{ route('admin.visitor-books.create') }}">
-										<i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>
-										New Visitor Book
-									</a>
-								</li>
-								<li class="{{ request()->routeIs('admin.visitor-books.index') ? 'active' : '' }}">
-									<a href="{{ route('admin.visitor-books.index') }}">
-										<i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>
-										Visitor Book List
-									</a>
-								</li>
-							</ul>
 						</li>
-						<li><a href=""><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Inv: Candidates</a></li>
+						<li class="{{ request()->routeIs('admin.interviewed-candidates.index') ? 'active menu-open' : '' }}">
+							<a href="{{ route('admin.interviewed-candidates.index') }}">
+								<i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>
+								Inv: Candidates
+							</a>
+						</li>
 					</ul>
 				</li>
 
@@ -438,8 +424,6 @@
 					  <span>Logout</span>
 					</a>
 				</li>
-
- 	     
 			  </ul>
 		  </div>
 		</div>

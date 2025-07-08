@@ -26,13 +26,13 @@ return new class extends Migration
             $table->foreignId('passport_issue_place_id')->nullable()->constrained('districts')->onDelete('set null');
 
             // Validity year
-            $table->enum('validity_year', ['5 Years', '10 Years'])->nullable();
+            $table->integer('validity_years')->nullable();
 
             // File path of scan copy
             $table->string('passport_scan_copy')->nullable();
 
             // Note
-            $table->text('note')->nullable();
+            $table->longText('note')->nullable();
 
             $table->timestamps();
         });

@@ -14,15 +14,16 @@ class PhoneCallController extends Controller
 {
     public function index()
     {
-        $phoneCalls = PhoneCall::with('country', 'candidateType')->latest()->paginate(20);
-        return view('backend.pages.enquiry.phone_call.index', compact('phoneCalls'));
-    }
-
-    public function create()
-    {
+        $phoneCalls = PhoneCall::with('country', 'candidateType')->latest()->get();
         $countries = Country::all();
         $candidateTypes = CandidateType::all();
-        return view('backend.pages.enquiry.phone_call.create', compact('countries', 'candidateTypes'));
+        return view('backend.pages.enquiry.phone_call', compact('phoneCalls', 'countries', 'candidateTypes'));
+    }
+
+    public function show($id)
+    {
+        $phoneCall = PhoneCall::findOrFail($id);
+        return response()->json($phoneCall);
     }
 
     public function store(Request $request)
@@ -38,16 +39,13 @@ class PhoneCallController extends Controller
             'how_find_us'       => 'nullable|string',
         ]);
 
-        PhoneCall::create($request->all());
-        
-        return redirect()->route('admin.phone-calls.index')->with('success', 'Phone call record saved successfully.');
-    }
+        $phoneCall = PhoneCall::create($request->all());
 
-    public function edit(PhoneCall $phoneCall)
-    {
-        $countries = Country::all();
-        $candidateTypes = CandidateType::all();
-        return view('backend.pages.enquiry.phone_call.edit', compact('phoneCall', 'countries', 'candidateTypes'));
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['status' => 'success', 'message' => 'Phone call record saved successfully.', 'data' => $phoneCall]);
+        }
+
+        return redirect()->route('admin.phone-calls.index')->with('success', 'Phone call record saved successfully.');
     }
 
     public function update(Request $request, PhoneCall $phone_call)
@@ -65,12 +63,21 @@ class PhoneCallController extends Controller
 
         $phone_call->update($request->all());
 
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['status' => 'success', 'message' => 'Phone call record updated successfully.', 'data' => $phone_call]);
+        }
+
         return redirect()->route('admin.phone-calls.index')->with('success', 'Phone call record updated successfully.');
     }
 
-    public function destroy(PhoneCall $phone_call)
+    public function destroy(PhoneCall $phone_call, Request $request)
     {
         $phone_call->delete();
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['status' => 'success', 'message' => 'Phone call record deleted successfully.']);
+        }
+
         return redirect()->route('admin.phone-calls.index')->with('success', 'Phone call record deleted successfully.');
     }
 }
