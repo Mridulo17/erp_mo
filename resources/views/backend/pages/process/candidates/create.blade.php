@@ -60,6 +60,9 @@
     // Handle form submit (Next or Final Submit)
     $(document).on('submit', '#candidateForm', function (e) {        
         e.preventDefault();
+        // Remove previous errors
+        $('#candidateForm .is-invalid').removeClass('is-invalid');
+        $('#candidateForm .invalid-feedback').remove();
         let formData = new FormData(this);
         formData.append('step', currentStep); // always send current step
 
@@ -81,8 +84,41 @@
                 }
             },
             error: function (xhr) {
-                alert('Submission failed!');
-                console.log(xhr.responseText);
+                if (xhr.status === 422) {
+                    let errors = xhr.responseJSON.errors;
+
+                    // Remove previous errors
+                    $('.is-invalid').removeClass('is-invalid');
+                    $('.invalid-feedback').remove();
+
+                    for (let field in errors) {
+                        let input = $('[name="' + field + '"]');
+
+                        if (input.length) {
+                            input.addClass('is-invalid');
+
+                            // If it's a select2, place error after the select2 container
+                            if (input.hasClass('select2-hidden-accessible')) {
+                                let select2Container = input.next('.select2');
+                                if (select2Container.length) {
+                                    select2Container.after('<div class="invalid-feedback d-block">' + errors[field][0] + '</div>');
+                                } else {
+                                    // fallback
+                                    input.after('<div class="invalid-feedback d-block">' + errors[field][0] + '</div>');
+                                }
+                            }
+                            // If inside an input-group (e.g., for datepicker/icons)
+                            else if (input.closest('.input-group').length) {
+                                input.closest('.input-group').after('<div class="invalid-feedback d-block">' + errors[field][0] + '</div>');
+                            } else {
+                                input.after('<div class="invalid-feedback d-block">' + errors[field][0] + '</div>');
+                            }
+                        }
+                    }
+                } else {
+                    alert('Submission failed!');
+                    console.log(xhr.responseText);
+                }
             }
         });
     });

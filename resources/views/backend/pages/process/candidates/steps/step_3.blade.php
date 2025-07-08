@@ -1,7 +1,7 @@
 <div class="row form-group col-md-3">
     <label for="experience_type" class="font-weight-bold text-dark" style="font-size: 14px;">Experience Type</label>
     <select id="experience_type" name="experience_type" class="form-control select2">
-        <option value="" disabled selected>--Select One--</option>
+        <option value="">--Select One--</option>
         <option value="fresher" {{ session('form.step_3.experience_type') == 'fresher' ? 'selected' : '' }}>Fresher</option>
         <option value="experienced" {{ session('form.step_3.experience_type') == 'experienced' ? 'selected' : '' }}>Experienced</option>
     </select>

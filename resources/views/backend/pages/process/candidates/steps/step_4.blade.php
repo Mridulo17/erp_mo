@@ -1,7 +1,7 @@
 <div class="row form-group col-md-3">
     <label for="passport_type" class="font-weight-bold text-dark" style="font-size: 14px;">Passport Type</label>
     <select id="passport_type" name="passport_type" class="form-control select2">
-        <option value="" disabled selected>--Select One--</option>
+        <option value="">--Select One--</option>
         <option value="no_passport" {{ session('form.step_4.passport_type') == 'no_passport' ? 'selected' : '' }}>NoPassport</option>
         <option value="ordinary" {{ session('form.step_4.passport_type') == 'ordinary' ? 'selected' : '' }}>Ordinary</option>
         <option value="official" {{ session('form.step_4.passport_type') == 'official' ? 'selected' : '' }}>Official</option>

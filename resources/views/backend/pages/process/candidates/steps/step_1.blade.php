@@ -1,7 +1,7 @@
 <div class="row form-group col-md-3">
     <label for="candidate_type_id" class="font-weight-bold text-dark" style="font-size: 14px;">Candidate Type</label>
     <select id="candidate_type_id" name="candidate_type_id" class="form-control select2">
-        <option value="" disabled selected>--Select One--</option>
+        <option value="">--Select One--</option>
         @foreach($candidateTypes as $id => $name)
             <option value="{{ $id }}" 
                 {{ session('form.step_1.candidate_type_id') == $id ? 'selected' : '' }}>
