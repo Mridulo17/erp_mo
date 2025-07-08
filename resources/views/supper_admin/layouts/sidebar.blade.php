@@ -85,8 +85,20 @@
 						<li><a href="{{ route('supper_admin.currencies.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Currency</a></li>
 					</ul>
 				</li>
-
-                  <li class="treeview">
+                  @php
+                      $payRollRoutes = [
+                          'supper_admin.expense-categories.*',
+                          'supper_admin.expense-items.*',
+                          'supper_admin.expenses.*',
+                          'supper_admin.performance-bonuses.*',
+                          'supper_admin.inc-and-deces.*',
+                          'supper_admin.advance-salaries.*',
+                          'supper_admin.traveling-and-darenesses.*',
+                          'supper_admin.mobile-allowances.*',
+                          'supper_admin.festival-bonuses.*',
+                      ];
+                  @endphp
+                  <li class="treeview {{ Request::routeIs(...$payRollRoutes) ? 'active' : '' }}">
                       <a href="#">
                           <i class="fa-solid fa fa-balance-scale"><span class="path1"></span><span class="path2"></span></i>
                           <span>Payroll</span>
@@ -94,28 +106,37 @@
 						<i class="fa fa-angle-right pull-right"></i>
 					  </span>
                       </a>
-                      <ul class="treeview-menu">
-                          <li class="treeview">
+                      <ul class="treeview-menu" @if (Request::routeIs(...$payRollRoutes)) style="display: block;" @endif>
+
+                          @php
+                              $expenseRoutes = [
+                                  'supper_admin.expense-categories.*',
+                                  'supper_admin.expense-items.*',
+                                  'supper_admin.expenses.*'
+                              ];
+                          @endphp
+
+                          <li class="treeview {{ Request::routeIs(...$expenseRoutes) ? 'active' : '' }}">
                               <a href="">
                                   <i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>
                                   <span>Expense</span>
                                   <span class="pull-right-container">
 						<i class="fa fa-angle-right pull-right"></i>
 					  </span>
-                                  <ul class="treeview-menu">
-                                      <li><a href="{{ route('supper_admin.expense-categories.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Expense Category</a></li>
-                                      <li><a href="{{ route('supper_admin.expense-items.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Expense Item</a></li>
-                                      <li><a href="{{ route('supper_admin.expenses.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Add Expense</a></li>
+                                  <ul class="treeview-menu" @if (Request::routeIs(...$expenseRoutes)) style="display: block;" @endif>
+                                      <li class="{{ Request::routeIs('supper_admin.expense-categories.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.expense-categories.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Expense Category</a></li>
+                                      <li class="{{ Request::routeIs('supper_admin.expense-items.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.expense-items.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Expense Item</a></li>
+                                      <li class="{{ Request::routeIs('supper_admin.expenses.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.expenses.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Add Expense</a></li>
                                   </ul>
                               </a></li>
-                          <li><a href="{{ route('supper_admin.countries.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Salary Generate</a></li>
-                          <li><a href="{{ route('supper_admin.performance-bonuses.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Performance Bonus</a></li>
-                          <li><a href="{{ route('supper_admin.inc-and-deces.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Inc & Dec</a></li>
-                          <li><a href="{{ route('supper_admin.advance-salaries.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Advance Salary</a></li>
-                          <li><a href="{{ route('supper_admin.traveling-and-darenesses.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>TA - DA</a></li>
-                          <li><a href="{{ route('supper_admin.states.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Hold / Allowance</a></li>
-                          <li><a href="{{ route('supper_admin.mobile-allowances.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Mobile Allowance</a></li>
-                          <li><a href="{{ route('supper_admin.festival-bonuses.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Festival Bonus</a></li>
+                          <li class="{{ Request::routeIs('supper_admin.countries.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.countries.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Salary Generate</a></li>
+                          <li class="{{ Request::routeIs('supper_admin.performance-bonuses.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.performance-bonuses.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Performance Bonus</a></li>
+                          <li class="{{ Request::routeIs('supper_admin.inc-and-deces.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.inc-and-deces.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Inc & Dec</a></li>
+                          <li class="{{ Request::routeIs('supper_admin.advance-salaries.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.advance-salaries.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Advance Salary</a></li>
+                          <li class="{{ Request::routeIs('supper_admin.traveling-and-darenesses.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.traveling-and-darenesses.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>TA - DA</a></li>
+                          <li class="{{ Request::routeIs('supper_admin.states.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.states.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Hold / Allowance</a></li>
+                          <li class="{{ Request::routeIs('supper_admin.mobile-allowances.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.mobile-allowances.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Mobile Allowance</a></li>
+                          <li class="{{ Request::routeIs('supper_admin.festival-bonuses.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.festival-bonuses.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Festival Bonus</a></li>
                       </ul>
                   </li>
 
