@@ -1,5 +1,5 @@
 @extends('supper_admin.layouts.app')
-@section('title', config('app.name') . ' - Mobile Allowance')
+@section('title', config('app.name') . ' - Festival Bonus')
 
 @section('style')
     <style>
@@ -45,15 +45,15 @@
         <!-- Header Section -->
         <div class="box-header with-border d-flex justify-content-between align-items-center">
             <div>
-                <h3 class="box-title">Mobile Allowance</h3>
-                <h6 class="box-subtitle">This is all Mobile Allowance List</h6>
+                <h3 class="box-title">Festival Bonus</h3>
+                <h6 class="box-subtitle">This is all Festival Bonus List</h6>
             </div>
             <button type="button" class="btn btn-warning addBlogButton" data-toggle="modal" data-target="#modal-center">
                 <i class="fa-solid fa-plus"></i> Add Data
             </button>
         </div>
 
-        @include('supper_admin.components.payroll.mobile_allowance_modal')
+        @include('supper_admin.components.payroll.festival_bonus_modal')
 
         <div class="box-body">
             <div class="table-responsive">
@@ -63,17 +63,14 @@
                     <tr>
                         <th style="">Action</th>
                         <th style="">DB:ID</th>
-                        <th style="">Employee</th>
-                        <th style="">Department</th>
-                        <th style="">Start Month</th>
-                        <th style="">Impression</th>
+                        <th style="">Month</th>
                         <th style="">Type</th>
                         <th style="">Amount</th>
                         <th style="">Entry Date</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($mobileAllowances as $key =>$bonus)
+                    @foreach($festivalBonuses as $key =>$bonus)
                         <tr>
                             <td>
                                 <div class="btn-group">
@@ -82,6 +79,11 @@
                                         <i class="fa fa-bars"></i> Action
                                     </button>
                                     <div class="dropdown-menu">
+                                        <!-- Edit Button inside Dropdown -->
+                                        <a href="#" class="dropdown-item editBlogButton" data-toggle="modal"
+                                           data-target="#modal-center" data-id="{{ $bonus->id }}">
+                                            <i class="fa fa-edit"></i> Edit
+                                        </a>
 
                                         <!-- Delete Form inside Dropdown -->
                                         <button type="button"
@@ -94,10 +96,7 @@
                             </td>
 
                             <td>{{ $key + 1 }}</td>
-                            <td class="wrap-text">{{$bonus->employee ? $bonus->employee->first_name : '' }} {{$bonus->employee ? $bonus->employee->last_name : '' }}</td>
-                            <td class="wrap-text">{{$bonus->department ? $bonus->department->name : '' }}</td>
-                            <td class="wrap-text">{{ $bonus->start_month  }}</td>
-                            <td class="wrap-text">{{ $bonus->impression_type  }}</td>
+                            <td class="wrap-text">{{ $bonus->month  }}</td>
                             <td class="wrap-text">{{ $bonus->amount_type  }}</td>
                             <td class="wrap-text">{{ $bonus->amount  }}</td>
                             <td class="wrap-text">{{ $bonus->created_at->format('F d, Y') }}</td>
@@ -114,16 +113,16 @@
     @section('script')
         <script>
 
-            function fetchMobileAllowances() {
+            function fetchFestivalBonuses() {
                 $.ajax({
-                    url: '{{ route("supper_admin.mobile-allowances.index") }}',
+                    url: '{{ route("supper_admin.festival-bonuses.index") }}',
                     type: 'GET',
                     success: function (data) {
                         let newBody = $(data).find('table tbody').html();
                         $('#customDataTable tbody').html(newBody);
                     },
                     error: function () {
-                        console.error('Failed to refresh mobile allowance table.');
+                        console.error('Failed to refresh festival bonus table.');
                     }
                 });
             }
@@ -139,77 +138,15 @@
 
             $(document).ready(function () {
 
-                fetchDepartments();
-
-                function fetchDepartments() {
-                    $.ajax({
-                        url: "{{ route('admin.department.active') }}",
-                        method: "GET",
-                        success: function (data) {
-                            let select = $('#departmentSelect');
-                            select.empty();
-                            select.append('<option value="" disabled selected>Choose Department</option>');
-
-                            data.forEach(function (department) {
-                                select.append(
-                                    '<option value="' + department.id + '">' +
-                                    department.name +
-                                    '</option>'
-                                );
-                            });
-                        },
-                        error: function (xhr) {
-                            console.error("Failed to fetch departments:", xhr);
-                        }
-                    });
-                }
-
-                // Fetch Countries based on Continent
-                function fetchEmployees(departmentId, selectedEmployeeId) {
-                    $.ajax({
-                        url: "{{ route('admin.employee.active') }}",
-                        method: "GET",
-                        data: {department_id: departmentId}, // Pass department_id to filter employees
-                        success: function (data) {
-                            let select = $('#employeeSelect');
-                            select.empty();
-                            select.append('<option value="" disabled selected>Choose Employee</option>');
-                            data.forEach(function (employee) {
-                                let selected = employee.id === selectedEmployeeId ? 'selected' : '';
-                                select.append('<option value="' + employee.id + '" ' + selected + '>' +
-                                    employee.first_name + ' - ' + employee.last_name +
-                                    '</option>');
-                            });
-
-                            // Ensure the item dropdown value is updated after population
-                            select.val(selectedEmployeeId).trigger('change');  // Set selected employee
-                        },
-                        error: function (xhr) {
-                            console.error("Failed to fetch employees :", xhr);
-                        }
-                    });
-                }
-
-                // Trigger the fetchEmployees function when a category is selected
-                $('#departmentSelect').on('change', function () {
-                    const departmentId = $(this).val();
-                    if (departmentId) {
-                        fetchEmployees(departmentId);  // Fetch employee based on the selected department
-                    } else {
-                        $('#employeeSelect').empty().append('<option value="" disabled selected>Choose Employee</option>');
-                    }
-                });
-
-                $('#mobileAllowanceForm').on('submit', function (e) {
+                $('#festivalBonusForm').on('submit', function (e) {
                     e.preventDefault();
-                    let isEdit = $('#mobile_allowance_id').val() !== '';
+                    let isEdit = $('#festival_bonus_id').val() !== '';
                     let formData = new FormData(this);
-                    let id = $('#mobile_allowance_id').val();
-                    const baseUpdateUrl = "{{ url('supper_admin/mobile-allowances') }}";
-
+                    let id = $('#festival_bonus_id').val();
+                    const baseUpdateUrl = "{{ url('supper_admin/festival-bonuses') }}";
                     let url = isEdit
                         ? `${baseUpdateUrl}/${id}`
-                        : `{{ route('supper_admin.mobile-allowances.store') }}`;
+                        : `{{ route('supper_admin.festival-bonuses.store') }}`;
 
                     let method = isEdit ? 'POST' : 'POST';
                     if (isEdit) {
@@ -217,7 +154,7 @@
                     }
 
                     Swal.fire({
-                        title: isEdit ? "Update Mobile Allowance?" : "Add Mobile Allowance?",
+                        title: isEdit ? "Update Festival Bonus?" : "Add Festival Bonus?",
                         icon: "question",
                         showCancelButton: true,
                         confirmButtonText: "Yes, proceed"
@@ -233,15 +170,15 @@
                                     if (response.status === 'success') {
                                         $('#modal-center').modal('hide');
                                         Swal.fire('Success!', response.message, 'success');
-                                        $('#mobileAllowanceForm')[0].reset();
-                                        $('#mobile_allowance_id').val('');
-                                        fetchMobileAllowances();
+                                        $('#festivalBonusForm')[0].reset();
+                                        $('#festival_bonus_id').val('');
+                                        fetchFestivalBonuses();
                                     } else {
                                         Swal.fire('Error!', response.message, 'error');
                                     }
                                 },
                                 error: function () {
-                                    Swal.fire('Error!', 'Failed to save mobile allowance.', 'error');
+                                    Swal.fire('Error!', 'Failed to save festival bonus.', 'error');
                                 }
                             });
                         }
@@ -249,22 +186,44 @@
                 });
 
                 $(document).on('click', '.addBlogButton', function () {
-                    $('#mobileAllowanceForm')[0].reset();
-                    $('#mobile_allowance_id').val('');
-                    $('#departmentSelect').val('').trigger('change');
-                    $('#employeeSelect').empty().append('<option value="" disabled selected>Choose Employee</option>');
-                    $('#preview').attr('src', '').hide();
-                    $('#modalTitle').text('Add Mobile Allowance');
+                    $('#festivalBonusForm')[0].reset();
+                    $('#festival_bonus_id').val('');
+                    $('#modalTitle').text('Add Festival Bonus');
                     $('#modal-center').modal('show');
 
                 });
 
+                $(document).on('click', '.editBlogButton', function () {
+                    const id = $(this).data('id');
+                    const url = '{{ route("supper_admin.festival-bonuses.edit", ":id") }}'.replace(':id', id);
+
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        success: function (res) {
+                            $('#festival_bonus_id').val(id);
+                            $('#month').val(res.month);
+                            $('#amount_type').val(res.amount_type);
+                            $('#amount').val(res.amount);
+                            $('#note').val(res.note);
+                            $('#modalTitle').text('Edit festival bonus');
+                            $('#modal-center').modal('show');
+
+                        },
+                        error: function () {
+                            Swal.fire('Error', 'Could not load festival bonus data.', 'error');
+                        }
+                    });
+                });
+
+
+
                 $(document).on('click', '.deleteBonusBtn', function () {
                     const id = $(this).data('id');
-                    const url = '{{ route("supper_admin.mobile-allowances.destroy", ":id") }}'.replace(':id', id);
+                    const url = '{{ route("supper_admin.festival-bonuses.destroy", ":id") }}'.replace(':id', id);
 
                     Swal.fire({
-                        title: 'Delete Mobile Allowance?',
+                        title: 'Delete Festival Bonus?',
                         text: "This action cannot be undone.",
                         icon: 'warning',
                         showCancelButton: true,
@@ -281,13 +240,13 @@
                                 success: function (response) {
                                     if (response.status === 'success') {
                                         Swal.fire('Deleted!', response.message, 'success');
-                                        fetchMobileAllowances();
+                                        fetchFestivalBonuses();
                                     } else {
                                         Swal.fire('Error!', response.message, 'error');
                                     }
                                 },
                                 error: function () {
-                                    Swal.fire('Error!', 'Failed to delete the mobile allowance.', 'error');
+                                    Swal.fire('Error!', 'Failed to delete the festival bonus.', 'error');
                                 }
                             });
                         }
