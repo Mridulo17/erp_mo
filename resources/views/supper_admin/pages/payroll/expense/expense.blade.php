@@ -14,7 +14,8 @@
 @section('content')
 
     @if (session('status'))
-        <div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel" aria-hidden="true">
+        <div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel"
+             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content text-center">
                     <div class="modal-header border-0">
@@ -52,12 +53,13 @@
             </button>
         </div>
 
-        @include('supper_admin.components.expense.expense_modal')
-        @include('supper_admin.components.expense.expense_transaction_modal')
+        @include('supper_admin.components.payroll.expense.expense_modal')
+        @include('supper_admin.components.payroll.expense.expense_transaction_modal')
 
         <div class="box-body">
             <div class="table-responsive">
-                <table id="customDataTable" style="table-layout: fixed; width: 100%;" class="table table-bordered table-hover display nowrap margin-top-10 w-p100">
+                <table id="customDataTable" style="table-layout: fixed; width: 100%;"
+                       class="table table-bordered table-hover display nowrap margin-top-10 w-p100">
                     <thead>
                     <tr>
                         <th style="">Action</th>
@@ -78,12 +80,14 @@
                         <tr>
                             <td>
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false">
                                         <i class="fa fa-bars"></i> Action
                                     </button>
                                     <div class="dropdown-menu">
                                         <!-- Edit Button inside Dropdown -->
-                                        <a href="#" class="dropdown-item editBlogButton" data-toggle="modal" data-target="#expense-transaction-modal" data-id="{{ $expense->id }}">
+                                        <a href="#" class="dropdown-item editBlogButton" data-toggle="modal"
+                                           data-target="#expense-transaction-modal" data-id="{{ $expense->id }}">
                                             <i class="fa fa-bars"></i> View Transactions
                                         </a>
 
@@ -101,7 +105,8 @@
                             <td>{{ $expense->month_year}}</td>
                             <td>Give Payment</td>
                             <td>Office Expense</td>
-                            <td class="wrap-text">{{ $expense->expenseCategory ? $expense->expenseCategory->expense_category_name : ''}} - {{$expense->expenseItem? $expense->expenseItem->expense_item_name  : ''}}</td>
+                            <td class="wrap-text">{{ $expense->expenseCategory ? $expense->expenseCategory->expense_category_name : ''}}
+                                - {{$expense->expenseItem? $expense->expenseItem->expense_item_name  : ''}}</td>
                             <td class="wrap-text">{{ $expense->amount}}</td>
                             <td class="wrap-text">{{ $expense->currency ? $expense->currency->name : '' }}</td>
                             <td class="wrap-text">{{ $expense->bdt_amount  }}</td>
@@ -146,15 +151,16 @@
             $(document).ready(function () {
 
                 fetchCurrencies();
+
                 function fetchCurrencies() {
                     $.ajax({
                         url: "{{ route('supper_admin.currency.active') }}",
                         method: "GET",
-                        success: function(data) {
+                        success: function (data) {
                             let select = $('#currencySelect');
                             select.empty();
                             select.append('<option value="" disabled selected>Choose Currency</option>');
-                            data.forEach(function(currency) {
+                            data.forEach(function (currency) {
                                 select.append(
                                     '<option data-bdt_amount="' + currency.bdt_amount + '" data-name="' + currency.name + '" value="' + currency.id + '">' +
                                     currency.name + '</option>'
@@ -162,23 +168,24 @@
                             });
 
                         },
-                        error: function(xhr) {
+                        error: function (xhr) {
                             console.error("Failed to fetch currencies:", xhr);
                         }
                     });
                 }
 
                 fetchCategories();
+
                 function fetchCategories() {
                     $.ajax({
                         url: "{{ route('supper_admin.expense-category.enabled') }}",
                         method: "GET",
-                        success: function(data) {
+                        success: function (data) {
                             let select = $('#categorySelect');
                             select.empty();
                             select.append('<option value="" disabled selected>Expense Category</option>');
 
-                            data.forEach(function(category) {
+                            data.forEach(function (category) {
                                 select.append(
                                     '<option value="' + category.id + '">' +
                                     category.expense_category_name + ' - ' + category.expense_category_code +
@@ -186,24 +193,23 @@
                                 );
                             });
                         },
-                        error: function(xhr) {
+                        error: function (xhr) {
                             console.error("Failed to fetch expense categories:", xhr);
                         }
                     });
                 }
 
                 // Fetch Countries based on Continent
-                function fetchItems(categoryId, selectedItemId)
-                {
+                function fetchItems(categoryId, selectedItemId) {
                     $.ajax({
                         url: "{{ route('supper_admin.expense-item.enabled') }}",
                         method: "GET",
-                        data: { expense_category_id: categoryId }, // Pass expense_category_id to filter items
+                        data: {expense_category_id: categoryId}, // Pass expense_category_id to filter items
                         success: function (data) {
                             let select = $('#itemSelect');
                             select.empty();
                             select.append('<option value="" disabled selected>Expense Item</option>');
-                            data.forEach(function(item) {
+                            data.forEach(function (item) {
                                 let selected = item.id === selectedItemId ? 'selected' : '';
                                 select.append('<option value="' + item.id + '" ' + selected + '>' + item.expense_item_name + '</option>');
                             });
@@ -211,14 +217,14 @@
                             // Ensure the item dropdown value is updated after population
                             select.val(selectedItemId).trigger('change');  // Set selected item
                         },
-                        error: function(xhr) {
+                        error: function (xhr) {
                             console.error("Failed to fetch expense items:", xhr);
                         }
                     });
                 }
 
                 // Trigger the fetchItems function when a category is selected
-                $('#categorySelect').on('change', function() {
+                $('#categorySelect').on('change', function () {
                     const categoryId = $(this).val();
                     if (categoryId) {
                         fetchItems(categoryId);  // Fetch item based on the selected category
@@ -253,16 +259,106 @@
                 // Bangla Number to Words
                 function numberToBanglaWords(num) {
                     const numbers = {
-                        0: 'শূন্য', 1: 'এক', 2: 'দুই', 3: 'তিন', 4: 'চার', 5: 'পাঁচ', 6: 'ছয়', 7: 'সাত', 8: 'আট', 9: 'নয়',
-                        10: 'দশ', 11: 'এগারো', 12: 'বারো', 13: 'তেরো', 14: 'চৌদ্দ', 15: 'পনেরো', 16: 'ষোল', 17: 'সতেরো', 18: 'আঠারো', 19: 'উনিশ',
-                        20: 'বিশ', 21: 'একুশ', 22: 'বাইশ', 23: 'তেইশ', 24: 'চব্বিশ', 25: 'পঁচিশ', 26: 'ছাব্বিশ', 27: 'সাতাশ', 28: 'আটাশ', 29: 'ঊনত্রিশ',
-                        30: 'ত্রিশ', 31: 'একত্রিশ', 32: 'বত্রিশ', 33: 'তেত্রিশ', 34: 'চৌত্রিশ', 35: 'পঁইত্রিশ', 36: 'ছত্রিশ', 37: 'সাঁইত্রিশ', 38: 'আটত্রিশ', 39: 'ঊনচল্লিশ',
-                        40: 'চল্লিশ', 41: 'একচল্লিশ', 42: 'বিয়াল্লিশ', 43: 'তেতাল্লিশ', 44: 'চুয়াল্লিশ', 45: 'পঁয়তাল্লিশ ', 46: 'ছিচল্লিশ', 47: 'সাতচল্লিশ', 48: 'আটচল্লিশ', 49: 'ঊনপঞ্চাশ',
-                        50: 'পঞ্চাশ', 51: 'একান্ন', 52: 'বাহান্ন', 53: 'তিপ্পান্ন', 54: 'চুয়ান্ন', 55: 'পঁচান্ন', 56: 'ছাপ্পান্ন', 57: 'সাতান্ন', 58: 'আটান্ন', 59: 'ঊনষাট',
-                        60: 'ষাট', 61: 'একষট্টি', 62: 'বাষট্টি', 63: 'তেষট্টি', 64: 'চৌষট্টি', 65: 'পঁইষট্টি', 66: 'ছেষট্টি', 67: 'সাতষট্টি', 68: 'আটষট্টি', 69: 'ঊনসত্তর',
-                        70: 'সত্তর', 71: 'একাত্তর', 72: 'বাহাত্তর', 73: 'তিয়াত্তর', 74: 'চুয়াত্তর', 75: 'পঁচাত্তর', 76: 'ছিয়াত্তর', 77: 'সাতাত্তর', 78: 'আটাত্তর', 79: 'ঊনআশি',
-                        80: 'আশি', 81: 'একাশি', 82: 'বিরাশি', 83: 'তিরাশি', 84: 'চুরাশি', 85: 'পঁচাশি', 86: 'ছিয়াশি', 87: 'সাতাশি', 88: 'আটাশি', 89: 'ঊননব্বই',
-                        90: 'নব্বই', 91: 'একানব্বই', 92: 'বিরানব্বই', 93: 'তিরানব্বই', 94: 'চুরানব্বই', 95: 'পঁচানব্বই', 96: 'ছিয়ানব্বই', 97: 'সাতানব্বই', 98: 'আটানব্বই', 99: 'নিরানব্বই'
+                        0: 'শূন্য',
+                        1: 'এক',
+                        2: 'দুই',
+                        3: 'তিন',
+                        4: 'চার',
+                        5: 'পাঁচ',
+                        6: 'ছয়',
+                        7: 'সাত',
+                        8: 'আট',
+                        9: 'নয়',
+                        10: 'দশ',
+                        11: 'এগারো',
+                        12: 'বারো',
+                        13: 'তেরো',
+                        14: 'চৌদ্দ',
+                        15: 'পনেরো',
+                        16: 'ষোল',
+                        17: 'সতেরো',
+                        18: 'আঠারো',
+                        19: 'উনিশ',
+                        20: 'বিশ',
+                        21: 'একুশ',
+                        22: 'বাইশ',
+                        23: 'তেইশ',
+                        24: 'চব্বিশ',
+                        25: 'পঁচিশ',
+                        26: 'ছাব্বিশ',
+                        27: 'সাতাশ',
+                        28: 'আটাশ',
+                        29: 'ঊনত্রিশ',
+                        30: 'ত্রিশ',
+                        31: 'একত্রিশ',
+                        32: 'বত্রিশ',
+                        33: 'তেত্রিশ',
+                        34: 'চৌত্রিশ',
+                        35: 'পঁইত্রিশ',
+                        36: 'ছত্রিশ',
+                        37: 'সাঁইত্রিশ',
+                        38: 'আটত্রিশ',
+                        39: 'ঊনচল্লিশ',
+                        40: 'চল্লিশ',
+                        41: 'একচল্লিশ',
+                        42: 'বিয়াল্লিশ',
+                        43: 'তেতাল্লিশ',
+                        44: 'চুয়াল্লিশ',
+                        45: 'পঁয়তাল্লিশ ',
+                        46: 'ছিচল্লিশ',
+                        47: 'সাতচল্লিশ',
+                        48: 'আটচল্লিশ',
+                        49: 'ঊনপঞ্চাশ',
+                        50: 'পঞ্চাশ',
+                        51: 'একান্ন',
+                        52: 'বাহান্ন',
+                        53: 'তিপ্পান্ন',
+                        54: 'চুয়ান্ন',
+                        55: 'পঁচান্ন',
+                        56: 'ছাপ্পান্ন',
+                        57: 'সাতান্ন',
+                        58: 'আটান্ন',
+                        59: 'ঊনষাট',
+                        60: 'ষাট',
+                        61: 'একষট্টি',
+                        62: 'বাষট্টি',
+                        63: 'তেষট্টি',
+                        64: 'চৌষট্টি',
+                        65: 'পঁইষট্টি',
+                        66: 'ছেষট্টি',
+                        67: 'সাতষট্টি',
+                        68: 'আটষট্টি',
+                        69: 'ঊনসত্তর',
+                        70: 'সত্তর',
+                        71: 'একাত্তর',
+                        72: 'বাহাত্তর',
+                        73: 'তিয়াত্তর',
+                        74: 'চুয়াত্তর',
+                        75: 'পঁচাত্তর',
+                        76: 'ছিয়াত্তর',
+                        77: 'সাতাত্তর',
+                        78: 'আটাত্তর',
+                        79: 'ঊনআশি',
+                        80: 'আশি',
+                        81: 'একাশি',
+                        82: 'বিরাশি',
+                        83: 'তিরাশি',
+                        84: 'চুরাশি',
+                        85: 'পঁচাশি',
+                        86: 'ছিয়াশি',
+                        87: 'সাতাশি',
+                        88: 'আটাশি',
+                        89: 'ঊননব্বই',
+                        90: 'নব্বই',
+                        91: 'একানব্বই',
+                        92: 'বিরানব্বই',
+                        93: 'তিরানব্বই',
+                        94: 'চুরানব্বই',
+                        95: 'পঁচানব্বই',
+                        96: 'ছিয়ানব্বই',
+                        97: 'সাতানব্বই',
+                        98: 'আটানব্বই',
+                        99: 'নিরানব্বই'
                     };
 
                     function convert(n) {
@@ -288,7 +384,7 @@
                 }
 
 
-                $('#currencySelect').on('change', function() {
+                $('#currencySelect').on('change', function () {
                     const selectedOption = $(this).find('option:selected');
                     const bdt_amount = selectedOption.data('bdt_amount');
                     const name = selectedOption.data('name');
@@ -311,7 +407,7 @@
                     });
                 });
 
-                $('#is_expire').on('click', function() {
+                $('#is_expire').on('click', function () {
                     var isChecked = $(this).is(':checked');
 
                     if (isChecked) {
@@ -320,7 +416,6 @@
                         $('#perDiv').hide();
                     }
                 });
-
 
 
                 $('#expenseForm').on('submit', function (e) {

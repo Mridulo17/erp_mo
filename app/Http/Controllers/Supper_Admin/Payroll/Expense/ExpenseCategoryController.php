@@ -14,7 +14,7 @@ class ExpenseCategoryController extends Controller
     public function index()
     {
         $expenseCategories = ExpenseCategory::get();
-        return view('supper_admin.pages.expense.expense-category', compact('expenseCategories'));
+        return view('supper_admin.pages.payroll.expense.expense-category', compact('expenseCategories'));
     }
 
     public function enabledIndex()

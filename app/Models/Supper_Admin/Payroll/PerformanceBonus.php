@@ -13,7 +13,7 @@ class PerformanceBonus extends Model
             'department_id',
             'employee_id',
             'impression_type',
-            'start_month',
+            'month',
             'amount_type',
             'amount',
             'note'

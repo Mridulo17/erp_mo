@@ -13,7 +13,7 @@ class ExpenseItemController extends Controller
     public function index()
     {
         $expenseItems = ExpenseItem::get();
-        return view('supper_admin.pages.expense.expense-item', compact('expenseItems'));
+        return view('supper_admin.pages.payroll.expense.expense-item', compact('expenseItems'));
     }
 
     public function enabledIndex(Request $request)

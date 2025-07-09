@@ -17,8 +17,8 @@ return new class extends Migration
             $table->foreign('department_id')->references('id')->on('departments')->cascadeOnUpdate()->restrictOnDelete();
             $table->unsignedBigInteger('employee_id');
             $table->foreign('employee_id')->references('id')->on('employees')->cascadeOnUpdate()->restrictOnDelete();
-            $table->enum('impression_type', ['Increment', 'Decrement']);
-            $table->string('start_month');
+            $table->enum('impression_type', ['Good impression', 'Bad impression']);
+            $table->string('month');
             $table->enum('amount_type', ['Percentage', 'Fixed']);
             $table->decimal('amount', 25, 2);
             $table->string('note', 2000)->nullable();

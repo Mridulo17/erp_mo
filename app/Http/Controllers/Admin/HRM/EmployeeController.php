@@ -21,11 +21,21 @@ class EmployeeController extends Controller
         return view('backend.pages.hrm.employee', compact('employees'));
     }
 
-    public function Activeindex()
+    public function Activeindex(Request $request)
     {
         $user = Auth::user();
-        $employees = Employee::with('branch')->where('company_id', $user->company_id)->where('status', 1)->get();
-        return response()->json($employees);
+        if ($request->has('department_id') && $request->department_id) {
+            $departmentId = $request->get('department_id');
+            $employees = Employee::with('branch')
+//                ->where('company_id', $user->company_id)
+                ->where('status', 1)
+                ->where('department_id', $departmentId)
+                ->get();
+        } else {
+            $employees = Employee::with('branch')->where('company_id', $user->company_id)->where('status', 1)->get();
+
+        }
+         return response()->json($employees);
     }
 
     public function create()
@@ -56,11 +66,11 @@ class EmployeeController extends Controller
                 'current_address'   => 'nullable|string',
                 'permanent_address' => 'nullable|string',
                 'note'              => 'nullable|string',
-                'branch_id'         => 'required|exists:branches,id', 
-                'role_id'           => 'nullable|exists:roles,id',  
-                'department_id'     => 'nullable|exists:departments,id',  
-                'designation_id'    => 'nullable|exists:designations,id', 
-                'roster_id'         => 'nullable|exists:rosters,id', 
+                'branch_id'         => 'required|exists:branches,id',
+                'role_id'           => 'nullable|exists:roles,id',
+                'department_id'     => 'nullable|exists:departments,id',
+                'designation_id'    => 'nullable|exists:designations,id',
+                'roster_id'         => 'nullable|exists:rosters,id',
                 'basic_salary_monthly' => 'nullable|numeric',
                 'basic_salary_daily' => 'nullable|numeric',
                 'mobile_allowance'  => 'nullable|numeric',
@@ -88,13 +98,13 @@ class EmployeeController extends Controller
             ->where('employee_code', 'like', 'EMP' . $companyNumber . '%')
             ->orderByDesc('employee_code')
             ->first();
-        
+
             if ($lastEmployee && preg_match('/EMP' . $companyNumber . '(\d+)/', $lastEmployee->employee_code, $codeMatch)) {
                 $lastNumber = (int)$codeMatch[1];
             } else {
                 $lastNumber = 0;
             }
-            
+
             $nextNumber = $lastNumber + 1;
             $employeeCode = 'EMP' . $companyNumber . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
 
@@ -121,10 +131,10 @@ class EmployeeController extends Controller
                 'permanent_address'     => $validatedData['permanent_address'] ?? null,
                 'note'                  => $validatedData['note'] ?? null,
                 'branch_id'             => $validatedData['branch_id'],
-                'role_id'               => $validatedData['role_id'],  
-                'department_id'         => $validatedData['department_id'],  
-                'designation_id'        => $validatedData['designation_id'],  
-                'roster_id'             => $validatedData['roster_id'],  
+                'role_id'               => $validatedData['role_id'],
+                'department_id'         => $validatedData['department_id'],
+                'designation_id'        => $validatedData['designation_id'],
+                'roster_id'             => $validatedData['roster_id'],
                 'basic_salary_monthly'  => $validatedData['basic_salary_monthly'] ?? null,
                 'basic_salary_daily'    => $validatedData['basic_salary_daily'] ?? null,
                 'mobile_allowance'      => $validatedData['mobile_allowance'] ?? null,
@@ -133,7 +143,7 @@ class EmployeeController extends Controller
                 'access_card'           => $validatedData['access_card'] ?? null,
                 'white_list'            => $validatedData['white_list'] ?? 0,
                 'weekend_day'           => $validatedData['weekend_day'] ?? null,
-                'status'                => $validatedData['status'] ?? 1, 
+                'status'                => $validatedData['status'] ?? 1,
                 'user_id'               => $user->id,
                 'company_id'            => $user->company_id,
             ]);
@@ -151,14 +161,14 @@ class EmployeeController extends Controller
             // Return success response with employee code
             return response()->json(['status' => 'success', 'message' => 'Employee added successfully', 'employee_code' => $employeeCode]);
         } catch (ValidationException $e) {
-            return response()->json(['status' => 'fail', 'errors' => $e->validator->errors()], 422); 
+            return response()->json(['status' => 'fail', 'errors' => $e->validator->errors()], 422);
         } catch (\Exception $e) {
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()], 500);
         }
     }
-    
-    
-    
+
+
+
 
 
     public function show(string $id)
@@ -243,11 +253,11 @@ class EmployeeController extends Controller
             'current_address'       => 'nullable|string',
             'permanent_address'     => 'nullable|string',
             'note'                  => 'nullable|string',
-            'branch_id'             => 'required|exists:branches,id', 
-            'role_id'               => 'nullable|exists:roles,id',  
-            'department_id'         => 'nullable|exists:departments,id',  
-            'designation_id'        => 'nullable|exists:designations,id', 
-            'roster_id'             => 'nullable|exists:rosters,id', 
+            'branch_id'             => 'required|exists:branches,id',
+            'role_id'               => 'nullable|exists:roles,id',
+            'department_id'         => 'nullable|exists:departments,id',
+            'designation_id'        => 'nullable|exists:designations,id',
+            'roster_id'             => 'nullable|exists:rosters,id',
             'basic_salary_monthly' => 'nullable|numeric',
             'basic_salary_daily'   => 'nullable|numeric',
             'mobile_allowance'     => 'nullable|numeric',
@@ -258,30 +268,30 @@ class EmployeeController extends Controller
             'weekend_day'          => 'nullable|string|max:10',
             'status'               => 'nullable|boolean',
         ]);
-    
+
         $user = Auth::user();
         $employee = Employee::findOrFail($id);
-    
+
         // Handle file upload if exists
         if ($request->hasFile('photo')) {
             $photoPath = $request->file('photo')->store('employees', 'public');
             $validated['photo'] = $photoPath;
         }
-    
+
         $validated['user_id'] = $user->id;
-    
+
         // Full name (optional)
         $validated['name'] = $validated['first_name'] . ' ' . $validated['last_name'];
-    
+
         $employee->update($validated);
-    
+
         return response()->json([
             'status' => 'success',
             'message' => 'Employee updated successfully',
         ]);
     }
-    
-    
+
+
 
     public function destroy(string $id)
     {

@@ -13,7 +13,7 @@ class ExpenseController extends Controller
     public function index()
     {
         $expenses = Expense::get();
-        return view('supper_admin.pages.expense.expense', compact('expenses'));
+        return view('supper_admin.pages.payroll.expense.expense', compact('expenses'));
     }
 
     public function Activeindex()

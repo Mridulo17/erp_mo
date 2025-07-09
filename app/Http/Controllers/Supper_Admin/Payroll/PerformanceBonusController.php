@@ -3,64 +3,66 @@
 namespace App\Http\Controllers\Supper_Admin\Payroll;
 
 use App\Http\Controllers\Controller;
+use App\Models\Supper_Admin\Payroll\Expense\ExpenseItem;
 use App\Models\Supper_Admin\Payroll\PerformanceBonus;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class PerformanceBonusController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $performanceBonuses = PerformanceBonus::get();
+        return view('supper_admin.pages.payroll.performance-bonus', compact('performanceBonuses'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
-        //
+        try {
+            $request->validate([
+                'department_id'      => 'required|integer',
+                'employee_id'      => 'required|integer',
+                'impression_type'    => 'required|in:Good impression,Bad impression',
+                'month'      => 'required|string',
+                'amount_type'    => 'required|in:Percentage,Fixed',
+                'amount'      => 'required'
+            ]);
+            PerformanceBonus::create([
+                'department_id'      => $request->input('department_id'),
+                'employee_id'      => $request->input('employee_id'),
+                'impression_type'      => $request->input('impression_type'),
+                'month'      => $request->input('month'),
+                'amount_type'      => $request->input('amount_type'),
+                'amount'      => $request->input('amount'),
+                'note'  => $request->input('note')
+            ]);
+            return response()->json(['status' => 'success', 'message' => 'Performance Bonus added Successfully']);
+        } catch (ValidationException $e) {
+            return response()->json(['status' => 'fail', 'message' => $e->validator->errors()]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(PerformanceBonus $performanceBonus)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(PerformanceBonus $performanceBonus)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, PerformanceBonus $performanceBonus)
-    {
-        //
-    }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(PerformanceBonus $performanceBonus)
+    public function destroy(string $id)
     {
-        //
+        try {
+            $performanceBonus = PerformanceBonus::findOrFail($id);
+            $performanceBonus->delete();
+            return response()->json(['status' => 'success', 'message' => 'Performance bonus deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
+        }
     }
 }
