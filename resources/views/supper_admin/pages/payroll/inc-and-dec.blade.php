@@ -1,5 +1,5 @@
 @extends('supper_admin.layouts.app')
-@section('title', config('app.name') . ' - Performance Bonus')
+@section('title', config('app.name') . ' - Inc & Dec')
 
 @section('style')
     <style>
@@ -45,15 +45,15 @@
         <!-- Header Section -->
         <div class="box-header with-border d-flex justify-content-between align-items-center">
             <div>
-                <h3 class="box-title">Performance Bonuses</h3>
-                <h6 class="box-subtitle">This is all Performance Bonuses List</h6>
+                <h3 class="box-title">Inc & Dec</h3>
+                <h6 class="box-subtitle">This is all Inc & Dec List</h6>
             </div>
             <button type="button" class="btn btn-warning addBlogButton" data-toggle="modal" data-target="#modal-center">
                 <i class="fa-solid fa-plus"></i> Add Data
             </button>
         </div>
 
-        @include('supper_admin.components.payroll.performance_bonus_modal')
+        @include('supper_admin.components.payroll.inc_and_dec_modal')
 
         <div class="box-body">
             <div class="table-responsive">
@@ -65,7 +65,7 @@
                         <th style="">DB:ID</th>
                         <th style="">Employee</th>
                         <th style="">Department</th>
-                        <th style="">Month</th>
+                        <th style="">Start Month</th>
                         <th style="">Impression</th>
                         <th style="">Type</th>
                         <th style="">Amount</th>
@@ -73,7 +73,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($performanceBonuses as $key =>$bonus)
+                    @foreach($incAndDecs as $key =>$bonus)
                         <tr>
                             <td>
                                 <div class="btn-group">
@@ -96,7 +96,7 @@
                             <td>{{ $key + 1 }}</td>
                             <td class="wrap-text">{{$bonus->employee ? $bonus->employee->first_name : '' }} {{$bonus->employee ? $bonus->employee->last_name : '' }}</td>
                             <td class="wrap-text">{{$bonus->department ? $bonus->department->name : '' }}</td>
-                            <td class="wrap-text">{{ $bonus->month  }}</td>
+                            <td class="wrap-text">{{ $bonus->start_month  }}</td>
                             <td class="wrap-text">{{ $bonus->impression_type  }}</td>
                             <td class="wrap-text">{{ $bonus->amount_type  }}</td>
                             <td class="wrap-text">{{ $bonus->amount  }}</td>
@@ -114,16 +114,16 @@
     @section('script')
         <script>
 
-            function fetchPerformanceBonuses() {
+            function fetchIncAnddecs() {
                 $.ajax({
-                    url: '{{ route("supper_admin.performance-bonuses.index") }}',
+                    url: '{{ route("supper_admin.inc-and-deces.index") }}',
                     type: 'GET',
                     success: function (data) {
                         let newBody = $(data).find('table tbody').html();
                         $('#customDataTable tbody').html(newBody);
                     },
                     error: function () {
-                        console.error('Failed to refresh expense table.');
+                        console.error('Failed to refresh inc and dec table.');
                     }
                 });
             }
@@ -185,7 +185,7 @@
                             select.val(selectedEmployeeId).trigger('change');  // Set selected employee
                         },
                         error: function (xhr) {
-                            console.error("Failed to fetch employees:", xhr);
+                            console.error("Failed to fetch employees :", xhr);
                         }
                     });
                 }
@@ -200,16 +200,16 @@
                     }
                 });
 
-                $('#bonusForm').on('submit', function (e) {
+                $('#incAndDecForm').on('submit', function (e) {
                     e.preventDefault();
-                    let isEdit = $('#performance_bonus_id').val() !== '';
+                    let isEdit = $('#inc_and_dec_id').val() !== '';
                     let formData = new FormData(this);
-                    let id = $('#performance_bonus_id').val();
-                    const baseUpdateUrl = "{{ url('supper_admin/performance-bonuses') }}";
+                    let id = $('#inc_and_dec_id').val();
+                    const baseUpdateUrl = "{{ url('supper_admin/inc-and-deces') }}";
 
                     let url = isEdit
                         ? `${baseUpdateUrl}/${id}`
-                        : `{{ route('supper_admin.performance-bonuses.store') }}`;
+                        : `{{ route('supper_admin.inc-and-deces.store') }}`;
 
                     let method = isEdit ? 'POST' : 'POST';
                     if (isEdit) {
@@ -217,7 +217,7 @@
                     }
 
                     Swal.fire({
-                        title: isEdit ? "Update Performance Bonus?" : "Add Performance Bonus?",
+                        title: isEdit ? "Update Inc And Dec?" : "Add Inc And Dec?",
                         icon: "question",
                         showCancelButton: true,
                         confirmButtonText: "Yes, proceed"
@@ -233,15 +233,15 @@
                                     if (response.status === 'success') {
                                         $('#modal-center').modal('hide');
                                         Swal.fire('Success!', response.message, 'success');
-                                        $('#bonusForm')[0].reset();
-                                        $('#performance_bonus_id').val('');
-                                        fetchPerformanceBonuses();
+                                        $('#incAndDecForm')[0].reset();
+                                        $('#inc_and_dec_id').val('');
+                                        fetchIncAnddecs();
                                     } else {
                                         Swal.fire('Error!', response.message, 'error');
                                     }
                                 },
                                 error: function () {
-                                    Swal.fire('Error!', 'Failed to save performance bonus.', 'error');
+                                    Swal.fire('Error!', 'Failed to save inc and dec.', 'error');
                                 }
                             });
                         }
@@ -249,22 +249,22 @@
                 });
 
                 $(document).on('click', '.addBlogButton', function () {
-                    $('#bonusForm')[0].reset();
-                    $('#performance_bonus_id').val('');
+                    $('#incAndDecForm')[0].reset();
+                    $('#inc_and_dec_id').val('');
                     $('#departmentSelect').val('').trigger('change');
                     $('#employeeSelect').empty().append('<option value="" disabled selected>Choose Employee</option>');
                     $('#preview').attr('src', '').hide();
-                    $('#modalTitle').text('Add Performance Bonus');
+                    $('#modalTitle').text('Add Inc And Dec');
                     $('#modal-center').modal('show');
 
                 });
 
                 $(document).on('click', '.deleteBonusBtn', function () {
                     const id = $(this).data('id');
-                    const url = '{{ route("supper_admin.performance-bonuses.destroy", ":id") }}'.replace(':id', id);
+                    const url = '{{ route("supper_admin.inc-and-deces.destroy", ":id") }}'.replace(':id', id);
 
                     Swal.fire({
-                        title: 'Delete performance bonus?',
+                        title: 'Delete inc and dec?',
                         text: "This action cannot be undone.",
                         icon: 'warning',
                         showCancelButton: true,
@@ -281,13 +281,13 @@
                                 success: function (response) {
                                     if (response.status === 'success') {
                                         Swal.fire('Deleted!', response.message, 'success');
-                                        fetchPerformanceBonuses();
+                                        fetchIncAnddecs();
                                     } else {
                                         Swal.fire('Error!', response.message, 'error');
                                     }
                                 },
                                 error: function () {
-                                    Swal.fire('Error!', 'Failed to delete the performance bonus.', 'error');
+                                    Swal.fire('Error!', 'Failed to delete the inc and dec.', 'error');
                                 }
                             });
                         }
