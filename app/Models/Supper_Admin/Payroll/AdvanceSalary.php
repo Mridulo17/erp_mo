@@ -13,7 +13,6 @@ class AdvanceSalary extends Model
         [
             'department_id',
             'employee_id',
-            'impression_type',
             'month',
             'payment_account',
             'currency_id',
