@@ -87,6 +87,28 @@
 				</li>
                   @php
                       $payRollRoutes = [
+                          'supper_admin.manage-sponsors.*',
+                          'supper_admin.manage-visas.*',
+                          'supper_admin.marketing-visas.*',
+                      ];
+                  @endphp
+                  <li class="treeview {{ Request::routeIs(...$payRollRoutes) ? 'active' : '' }}">
+                      <a href="#">
+                          <i class="mdi mdi-account-star"><span class="path1"></span><span class="path2"></span></i>
+                          <span>Sponsor</span>
+                          <span class="pull-right-container">
+						<i class="fa fa-angle-right pull-right"></i>
+					  </span>
+                      </a>
+                      <ul class="treeview-menu" @if (Request::routeIs(...$payRollRoutes)) style="display: block;" @endif>
+
+                          <li class="{{ Request::routeIs('supper_admin.manage-sponsors.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.manage-sponsors.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Manage Sponsor</a></li>
+                          <li class="{{ Request::routeIs('supper_admin.manage-visas.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.manage-visas.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Manage Visa</a></li>
+                          <li class="{{ Request::routeIs('supper_admin.marketing-visas.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.marketing-visas.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Marketing Visa</a></li>
+                      </ul>
+                  </li>
+                  @php
+                      $payRollRoutes = [
                           'supper_admin.expense-categories.*',
                           'supper_admin.expense-items.*',
                           'supper_admin.expenses.*',
@@ -138,6 +160,31 @@
                           <li class="{{ Request::routeIs('supper_admin.mobile-allowances.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.mobile-allowances.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Mobile Allowance</a></li>
                           <li class="{{ Request::routeIs('supper_admin.festival-bonuses.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.festival-bonuses.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Festival Bonus</a></li>
                       </ul>
+                  </li>
+
+                  @php
+                      $payRollRoutes = [
+                          'supper_admin.add-attendances.*',
+                          'supper_admin.add-leaves.*',
+                          'supper_admin.assign-roastings.*',
+                          'supper_admin.setup-weekends.*',
+                      ];
+                  @endphp
+                  <li class="treeview {{ Request::routeIs(...$payRollRoutes) ? 'active' : '' }}">
+                      <a href="#">
+                          <i class="fa fa-history"><span class="path1"></span><span class="path2"></span></i>
+                          <span>Atte: & Leave</span>
+                          <span class="pull-right-container">
+						<i class="fa fa-angle-right pull-right"></i>
+					  </span>
+                      </a>
+                      <ul class="treeview-menu" @if (Request::routeIs(...$payRollRoutes)) style="display: block;" @endif>
+
+                           <li class="{{ Request::routeIs('supper_admin.add-attendances.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.add-attendances.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Add Attendance</a></li>
+                          <li class="{{ Request::routeIs('supper_admin.add-leaves.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.add-leaves.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Add Leave</a></li>
+                          <li class="{{ Request::routeIs('supper_admin.assign-roastings.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.assign-roastings.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Assign Roasting</a></li>
+                          <li class="{{ Request::routeIs('supper_admin.setup-weekends.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.setup-weekends.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Setup Weekend</a></li>
+                          </ul>
                   </li>
 
 				<li class="treeview">
