@@ -13,7 +13,6 @@ class TravellingAndDearness extends Model
         [
             'department_id',
             'employee_id',
-            'impression_type',
             'from',
             'to',
             'date',
@@ -37,5 +36,10 @@ class TravellingAndDearness extends Model
     public function currency()
     {
         return $this->belongsTo(Currency::class);
+    }
+
+    public function travellingAndDearnessVehicleTypes()
+    {
+        return $this->hasMany(TravellingAndDearnessVehicleTypes::class, 'travelling_and_dearness_id', 'id');
     }
 }

@@ -44,6 +44,7 @@ use App\Http\Controllers\Supper_Admin\Payroll\FestivalBonusController;
 use App\Http\Controllers\Supper_Admin\Payroll\IncAndDecController;
 use App\Http\Controllers\Supper_Admin\Payroll\MobileAllowanceController;
 use App\Http\Controllers\Supper_Admin\Payroll\PerformanceBonusController;
+use App\Http\Controllers\Supper_Admin\Payroll\TravellingAndDearnessController;
 use App\Http\Controllers\Supper_Admin\service\AirTicketcontroller;
 use App\Http\Controllers\Supper_Admin\service\HazzUmrahcontroller;
 use App\Http\Controllers\Supper_Admin\service\WorkPermitcontroller;
@@ -126,7 +127,7 @@ Route::middleware(['auth', 'verified'])->prefix('supper_admin')->name('supper_ad
     Route::resource('performance-bonuses', PerformanceBonusController::class);
     Route::resource('inc-and-deces', IncAndDecController::class);
     Route::resource('advance-salaries', AdvanceSalaryController::class);
-    Route::resource('traveling-and-darenesses', TravellingAndDearness::class);
+    Route::resource('traveling-and-darenesses', TravellingAndDearnessController::class);
     Route::resource('mobile-allowances', MobileAllowanceController::class);
     Route::resource('festival-bonuses', FestivalBonusController::class);
 });
