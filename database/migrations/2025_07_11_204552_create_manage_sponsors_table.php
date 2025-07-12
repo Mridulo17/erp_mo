@@ -13,6 +13,22 @@ return new class extends Migration
     {
         Schema::create('manage_sponsors', function (Blueprint $table) {
             $table->id();
+            $table->enum('sponsor_type', ['Agent', 'Delegate', 'Prime Sponsor']);
+            $table->unsignedBigInteger('agent_id')->nullable();
+            $table->foreign('agent_id')->references('id')->on('agents')->cascadeOnUpdate()->restrictOnDelete();
+            $table->unsignedBigInteger('delegate_id')->nullable();
+            $table->foreign('delegate_id')->references('id')->on('delegates')->cascadeOnUpdate()->restrictOnDelete();
+            $table->string('sponsor_name');
+            $table->string('cell_number');
+            $table->string('email')->nullable();
+            $table->decimal('opening_balance', 25, 2)->nullable();
+            $table->string('nid')->nullable();
+            $table->string('sponsor_photo')->nullable();
+            $table->string('address', 2000)->nullable();
+            $table->string('note', 2000)->nullable();
+            $table->unsignedBigInteger('employee_id');
+            $table->foreign('employee_id')->references('id')->on('employees')->cascadeOnUpdate()->restrictOnDelete();
+            $table->enum('status', ['Enabled', 'Disabled'])->default('Enabled');
             $table->timestamps();
         });
     }

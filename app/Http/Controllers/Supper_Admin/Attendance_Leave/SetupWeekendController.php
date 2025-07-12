@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Supper_Admin\Attendance_Leave;
 
 use App\Http\Controllers\Controller;
-use App\Models\Supper_Admin\Attendence_Leave\SetupWeekend;
+use App\Models\Supper_Admin\Attendance_Leave\SetupWeekend;
 use Illuminate\Http\Request;
 
 class SetupWeekendController extends Controller

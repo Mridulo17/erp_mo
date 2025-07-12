@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Supper_Admin\Attendence_Leave;
+namespace App\Models\Supper_Admin\Attendance_Leave;
 
 use Illuminate\Database\Eloquent\Model;
 
