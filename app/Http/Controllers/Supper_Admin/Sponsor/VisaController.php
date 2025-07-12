@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Supper_Admin\Sponsor;
 
 use App\Http\Controllers\Controller;
-use App\Models\Supper_Admin\Sponsor\ManageSponsor;
+use App\Models\Supper_Admin\Sponsor\Visa;
 use Illuminate\Http\Request;
 
-class ManageSponsorController extends Controller
+class VisaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,7 +35,7 @@ class ManageSponsorController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ManageSponsor $manageSponsor)
+    public function show(Visa $visa)
     {
         //
     }
@@ -43,7 +43,7 @@ class ManageSponsorController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ManageSponsor $manageSponsor)
+    public function edit(Visa $visa)
     {
         //
     }
@@ -51,7 +51,7 @@ class ManageSponsorController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ManageSponsor $manageSponsor)
+    public function update(Request $request, Visa $visa)
     {
         //
     }
@@ -59,7 +59,7 @@ class ManageSponsorController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ManageSponsor $manageSponsor)
+    public function destroy(Visa $visa)
     {
         //
     }

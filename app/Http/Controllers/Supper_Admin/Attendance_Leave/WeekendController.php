@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Supper_Admin\Attendance_Leave;
 
 use App\Http\Controllers\Controller;
-use App\Models\Supper_Admin\Attendance_Leave\AddLeave;
+use App\Models\Supper_Admin\Attendence_Leave\Weekend;
 use Illuminate\Http\Request;
 
-class AddLeaveController extends Controller
+class WeekendController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,7 +35,7 @@ class AddLeaveController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(AddLeave $addLeave)
+    public function show(Weekend $weekend)
     {
         //
     }
@@ -43,7 +43,7 @@ class AddLeaveController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(AddLeave $addLeave)
+    public function edit(Weekend $weekend)
     {
         //
     }
@@ -51,7 +51,7 @@ class AddLeaveController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, AddLeave $addLeave)
+    public function update(Request $request, Weekend $weekend)
     {
         //
     }
@@ -59,7 +59,7 @@ class AddLeaveController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(AddLeave $addLeave)
+    public function destroy(Weekend $weekend)
     {
         //
     }

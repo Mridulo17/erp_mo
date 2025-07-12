@@ -29,7 +29,11 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Supper_Admin\Attendance_Leave\AddAttendanceController;
 use App\Http\Controllers\Supper_Admin\Attendance_Leave\AddLeaveController;
 use App\Http\Controllers\Supper_Admin\Attendance_Leave\AssignRoastingController;
+use App\Http\Controllers\Supper_Admin\Attendance_Leave\AttendanceController;
+use App\Http\Controllers\Supper_Admin\Attendance_Leave\LeaveController;
+use App\Http\Controllers\Supper_Admin\Attendance_Leave\RoastingController;
 use App\Http\Controllers\Supper_Admin\Attendance_Leave\SetupWeekendController;
+use App\Http\Controllers\Supper_Admin\Attendance_Leave\WeekendController;
 use App\Http\Controllers\Supper_Admin\Location\ContinentController;
 use App\Http\Controllers\Supper_Admin\Location\CountryController;
 use App\Http\Controllers\Supper_Admin\Location\CurrencyController;
@@ -55,6 +59,8 @@ use App\Http\Controllers\Supper_Admin\service\WorkPermitcontroller;
 use App\Http\Controllers\Supper_Admin\Sponsor\ManageSponsorController;
 use App\Http\Controllers\Supper_Admin\Sponsor\ManageVisaController;
 use App\Http\Controllers\Supper_Admin\Sponsor\MarketingVisaController;
+use App\Http\Controllers\Supper_Admin\Sponsor\SponsorController;
+use App\Http\Controllers\Supper_Admin\Sponsor\VisaController;
 use App\Models\Supper_Admin\Payroll\TravellingAndDearness;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -139,15 +145,15 @@ Route::middleware(['auth', 'verified'])->prefix('supper_admin')->name('supper_ad
     Route::resource('festival-bonuses', FestivalBonusController::class);
 
     //Resource routes for sponsor under super_admin
-    Route::resource('manage-sponsors', ManageSponsorController::class);
-    Route::resource('manage-visas', ManageVisaController::class);
+    Route::resource('sponsors', SponsorController::class);
+    Route::resource('visas', VisaController::class);
     Route::resource('marketing-visas', MarketingVisaController::class);
 
     //Resource routes for attendance and leave under super_admin
-    Route::resource('add-attendances', AddAttendanceController::class);
-    Route::resource('add-leaves', AddLeaveController::class);
-    Route::resource('assign-roastings', AssignRoastingController::class);
-    Route::resource('setup-weekends', SetupWeekendController::class);
+    Route::resource('attendances', AttendanceController::class);
+    Route::resource('leaves', LeaveController::class);
+    Route::resource('roastings', RoastingController::class);
+    Route::resource('weekends', WeekendController::class);
 });
 
 // Group routes for 'admin' with prefix and middleware

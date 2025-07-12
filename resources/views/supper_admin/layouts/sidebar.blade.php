@@ -86,13 +86,13 @@
 					</ul>
 				</li>
                   @php
-                      $payRollRoutes = [
-                          'supper_admin.manage-sponsors.*',
-                          'supper_admin.manage-visas.*',
+                      $sponsorRoutes = [
+                          'supper_admin.sponsors.*',
+                          'supper_admin.visas.*',
                           'supper_admin.marketing-visas.*',
                       ];
                   @endphp
-                  <li class="treeview {{ Request::routeIs(...$payRollRoutes) ? 'active' : '' }}">
+                  <li class="treeview {{ Request::routeIs(...$sponsorRoutes) ? 'active' : '' }}">
                       <a href="#">
                           <i class="mdi mdi-account-star"><span class="path1"></span><span class="path2"></span></i>
                           <span>Sponsor</span>
@@ -100,10 +100,10 @@
 						<i class="fa fa-angle-right pull-right"></i>
 					  </span>
                       </a>
-                      <ul class="treeview-menu" @if (Request::routeIs(...$payRollRoutes)) style="display: block;" @endif>
+                      <ul class="treeview-menu" @if (Request::routeIs(...$sponsorRoutes)) style="display: block;" @endif>
 
-                          <li class="{{ Request::routeIs('supper_admin.manage-sponsors.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.manage-sponsors.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Manage Sponsor</a></li>
-                          <li class="{{ Request::routeIs('supper_admin.manage-visas.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.manage-visas.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Manage Visa</a></li>
+                          <li class="{{ Request::routeIs('supper_admin.sponsors.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.sponsors.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Manage Sponsor</a></li>
+                          <li class="{{ Request::routeIs('supper_admin.visas.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.visas.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Manage Visa</a></li>
                           <li class="{{ Request::routeIs('supper_admin.marketing-visas.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.marketing-visas.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Marketing Visa</a></li>
                       </ul>
                   </li>
@@ -163,14 +163,14 @@
                   </li>
 
                   @php
-                      $payRollRoutes = [
-                          'supper_admin.add-attendances.*',
-                          'supper_admin.add-leaves.*',
-                          'supper_admin.assign-roastings.*',
-                          'supper_admin.setup-weekends.*',
+                      $attendanceAndLeaveRoutes = [
+                          'supper_admin.attendances.*',
+                          'supper_admin.leaves.*',
+                          'supper_admin.roastings.*',
+                          'supper_admin.weekends.*',
                       ];
                   @endphp
-                  <li class="treeview {{ Request::routeIs(...$payRollRoutes) ? 'active' : '' }}">
+                  <li class="treeview {{ Request::routeIs(...$attendanceAndLeaveRoutes) ? 'active' : '' }}">
                       <a href="#">
                           <i class="fa fa-history"><span class="path1"></span><span class="path2"></span></i>
                           <span>Atte: & Leave</span>
@@ -178,12 +178,12 @@
 						<i class="fa fa-angle-right pull-right"></i>
 					  </span>
                       </a>
-                      <ul class="treeview-menu" @if (Request::routeIs(...$payRollRoutes)) style="display: block;" @endif>
+                      <ul class="treeview-menu" @if (Request::routeIs(...$attendanceAndLeaveRoutes)) style="display: block;" @endif>
 
-                           <li class="{{ Request::routeIs('supper_admin.add-attendances.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.add-attendances.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Add Attendance</a></li>
-                          <li class="{{ Request::routeIs('supper_admin.add-leaves.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.add-leaves.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Add Leave</a></li>
-                          <li class="{{ Request::routeIs('supper_admin.assign-roastings.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.assign-roastings.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Assign Roasting</a></li>
-                          <li class="{{ Request::routeIs('supper_admin.setup-weekends.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.setup-weekends.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Setup Weekend</a></li>
+                           <li class="{{ Request::routeIs('supper_admin.attendances.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.attendances.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Add Attendance</a></li>
+                          <li class="{{ Request::routeIs('supper_admin.leaves.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.leaves.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Add Leave</a></li>
+                          <li class="{{ Request::routeIs('supper_admin.roastings.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.roastings.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Assign Roasting</a></li>
+                          <li class="{{ Request::routeIs('supper_admin.weekends.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.weekends.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Setup Weekend</a></li>
                           </ul>
                   </li>
 

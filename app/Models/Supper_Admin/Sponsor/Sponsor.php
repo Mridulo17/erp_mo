@@ -3,13 +3,11 @@
 namespace App\Models\Supper_Admin\Sponsor;
 
 use App\Models\Admin\HRM\Employee;
-use App\Models\Admin\MyOffice\Department;
 use App\Models\Admin\People\Agent;
 use App\Models\Admin\People\Delegate;
-use App\Models\Supper_Admin\Location\Currency;
 use Illuminate\Database\Eloquent\Model;
 
-class ManageSponsor extends Model
+class Sponsor extends Model
 {
     protected $fillable =
         [

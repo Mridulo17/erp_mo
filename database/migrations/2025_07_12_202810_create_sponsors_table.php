@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('manage_sponsors', function (Blueprint $table) {
+        Schema::create('sponsors', function (Blueprint $table) {
             $table->id();
             $table->enum('sponsor_type', ['Agent', 'Delegate', 'Prime Sponsor']);
             $table->unsignedBigInteger('agent_id')->nullable();
@@ -38,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('manage_sponsors');
+        Schema::dropIfExists('sponsors');
     }
 };

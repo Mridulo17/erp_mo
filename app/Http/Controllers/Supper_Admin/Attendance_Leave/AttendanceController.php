@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Supper_Admin\Attendance_Leave;
 
 use App\Http\Controllers\Controller;
-use App\Models\Supper_Admin\Attendance_Leave\AssignRoasting;
+use App\Models\Supper_Admin\AttendenceLeave\Attendance;
 use Illuminate\Http\Request;
 
-class AssignRoastingController extends Controller
+class AttendanceController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,7 +35,7 @@ class AssignRoastingController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(AssignRoasting $assignRoasting)
+    public function show(Attendance $attendance)
     {
         //
     }
@@ -43,7 +43,7 @@ class AssignRoastingController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(AssignRoasting $assignRoasting)
+    public function edit(Attendance $attendance)
     {
         //
     }
@@ -51,7 +51,7 @@ class AssignRoastingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, AssignRoasting $assignRoasting)
+    public function update(Request $request, Attendance $attendance)
     {
         //
     }
@@ -59,7 +59,7 @@ class AssignRoastingController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(AssignRoasting $assignRoasting)
+    public function destroy(Attendance $attendance)
     {
         //
     }

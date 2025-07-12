@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Supper_Admin\Attendance_Leave;
 
 use App\Http\Controllers\Controller;
-use App\Models\Supper_Admin\Attendance_Leave\SetupWeekend;
+use App\Models\Supper_Admin\AttendenceLeave\Roasting;
 use Illuminate\Http\Request;
 
-class SetupWeekendController extends Controller
+class RoastingController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,7 +35,7 @@ class SetupWeekendController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(SetupWeekend $setupWeekend)
+    public function show(Roasting $roasting)
     {
         //
     }
@@ -43,7 +43,7 @@ class SetupWeekendController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(SetupWeekend $setupWeekend)
+    public function edit(Roasting $roasting)
     {
         //
     }
@@ -51,7 +51,7 @@ class SetupWeekendController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, SetupWeekend $setupWeekend)
+    public function update(Request $request, Roasting $roasting)
     {
         //
     }
@@ -59,7 +59,7 @@ class SetupWeekendController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(SetupWeekend $setupWeekend)
+    public function destroy(Roasting $roasting)
     {
         //
     }

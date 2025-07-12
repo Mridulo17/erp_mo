@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Supper_Admin\Attendance_Leave;
 
 use App\Http\Controllers\Controller;
-use App\Models\Supper_Admin\AttendenceLeave\AddAttendance;
+use App\Models\Supper_Admin\AttendenceLeave\Leave;
 use Illuminate\Http\Request;
 
-class AddAttendanceController extends Controller
+class LeaveController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,7 +35,7 @@ class AddAttendanceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(AddAttendance $addAttendance)
+    public function show(Leave $leave)
     {
         //
     }
@@ -43,7 +43,7 @@ class AddAttendanceController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(AddAttendance $addAttendance)
+    public function edit(Leave $leave)
     {
         //
     }
@@ -51,7 +51,7 @@ class AddAttendanceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, AddAttendance $addAttendance)
+    public function update(Request $request, Leave $leave)
     {
         //
     }
@@ -59,7 +59,7 @@ class AddAttendanceController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(AddAttendance $addAttendance)
+    public function destroy(Leave $leave)
     {
         //
     }
