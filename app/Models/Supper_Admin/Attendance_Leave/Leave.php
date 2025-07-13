@@ -14,6 +14,7 @@ class Leave extends Model
             'employee_id',
             'leave_type',
             'no_of_days',
+            'shift',
             'attachment',
             'note'
         ];

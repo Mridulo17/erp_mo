@@ -1,5 +1,5 @@
 @extends('supper_admin.layouts.app')
-@section('title', config('app.name') . ' - Mobile Allowance')
+@section('title', config('app.name') . ' - Attendance')
 
 @section('style')
     <style>

@@ -28,7 +28,7 @@
 
                     <div class="form-group">
                         <label for="date" class="font-weight-bold text-dark" style="font-size: 14px;">Date</label>
-                        <input type="date" id="date" name="date" value="date()" class="form-control" placeholder="Date">
+                        <input type="date" id="date" name="date" value="{{date("Y-m-d")}}" class="form-control" placeholder="Date">
                     </div>
 
                     <div class="form-group">

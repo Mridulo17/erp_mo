@@ -2,16 +2,16 @@
     <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalTitle">Add Performance Bonus</h5>
+                <h5 class="modal-title" id="modalTitle">Manage Attendance</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
 
             <!-- The Form -->
-            <form id="incAndDecForm">
+            <form id="leaveForm">
                 @csrf
-                <input type="hidden" id="inc_and_dec_id" name="inc_and_dec_id" value="">
+                <input type="hidden" id="leave_id" name="leave_id" value="">
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="department_id" class="font-weight-bold text-dark" style="font-size: 14px;">Choose Department </label>
@@ -25,30 +25,37 @@
                             <option value="" disabled selected>Choose Employee</option>
                         </select>
                     </div>
+
                     <div class="form-group">
-                        <label class="font-weight-700 font-size-16" for="impression_type">Impression Type</label>
-                        <select name="impression_type" id="impression_type" class="form-control" required>
-                            <option value="" disabled selected>Impression Type</option>
-                            <option value="Increment">Increment</option>
-                            <option value="Decrement">Decrement</option>
+                        <label class="font-weight-700 font-size-16" for="leave_type">Leave Type</label>
+                        <select name="leave_type" id="leave_type" class="form-control">
+                            <option value="" disabled selected>Leave Type</option>
+                            <option value="Half Day Leave">Half Day Leave</option>
+                            <option value="Full Day Leave">Full Day Leave</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="dayDiv" style="display: none">
+                        <label for="leave_date" class="font-weight-bold text-dark" style="font-size: 14px;">Choose Date</label>
+                        <input type="date" id="leave_date" name="leave_date" value="" class="form-control" placeholder="Expiry Date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="no_of_days" class="font-weight-bold text-dark" style="font-size: 14px;">Number of Days</label>
+                        <input type="number" step="any" value="0" id="no_of_days" name="no_of_days" class="form-control" placeholder="0" required readonly>
+                    </div>
+                    <div class="form-group" id="shiftDiv" style="display: none">
+                        <label class="font-weight-700 font-size-16" for="shift">Shift</label>
+                        <select name="shift" id="shift" class="form-control">
+                            <option value="" disabled selected>Shift</option>
+                            <option value="Morning">Morning</option>
+                            <option value="Evening">Evening</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="start_month" class="font-weight-bold text-dark" style="font-size: 14px;">Start Month</label>
-                        <input type="month" id="start_month" name="start_month" class="form-control" placeholder="Month">
-                    </div>
-                    <div class="form-group">
-                        <label class="font-weight-700 font-size-16" for="amount_type">Amount Type</label>
-                        <select name="amount_type" id="amount_type" class="form-control" required>
-                            <option value="" disabled selected>Amount Type</option>
-                            <option value="Percentage">Percentage</option>
-                            <option value="Fixed">Fixed</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="amount" class="font-weight-bold text-dark" style="font-size: 14px;">Amount<small id="amount_currency"></small></label>
-                        <input type="number" step="any" min="0" id="amount" name="amount" class="form-control" placeholder="Amount" required>
+                        <label for="opening_balance_sheet" class="font-weight-bold text-dark" style="font-size: 14px;">Attachment</label>
+                        <input type="file" id="attachment" name="attachment" class="form-control form-control-lg">
                     </div>
 
                     <div class="form-group">

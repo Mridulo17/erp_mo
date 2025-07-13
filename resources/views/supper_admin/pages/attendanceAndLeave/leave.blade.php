@@ -1,5 +1,5 @@
 @extends('supper_admin.layouts.app')
-@section('title', config('app.name') . ' - Performance Bonus')
+@section('title', config('app.name') . ' - Leave')
 
 @section('style')
     <style>
@@ -9,6 +9,8 @@
             word-break: break-word !important;
         }
     </style>
+    <!-- daterangepicker CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 @endsection
 
 @section('content')
@@ -45,15 +47,15 @@
         <!-- Header Section -->
         <div class="box-header with-border d-flex justify-content-between align-items-center">
             <div>
-                <h3 class="box-title">Performance Bonuses</h3>
-                <h6 class="box-subtitle">This is all Performance Bonuses List</h6>
+                <h3 class="box-title">Leave</h3>
+                <h6 class="box-subtitle">This is all Leave List</h6>
             </div>
             <button type="button" class="btn btn-warning addBlogButton" data-toggle="modal" data-target="#modal-center">
                 <i class="fa-solid fa-plus"></i> Add Data
             </button>
         </div>
 
-        @include('supper_admin.components.payroll.performance_bonus_modal')
+        @include('supper_admin.components.attendanceAndLeave.leave_modal')
 
         <div class="box-body">
             <div class="table-responsive">
@@ -65,15 +67,14 @@
                         <th style="">DB:ID</th>
                         <th style="">Employee</th>
                         <th style="">Department</th>
-                        <th style="">Month</th>
-                        <th style="">Impression</th>
-                        <th style="">Type</th>
-                        <th style="">Amount</th>
+                        <th style="">Date</th>
+                        <th style="">In</th>
+                        <th style="">Out</th>
                         <th style="">Entry Date</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($performanceBonuses as $key =>$bonus)
+                    @foreach($leaves as $key =>$bonus)
                         <tr>
                             <td>
                                 <div class="btn-group">
@@ -82,6 +83,11 @@
                                         <i class="fa fa-bars"></i> Action
                                     </button>
                                     <div class="dropdown-menu">
+                                        <!-- Edit Button inside Dropdown -->
+                                        <a href="#" class="dropdown-item editBlogButton" data-toggle="modal"
+                                           data-target="#modal-center" data-id="{{ $bonus->id }}">
+                                            <i class="fa fa-edit"></i> Edit
+                                        </a>
 
                                         <!-- Delete Form inside Dropdown -->
                                         <button type="button"
@@ -96,10 +102,9 @@
                             <td>{{ $key + 1 }}</td>
                             <td class="wrap-text">{{$bonus->employee ? $bonus->employee->first_name : '' }} {{$bonus->employee ? $bonus->employee->last_name : '' }}</td>
                             <td class="wrap-text">{{$bonus->department ? $bonus->department->name : '' }}</td>
-                            <td class="wrap-text">{{ $bonus->month  }}</td>
-                            <td class="wrap-text">{{ $bonus->impression_type  }}</td>
-                            <td class="wrap-text">{{ $bonus->amount_type  }}</td>
-                            <td class="wrap-text">{{ $bonus->amount  }}</td>
+                            <td class="wrap-text">{{ $bonus->date  }}({{ $bonus->date_details  }})</td>
+                            <td class="wrap-text">{{ $bonus->check_in  }}</td>
+                            <td class="wrap-text">{{ $bonus->check_out  }}</td>
                             <td class="wrap-text">{{ $bonus->created_at->format('F d, Y') }}</td>
 
                         </tr>
@@ -112,18 +117,49 @@
     </div>
 
     @section('script')
+        <!-- jQuery (required) -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <!-- moment.js -->
+        <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+
+        <!-- daterangepicker JS -->
+        <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
         <script>
 
-            function fetchPerformanceBonuses() {
+            $(document).ready(function () {
+                $('#leave_date').daterangepicker({
+                    opens: 'left', // or 'right'
+                    autoUpdateInput: true,
+                    locale: {
+                        format: 'YYYY-MM-DD',
+                        separator: ' → ', // change dash to arrow
+                        cancelLabel: 'Clear'
+                    }
+                }, function(start, end) {
+                    // Calculate number of days including both start and end
+                    let days = end.diff(start, 'days') + 1;
+                    // Display it in a paragraph
+                    $('#no_of_days').val(days);
+                }
+                );
+
+                // Optional: Clear on cancel
+                $('#leave_date').on('cancel.daterangepicker', function (ev, picker) {
+                    $(this).val('');
+                });
+            });
+
+            function fetchLeaves() {
                 $.ajax({
-                    url: '{{ route("supper_admin.performance-bonuses.index") }}',
+                    url: '{{ route("supper_admin.leaves.index") }}',
                     type: 'GET',
                     success: function (data) {
                         let newBody = $(data).find('table tbody').html();
                         $('#customDataTable tbody').html(newBody);
                     },
                     error: function () {
-                        console.error('Failed to refresh expense table.');
+                        console.error('Failed to refresh leave table.');
                     }
                 });
             }
@@ -185,7 +221,7 @@
                             select.val(selectedEmployeeId).trigger('change');  // Set selected employee
                         },
                         error: function (xhr) {
-                            console.error("Failed to fetch employees:", xhr);
+                            console.error("Failed to fetch employees :", xhr);
                         }
                     });
                 }
@@ -200,16 +236,36 @@
                     }
                 });
 
-                $('#bonusForm').on('submit', function (e) {
+                $('#leave_type').on('change', function () {
+                    $('#dayDiv').show();
+                    const selectedText = $(this).find('option:selected').text();
+                    let today = moment().startOf('day').format('YYYY-MM-DD');
+
+                    if (selectedText === 'Half Day Leave') {
+                        $('#shiftDiv').show();
+                        $('#leave_date').val(today);
+                        $('#no_of_days').val(0.5);
+                    } else if (selectedText === 'Full Day Leave') {
+                        $('#shiftDiv').hide();
+                        $('#leave_date').attr('type', 'text');
+                        $('#leave_date').val(today+'→'+today);
+                        $('#no_of_days').val(1);
+                    } else {
+                        $('#shiftDiv').hide();
+                        $('#no_of_days').val(0);
+                    }
+                });
+
+                $('#leaveForm').on('submit', function (e) {
                     e.preventDefault();
-                    let isEdit = $('#performance_bonus_id').val() !== '';
+                    let isEdit = $('#leave_id').val() !== '';
                     let formData = new FormData(this);
-                    let id = $('#performance_bonus_id').val();
-                    const baseUpdateUrl = "{{ url('supper_admin/performance-bonuses') }}";
+                    let id = $('#leave_id').val();
+                    const baseUpdateUrl = "{{ url('supper_admin/leaves') }}";
 
                     let url = isEdit
                         ? `${baseUpdateUrl}/${id}`
-                        : `{{ route('supper_admin.performance-bonuses.store') }}`;
+                        : `{{ route('supper_admin.leaves.store') }}`;
 
                     let method = isEdit ? 'POST' : 'POST';
                     if (isEdit) {
@@ -217,7 +273,7 @@
                     }
 
                     Swal.fire({
-                        title: isEdit ? "Update Performance Bonus?" : "Add Performance Bonus?",
+                        title: isEdit ? "Update Leave?" : "Add Leave?",
                         icon: "question",
                         showCancelButton: true,
                         confirmButtonText: "Yes, proceed"
@@ -233,15 +289,15 @@
                                     if (response.status === 'success') {
                                         $('#modal-center').modal('hide');
                                         Swal.fire('Success!', response.message, 'success');
-                                        $('#bonusForm')[0].reset();
-                                        $('#performance_bonus_id').val('');
-                                        fetchPerformanceBonuses();
+                                        $('#leaveForm')[0].reset();
+                                        $('#leave_id').val('');
+                                        fetchLeaves();
                                     } else {
                                         Swal.fire('Error!', response.message, 'error');
                                     }
                                 },
                                 error: function () {
-                                    Swal.fire('Error!', 'Failed to save performance bonus.', 'error');
+                                    Swal.fire('Error!', 'Failed to save leave.', 'error');
                                 }
                             });
                         }
@@ -249,22 +305,48 @@
                 });
 
                 $(document).on('click', '.addBlogButton', function () {
-                    $('#bonusForm')[0].reset();
-                    $('#performance_bonus_id').val('');
+                    $('#leaveForm')[0].reset();
+                    $('#leave_id').val('');
                     $('#departmentSelect').val('').trigger('change');
                     $('#employeeSelect').empty().append('<option value="" disabled selected>Choose Employee</option>');
                     $('#preview').attr('src', '').hide();
-                    $('#modalTitle').text('Add Performance Bonus');
+                    $('#modalTitle').text('Manage Leave');
                     $('#modal-center').modal('show');
 
                 });
 
+                $(document).on('click', '.editBlogButton', function () {
+                    const id = $(this).data('id');
+                    const url = '{{ route("supper_admin.leaves.edit", ":id") }}'.replace(':id', id);
+
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        success: function (res) {
+                            $('#leave_id').val(id);
+                            $('#date').val(res.date);
+                            $('#check_in').val(res.check_in);
+                            $('#check_out').val(res.check_out);
+                            $('#note').val(res.note);
+                            $('#modalTitle').text('Edit attendance');
+                            $('#departmentSelect').val(res.department_id).trigger('change');
+                            $('#employeeSelect').val(res.employee_id).trigger('change');
+                            fetchEmployees(res.department_id, res.employee_id);
+                            $('#modal-center').modal('show');
+
+                        },
+                        error: function () {
+                            Swal.fire('Error', 'Could not load leave data.', 'error');
+                        }
+                    });
+                });
+
                 $(document).on('click', '.deleteBonusBtn', function () {
                     const id = $(this).data('id');
-                    const url = '{{ route("supper_admin.performance-bonuses.destroy", ":id") }}'.replace(':id', id);
+                    const url = '{{ route("supper_admin.leaves.destroy", ":id") }}'.replace(':id', id);
 
                     Swal.fire({
-                        title: 'Delete Performance Bonus?',
+                        title: 'Delete Leave?',
                         text: "This action cannot be undone.",
                         icon: 'warning',
                         showCancelButton: true,
@@ -281,13 +363,13 @@
                                 success: function (response) {
                                     if (response.status === 'success') {
                                         Swal.fire('Deleted!', response.message, 'success');
-                                        fetchPerformanceBonuses();
+                                        fetchLeaves();
                                     } else {
                                         Swal.fire('Error!', response.message, 'error');
                                     }
                                 },
                                 error: function () {
-                                    Swal.fire('Error!', 'Failed to delete the performance bonus.', 'error');
+                                    Swal.fire('Error!', 'Failed to delete the leave.', 'error');
                                 }
                             });
                         }

@@ -17,9 +17,10 @@ return new class extends Migration
             $table->foreign('department_id')->references('id')->on('departments')->cascadeOnUpdate()->restrictOnDelete();
             $table->unsignedBigInteger('employee_id');
             $table->foreign('employee_id')->references('id')->on('employees')->cascadeOnUpdate()->restrictOnDelete();
-            $table->enum('leave_type', ['Half Day', 'Full Day']);
+            $table->enum('leave_type', ['Half Day Leave', 'Full Day Leave']);
+            $table->enum('shift', ['Morning', 'Evening', 'Full Day'])->default('Full Day')->nullable();
             $table->string('no_of_days');
-            $table->string('attachment');
+            $table->string('attachment')->nullable();
             $table->string('note', 2000)->nullable();
             $table->timestamps();
         });
