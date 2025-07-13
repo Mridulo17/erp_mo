@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('leaves', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('department_id');
+            $table->foreign('department_id')->references('id')->on('departments')->cascadeOnUpdate()->restrictOnDelete();
+            $table->unsignedBigInteger('employee_id');
+            $table->foreign('employee_id')->references('id')->on('employees')->cascadeOnUpdate()->restrictOnDelete();
+            $table->enum('leave_type', ['Half Day', 'Full Day']);
+            $table->string('no_of_days');
+            $table->string('attachment');
+            $table->string('note', 2000)->nullable();
             $table->timestamps();
         });
     }

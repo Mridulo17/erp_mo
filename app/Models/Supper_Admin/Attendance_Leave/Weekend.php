@@ -4,7 +4,7 @@ namespace App\Models\Supper_Admin\Attendance_Leave;
 
 use Illuminate\Database\Eloquent\Model;
 
-class SetupWeekend extends Model
+class Weekend extends Model
 {
     //
 }

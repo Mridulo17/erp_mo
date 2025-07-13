@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Supper_Admin\Attendance_Leave;
 
 use App\Http\Controllers\Controller;
-use App\Models\Supper_Admin\AttendenceLeave\Leave;
+use App\Models\Supper_Admin\Attendance_Leave\Leave;
 use Illuminate\Http\Request;
 
 class LeaveController extends Controller
