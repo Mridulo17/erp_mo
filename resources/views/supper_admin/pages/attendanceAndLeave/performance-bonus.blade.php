@@ -1,5 +1,5 @@
 @extends('supper_admin.layouts.app')
-@section('title', config('app.name') . ' - Expense Item')
+@section('title', config('app.name') . ' - Performance Bonus')
 
 @section('style')
     <style>
@@ -45,15 +45,15 @@
         <!-- Header Section -->
         <div class="box-header with-border d-flex justify-content-between align-items-center">
             <div>
-                <h3 class="box-title">Expense Items</h3>
-                <h6 class="box-subtitle">This is all Expense Items List</h6>
+                <h3 class="box-title">Performance Bonuses</h3>
+                <h6 class="box-subtitle">This is all Performance Bonuses List</h6>
             </div>
             <button type="button" class="btn btn-warning addBlogButton" data-toggle="modal" data-target="#modal-center">
                 <i class="fa-solid fa-plus"></i> Add Data
             </button>
         </div>
 
-        @include('supper_admin.components.payroll.expense.expense_item_modal')
+        @include('supper_admin.components.payroll.performance_bonus_modal')
 
         <div class="box-body">
             <div class="table-responsive">
@@ -62,15 +62,18 @@
                     <thead>
                     <tr>
                         <th style="">Action</th>
-                        <th style="">Serial</th>
-                        <th style="">Expense Category Name</th>
-                        <th style="">Expense Item Name</th>
+                        <th style="">DB:ID</th>
+                        <th style="">Employee</th>
+                        <th style="">Department</th>
+                        <th style="">Month</th>
+                        <th style="">Impression</th>
+                        <th style="">Type</th>
+                        <th style="">Amount</th>
                         <th style="">Entry Date</th>
-                        <th style="">Status</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($expenseItems as $key =>$item)
+                    @foreach($performanceBonuses as $key =>$bonus)
                         <tr>
                             <td>
                                 <div class="btn-group">
@@ -79,16 +82,11 @@
                                         <i class="fa fa-bars"></i> Action
                                     </button>
                                     <div class="dropdown-menu">
-                                        <!-- Edit Button inside Dropdown -->
-                                        <a href="#" class="dropdown-item editBlogButton" data-toggle="modal"
-                                           data-target="#modal-center" data-id="{{ $item->id }}">
-                                            <i class="fa fa-edit"></i> Edit
-                                        </a>
 
                                         <!-- Delete Form inside Dropdown -->
                                         <button type="button"
-                                                class="dropdown-item text-danger deletecountryBtn"
-                                                data-id="{{ $item->id }}">
+                                                class="dropdown-item text-danger deleteBonusBtn"
+                                                data-id="{{ $bonus->id }}">
                                             <i class="fa fa-trash"></i> Delete
                                         </button>
                                     </div>
@@ -96,14 +94,13 @@
                             </td>
 
                             <td>{{ $key + 1 }}</td>
-                            <td class="wrap-text">{{$item->expenseCategory ? $item->expenseCategory->expense_category_name : '' }}</td>
-                            <td class="wrap-text">{{ $item->expense_item_name  }}</td>
-                            <td class="wrap-text">{{ $item->created_at->format('F d, Y') }}</td>
-                            <td>
-                            <span class="badge {{ $item->status == 'Enabled' ? 'badge-success' : 'badge-danger' }}">
-                                {{ $item->status == 'Enabled' ? 'Enabled' : 'Disabled' }}
-                            </span>
-                            </td>
+                            <td class="wrap-text">{{$bonus->employee ? $bonus->employee->first_name : '' }} {{$bonus->employee ? $bonus->employee->last_name : '' }}</td>
+                            <td class="wrap-text">{{$bonus->department ? $bonus->department->name : '' }}</td>
+                            <td class="wrap-text">{{ $bonus->month  }}</td>
+                            <td class="wrap-text">{{ $bonus->impression_type  }}</td>
+                            <td class="wrap-text">{{ $bonus->amount_type  }}</td>
+                            <td class="wrap-text">{{ $bonus->amount  }}</td>
+                            <td class="wrap-text">{{ $bonus->created_at->format('F d, Y') }}</td>
 
                         </tr>
                     @endforeach
@@ -116,16 +113,17 @@
 
     @section('script')
         <script>
-            function fetchExpenseItems() {
+
+            function fetchPerformanceBonuses() {
                 $.ajax({
-                    url: '{{ route("supper_admin.expense-items.index") }}',
+                    url: '{{ route("supper_admin.performance-bonuses.index") }}',
                     type: 'GET',
                     success: function (data) {
                         let newBody = $(data).find('table tbody').html();
                         $('#customDataTable tbody').html(newBody);
                     },
                     error: function () {
-                        console.error('Failed to refresh expense item table.');
+                        console.error('Failed to refresh expense table.');
                     }
                 });
             }
@@ -140,43 +138,78 @@
             });
 
             $(document).ready(function () {
-                fetchExpenseCategories();
 
-                function fetchExpenseCategories() {
+                fetchDepartments();
+
+                function fetchDepartments() {
                     $.ajax({
-                        url: "{{ route('supper_admin.expense-category.enabled') }}",
+                        url: "{{ route('admin.department.active') }}",
                         method: "GET",
                         success: function (data) {
-                            let select = $('#categorySelect');
+                            let select = $('#departmentSelect');
                             select.empty();
-                            select.append('<option value="" disabled selected>Choose Category</option>');
-                            data.forEach(function (category) {
+                            select.append('<option value="" disabled selected>Choose Department</option>');
+
+                            data.forEach(function (department) {
                                 select.append(
-                                    '<option value="' + category.id + '">' +
-                                    category.expense_category_name + ' - ' + category.expense_category_code +
+                                    '<option value="' + department.id + '">' +
+                                    department.name +
                                     '</option>'
                                 );
                             });
-
                         },
                         error: function (xhr) {
-                            console.error("Failed to fetch expense categories:", xhr);
+                            console.error("Failed to fetch departments:", xhr);
                         }
                     });
                 }
 
-                $('#expenseItemForm').on('submit', function (e) {
-                    e.preventDefault();
+                // Fetch Countries based on Continent
+                function fetchEmployees(departmentId, selectedEmployeeId) {
+                    $.ajax({
+                        url: "{{ route('admin.employee.active') }}",
+                        method: "GET",
+                        data: {department_id: departmentId}, // Pass department_id to filter employees
+                        success: function (data) {
+                            let select = $('#employeeSelect');
+                            select.empty();
+                            select.append('<option value="" disabled selected>Choose Employee</option>');
+                            data.forEach(function (employee) {
+                                let selected = employee.id === selectedEmployeeId ? 'selected' : '';
+                                select.append('<option value="' + employee.id + '" ' + selected + '>' +
+                                    employee.first_name + ' - ' + employee.last_name +
+                                    '</option>');
+                            });
 
-                    let isEdit = $('#expense_item_id').val() !== '';
+                            // Ensure the item dropdown value is updated after population
+                            select.val(selectedEmployeeId).trigger('change');  // Set selected employee
+                        },
+                        error: function (xhr) {
+                            console.error("Failed to fetch employees:", xhr);
+                        }
+                    });
+                }
+
+                // Trigger the fetchEmployees function when a category is selected
+                $('#departmentSelect').on('change', function () {
+                    const departmentId = $(this).val();
+                    if (departmentId) {
+                        fetchEmployees(departmentId);  // Fetch employee based on the selected department
+                    } else {
+                        $('#employeeSelect').empty().append('<option value="" disabled selected>Choose Employee</option>');
+                    }
+                });
+
+                $('#bonusForm').on('submit', function (e) {
+                    e.preventDefault();
+                    let isEdit = $('#performance_bonus_id').val() !== '';
                     let formData = new FormData(this);
-                    let id = $('#expense_item_id').val();
-                    formData.set('status', $('#status').is(':checked') ? 'Enabled' : 'Disabled');
-                    const baseUpdateUrl = "{{ url('supper_admin/expense-items') }}";
+                    let id = $('#performance_bonus_id').val();
+                    const baseUpdateUrl = "{{ url('supper_admin/performance-bonuses') }}";
 
                     let url = isEdit
                         ? `${baseUpdateUrl}/${id}`
-                        : `{{ route('supper_admin.expense-items.store') }}`;
+                        : `{{ route('supper_admin.performance-bonuses.store') }}`;
 
                     let method = isEdit ? 'POST' : 'POST';
                     if (isEdit) {
@@ -184,7 +217,7 @@
                     }
 
                     Swal.fire({
-                        title: isEdit ? "Update expense item?" : "Add expense item?",
+                        title: isEdit ? "Update Performance Bonus?" : "Add Performance Bonus?",
                         icon: "question",
                         showCancelButton: true,
                         confirmButtonText: "Yes, proceed"
@@ -200,15 +233,15 @@
                                     if (response.status === 'success') {
                                         $('#modal-center').modal('hide');
                                         Swal.fire('Success!', response.message, 'success');
-                                        $('#expenseItemForm')[0].reset();
-                                        $('#expense_item_id').val('');
-                                        fetchExpenseItems();
+                                        $('#bonusForm')[0].reset();
+                                        $('#performance_bonus_id').val('');
+                                        fetchPerformanceBonuses();
                                     } else {
                                         Swal.fire('Error!', response.message, 'error');
                                     }
                                 },
                                 error: function () {
-                                    Swal.fire('Error!', 'Failed to save expense item.', 'error');
+                                    Swal.fire('Error!', 'Failed to save performance bonus.', 'error');
                                 }
                             });
                         }
@@ -216,41 +249,22 @@
                 });
 
                 $(document).on('click', '.addBlogButton', function () {
-                    $('#expenseItemForm')[0].reset();
-                    $('#expense_item_id').val('');
-                    $('#modalTitle').text('Add expense item');
+                    $('#bonusForm')[0].reset();
+                    $('#performance_bonus_id').val('');
+                    $('#departmentSelect').val('').trigger('change');
+                    $('#employeeSelect').empty().append('<option value="" disabled selected>Choose Employee</option>');
+                    $('#preview').attr('src', '').hide();
+                    $('#modalTitle').text('Add Performance Bonus');
                     $('#modal-center').modal('show');
+
                 });
 
-                $(document).on('click', '.editBlogButton', function () {
+                $(document).on('click', '.deleteBonusBtn', function () {
                     const id = $(this).data('id');
-                    const url = '{{ route("supper_admin.expense-items.edit", ":id") }}'.replace(':id', id);
-
-                    $.ajax({
-                        url: url,
-                        type: 'GET',
-                        success: function (res) {
-                            $('#expense_item_id').val(id);
-                            $('#expense_item_name').val(res.expense_item_name);
-                            $('#note').val(res.note);
-                            $('#status').prop('checked', res.status === 'Enabled');
-                            $('#modalTitle').text('Edit expense item');
-                            $('#modal-center').modal('show');
-                            $('#categorySelect').val(res.expense_category_id).trigger('change');
-
-                        },
-                        error: function () {
-                            Swal.fire('Error', 'Could not load expense item data.', 'error');
-                        }
-                    });
-                });
-
-                $(document).on('click', '.deletecountryBtn', function () {
-                    const id = $(this).data('id');
-                    const url = '{{ route("supper_admin.expense-items.destroy", ":id") }}'.replace(':id', id);
+                    const url = '{{ route("supper_admin.performance-bonuses.destroy", ":id") }}'.replace(':id', id);
 
                     Swal.fire({
-                        title: 'Delete country?',
+                        title: 'Delete Performance Bonus?',
                         text: "This action cannot be undone.",
                         icon: 'warning',
                         showCancelButton: true,
@@ -261,19 +275,19 @@
                                 url: url,
                                 type: 'POST',
                                 data: {
-                                    _token: '{{ csrf_token() }}',
-                                    _method: 'DELETE'
+                                    _method: 'DELETE',
+                                    _token: '{{ csrf_token() }}'
                                 },
-                                success: function (res) {
-                                    if (res.status === 'success') {
-                                        Swal.fire('Deleted!', res.message, 'success');
-                                        fetchExpenseItems();
+                                success: function (response) {
+                                    if (response.status === 'success') {
+                                        Swal.fire('Deleted!', response.message, 'success');
+                                        fetchPerformanceBonuses();
                                     } else {
-                                        Swal.fire('Error!', res.message, 'error');
+                                        Swal.fire('Error!', response.message, 'error');
                                     }
                                 },
                                 error: function () {
-                                    Swal.fire('Error!', 'Failed to delete.', 'error');
+                                    Swal.fire('Error!', 'Failed to delete the performance bonus.', 'error');
                                 }
                             });
                         }

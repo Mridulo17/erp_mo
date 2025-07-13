@@ -13,6 +13,7 @@ class Attendance extends Model
             'department_id',
             'employee_id',
             'date',
+            'date_details',
             'check_in',
             'check_out',
             'note'

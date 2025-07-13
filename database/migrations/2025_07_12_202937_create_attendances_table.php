@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('employee_id');
             $table->foreign('employee_id')->references('id')->on('employees')->cascadeOnUpdate()->restrictOnDelete();
             $table->date('date');
+            $table->string('date_details');
             $table->time('check_in');
             $table->time('check_out');
             $table->string('note', 2000)->nullable();
