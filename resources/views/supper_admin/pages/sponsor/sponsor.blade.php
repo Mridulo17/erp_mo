@@ -82,6 +82,10 @@
                                         <i class="fa fa-bars"></i> Action
                                     </button>
                                     <div class="dropdown-menu">
+                                        <!-- Edit Button inside Dropdown -->
+                                        <a href="#" class="dropdown-item editBlogButton" data-toggle="modal" data-target="#modal-center" data-id="{{ $serivice->id }}">
+                                            <i class="fa fa-edit"></i> Edit
+                                        </a>
 
                                         <!-- Delete Form inside Dropdown -->
                                         <button type="button"
@@ -113,6 +117,18 @@
 
     @section('script')
         <script>
+            function previewImage(event) {
+                const input = event.target;
+                const preview = document.getElementById('preview');
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
 
             function fetchSponsors() {
                 $.ajax({
@@ -146,20 +162,20 @@
                         url: "{{ route('admin.agent.active') }}",
                         method: "GET",
                         success: function (data) {
-                            let select = $('#departmentSelect');
+                            let select = $('#agentSelect');
                             select.empty();
-                            select.append('<option value="" disabled selected>Choose Department</option>');
+                            select.append('<option value="" disabled selected>Choose Agent</option>');
 
-                            data.forEach(function (department) {
+                            data.forEach(function (agent) {
                                 select.append(
-                                    '<option value="' + department.id + '">' +
-                                    department.name +
-                                    '</option>'
+                                    '<option value="' + agent.id + '">' +
+                                    agent.first_name + ' - ' + agent.last_name +
+                                '</option>'
                                 );
                             });
                         },
                         error: function (xhr) {
-                            console.error("Failed to fetch departments:", xhr);
+                            console.error("Failed to fetch agents:", xhr);
                         }
                     });
                 }
@@ -171,85 +187,84 @@
                         url: "{{ route('admin.delegate.active') }}",
                         method: "GET",
                         success: function (data) {
-                            let select = $('#departmentSelect');
+                            let select = $('#delegateSelect');
                             select.empty();
-                            select.append('<option value="" disabled selected>Choose Department</option>');
+                            select.append('<option value="" disabled selected>Choose Delegate</option>');
 
-                            data.forEach(function (department) {
+                            data.forEach(function (delegate) {
                                 select.append(
-                                    '<option value="' + department.id + '">' +
-                                    department.name +
+                                    '<option value="' + delegate.id + '">' +
+                                    delegate.first_name + ' - ' + delegate.last_name +
                                     '</option>'
                                 );
                             });
                         },
                         error: function (xhr) {
-                            console.error("Failed to fetch departments:", xhr);
+                            console.error("Failed to fetch delegates:", xhr);
                         }
                     });
                 }
 
                 // Fetch Countries based on Continent
-                function fetchDelegateOffices(departmentId, selectDelegateId) {
+                function fetchDelegateOffices(delegateId, selectDelegateOfficeId) {
                     $.ajax({
                         url: "{{ route('admin.delegate-office.active') }}",
                         method: "GET",
-                        data: {department_id: departmentId}, // Pass department_id to filter employees
+                        data: {delegate_id: delegateId}, // Pass delegate_id to filter delegate offices
                         success: function (data) {
-                            let select = $('#employeeSelect');
+                            let select = $('#delegateOfficeSelect');
                             select.empty();
-                            select.append('<option value="" disabled selected>Choose Employee</option>');
-                            data.forEach(function (employee) {
-                                let selected = employee.id === selectDelegateId ? 'selected' : '';
-                                select.append('<option value="' + employee.id + '" ' + selected + '>' +
-                                    employee.first_name + ' - ' + employee.last_name +
+                            select.append('<option value="" disabled selected>Delegate Office</option>');
+                            data.forEach(function (office) {
+                                let selected = office.id === selectDelegateOfficeId ? 'selected' : '';
+                                select.append('<option value="' + office.id + '" ' + selected + '>' +
+                                    office.office_name +
                                     '</option>');
                             });
 
                             // Ensure the item dropdown value is updated after population
-                            select.val(selectDelegateId).trigger('change');  // Set selected employee
+                            select.val(selectDelegateOfficeId).trigger('change');  // Set selected delegate office
                         },
                         error: function (xhr) {
-                            console.error("Failed to fetch employees:", xhr);
+                            console.error("Failed to fetch delegate offices:", xhr);
                         }
                     });
                 }
 
-                // Trigger the fetchDelegateOffices function when a category is selected
-                $('#departmentSelect').on('change', function () {
-                    const departmentId = $(this).val();
-                    if (departmentId) {
-                        fetchDelegateOffices(departmentId);  // Fetch employee based on the selected department
+                // Trigger the fetchDelegateOffices function when a delegate is selected
+                $('#delegateSelect').on('change', function () {
+                    const delegateId = $(this).val();
+                    if (delegateId) {
+                        fetchDelegateOffices(delegateId);  // Fetch delegate office based on the selected delegate
                     } else {
-                        $('#employeeSelect').empty().append('<option value="" disabled selected>Choose Employee</option>');
+                        $('#delegateOfficeSelect').empty().append('<option value="" disabled selected>Delegate Office</option>');
                     }
                 });
 
-                $('#leave_type').on('change', function () {
-                    $('#dayDiv').show();
+                $('#sponsor_type').on('change', function () {
                     const selectedText = $(this).find('option:selected').text();
-                    let today = moment().startOf('day').format('YYYY-MM-DD');
 
-                    if (selectedText === 'Half Day Leave') {
-                        $('#shiftDiv').show();
-                        $('#leave_date').val(today);
-                        $('#no_of_days').val(0.5);
-                    } else if (selectedText === 'Full Day Leave') {
-                        $('#shiftDiv').hide();
-                        $('#leave_date').attr('type', 'text');
-                        $('#leave_date').val(today+'→'+today);
-                        $('#no_of_days').val(1);
+                    if (selectedText === 'Agent') {
+                        $('#agentDiv').show();
+                        $('#delegateDiv').hide();
+                        $('#delegateOfficeDiv').hide();
+                    } else if (selectedText === 'Delegate') {
+                        $('#delegateDiv').show();
+                        $('#delegateOfficeDiv').show();
+                        $('#agentDiv').hide();
                     } else {
-                        $('#shiftDiv').hide();
-                        $('#no_of_days').val(0);
+                        $('#agentDiv').hide();
+                        $('#delegateDiv').hide();
+                        $('#delegateOfficeDiv').hide();
                     }
                 });
 
-                $('#bonusForm').on('submit', function (e) {
+                $('#sponsorForm').on('submit', function (e) {
                     e.preventDefault();
-                    let isEdit = $('#performance_bonus_id').val() !== '';
+                    let isEdit = $('#sponsor_id').val() !== '';
                     let formData = new FormData(this);
-                    let id = $('#performance_bonus_id').val();
+                    let id = $('#sponsor_id').val();
+                    formData.set('status', $('#status').is(':checked') ? 'Enabled' : 'Disabled');
                     const baseUpdateUrl = "{{ url('supper_admin/sponsors') }}";
 
                     let url = isEdit
@@ -262,7 +277,7 @@
                     }
 
                     Swal.fire({
-                        title: isEdit ? "Update Performance Bonus?" : "Add Performance Bonus?",
+                        title: isEdit ? "Update Sponsor?" : "Add Sponsor?",
                         icon: "question",
                         showCancelButton: true,
                         confirmButtonText: "Yes, proceed"
@@ -278,15 +293,15 @@
                                     if (response.status === 'success') {
                                         $('#modal-center').modal('hide');
                                         Swal.fire('Success!', response.message, 'success');
-                                        $('#bonusForm')[0].reset();
-                                        $('#performance_bonus_id').val('');
+                                        $('#sponsorForm')[0].reset();
+                                        $('#sponsor_id').val('');
                                         fetchSponsors();
                                     } else {
                                         Swal.fire('Error!', response.message, 'error');
                                     }
                                 },
                                 error: function () {
-                                    Swal.fire('Error!', 'Failed to save performance bonus.', 'error');
+                                    Swal.fire('Error!', 'Failed to save sponsor.', 'error');
                                 }
                             });
                         }
@@ -294,14 +309,53 @@
                 });
 
                 $(document).on('click', '.addBlogButton', function () {
-                    $('#bonusForm')[0].reset();
-                    $('#performance_bonus_id').val('');
-                    $('#departmentSelect').val('').trigger('change');
-                    $('#employeeSelect').empty().append('<option value="" disabled selected>Choose Employee</option>');
+                    $('#sponsorForm')[0].reset();
+                    $('#sponsor_id').val('');
+                    $('#sponsor_type').val('').trigger('change');
+                    $('#agentSelect').val('').trigger('change');
+                    $('#delegateSelect').val('').trigger('change');
+                    $('#delegateOfficeSelect').empty().append('<option value="" disabled selected>Delegate Office</option>');
                     $('#preview').attr('src', '').hide();
-                    $('#modalTitle').text('Add Performance Bonus');
+                    $('#modalTitle').text('Manage Sponsor');
                     $('#modal-center').modal('show');
 
+                });
+
+                const storageBaseUrl = "{{ asset('storage') }}/";
+                $(document).on('click', '.editBlogButton', function () {
+                    const id = $(this).data('id');
+                    const url = '{{ route("supper_admin.sponsors.edit", ":id") }}'.replace(':id', id);
+
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        success: function (res) {
+                            $('#sponsor_id').val(id);
+                            $('#sponsor_type').val(res.sponsor_type).trigger('change');
+                            $('#sponsor_name').val(res.sponsor_name);
+                            $('#cell_number').val(res.cell_number);
+                            $('#email').val(res.email);
+                            $('#nid').val(res.nid);
+                            if (res.sponsor_photo) {
+                                $('#preview').attr('src', storageBaseUrl + res.sponsor_photo);
+                                $('#preview').show();
+                            } else {
+                                console.log('No image path found');  // Log if no image is found
+                                $('#preview').attr('src', '');
+                                $('#preview').hide();
+                            }
+                            $('#status').prop('checked', res.status === 'Enabled');
+                            $('#modalTitle').text('Edit Sponsor');
+                            $('#modal-center').modal('show');
+                            $('#agentSelect').val(res.agent_id).trigger('change');
+                            $('#delegateSelect').val(res.delegate_id).trigger('change');
+                            $('#delegateOfficeSelect').val(res.delegate_office_id).trigger('change');
+                            fetchDelegateOffices(res.delegate_id, res.delegate_office_id);
+                        },
+                        error: function () {
+                            Swal.fire('Error', 'Could not load sponsor data.', 'error');
+                        }
+                    });
                 });
 
                 $(document).on('click', '.deleteBonusBtn', function () {
@@ -309,7 +363,7 @@
                     const url = '{{ route("supper_admin.sponsors.destroy", ":id") }}'.replace(':id', id);
 
                     Swal.fire({
-                        title: 'Delete Performance Bonus?',
+                        title: 'Delete Sponsor?',
                         text: "This action cannot be undone.",
                         icon: 'warning',
                         showCancelButton: true,
@@ -332,7 +386,7 @@
                                     }
                                 },
                                 error: function () {
-                                    Swal.fire('Error!', 'Failed to delete the performance bonus.', 'error');
+                                    Swal.fire('Error!', 'Failed to delete the sponsor.', 'error');
                                 }
                             });
                         }

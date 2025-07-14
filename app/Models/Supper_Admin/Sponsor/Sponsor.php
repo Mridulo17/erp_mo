@@ -5,6 +5,7 @@ namespace App\Models\Supper_Admin\Sponsor;
 use App\Models\Admin\HRM\Employee;
 use App\Models\Admin\People\Agent;
 use App\Models\Admin\People\Delegate;
+use App\Models\Admin\People\DelegateOffice;
 use Illuminate\Database\Eloquent\Model;
 
 class Sponsor extends Model
@@ -14,6 +15,7 @@ class Sponsor extends Model
             'sponsor_type',
             'agent_id',
             'delegate_id',
+            'delegate_office_id',
             'sponsor_name',
             'cell_number',
             'email',
@@ -21,7 +23,6 @@ class Sponsor extends Model
             'nid',
             'sponsor_photo',
             'address',
-            'employee_id',
             'note'
         ];
 
@@ -34,8 +35,8 @@ class Sponsor extends Model
     {
         return $this->belongsTo(Delegate::class);
     }
-    public function employee()
+    public function delegateOffice()
     {
-        return $this->belongsTo(Employee::class);
+        return $this->belongsTo(DelegateOffice::class);
     }
 }
