@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('sponsor_name');
             $table->string('cell_number');
             $table->string('email')->nullable();
-            $table->decimal('opening_balance', 25, 2)->nullable();
+            $table->decimal('opening_balance', 25, 2)->default(0)->nullable();
             $table->string('nid')->nullable();
             $table->string('sponsor_photo')->nullable();
             $table->string('address', 2000)->nullable();

@@ -83,7 +83,7 @@
                                     </button>
                                     <div class="dropdown-menu">
                                         <!-- Edit Button inside Dropdown -->
-                                        <a href="#" class="dropdown-item editBlogButton" data-toggle="modal" data-target="#modal-center" data-id="{{ $serivice->id }}">
+                                        <a href="#" class="dropdown-item editBlogButton" data-toggle="modal" data-target="#modal-center" data-id="{{ $bonus->id }}">
                                             <i class="fa fa-edit"></i> Edit
                                         </a>
 
@@ -139,7 +139,7 @@
                         $('#customDataTable tbody').html(newBody);
                     },
                     error: function () {
-                        console.error('Failed to refresh expense table.');
+                        console.error('Failed to refresh sponsor table.');
                     }
                 });
             }
