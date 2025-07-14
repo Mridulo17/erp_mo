@@ -44,6 +44,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\Process\CandidateController;
 use App\Http\Controllers\Admin\Enquiry\PhoneCallController;
 use App\Http\Controllers\Admin\Enquiry\VisitorBookController;
+use App\Http\Controllers\Supper_Admin\Communication\ImportantDaysController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -84,6 +85,7 @@ Route::middleware(['auth', 'verified'])->prefix('supper_admin')->name('supper_ad
     Route::get('/thana/active', [ThanaController::class, 'Activeindex'])->name('thana.active');
     Route::get('/company/active', [CompaniesController::class, 'Activeindex'])->name('company.active');
     Route::get('/expense-categories/enabled', [ExpenseCategoryController::class, 'enabledIndex'])->name('expense-category.enabled');
+    Route::get('/important-days/active', [ImportantDaysController::class, 'ActiveIndex'])->name('important-days.active');
 
 
 
@@ -108,12 +110,13 @@ Route::middleware(['auth', 'verified'])->prefix('supper_admin')->name('supper_ad
     Route::resource('states', StateController::class);
     Route::resource('currencies', CurrencyController::class);
     Route::resource('mikrotik-devices', MikrotikDeviceController::class);
+    Route::resource('important-days', ImportantDaysController::class);
 
     //Resource routes for payroll under super_admin
     Route::resource('expense-categories', ExpenseCategoryController::class);
     Route::resource('expense-items', ExpenseItemController::class);
     Route::resource('expenses', ExpenseController::class);
-    });
+});
 
 // Group routes for 'admin' with prefix and middleware
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
@@ -171,4 +174,4 @@ Route::middleware('auth')->group(function () {
 });
 
 // Include authentication routes
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

@@ -22,15 +22,15 @@ class CountryController extends Controller
         if ($request->has('continent_id') && $request->continent_id) {
             $continentId = $request->get('continent_id');
             $countries = Country::where('status', 'Active')
-                                ->where('continent_id', $continentId)
-                                ->get();
+                ->where('continent_id', $continentId)
+                ->get();
         } else {
             $countries = Country::where('status', 'Active')->get();
         }
-    
+
         return response()->json($countries);
     }
-    
+
 
     public function create()
     {
@@ -93,9 +93,9 @@ class CountryController extends Controller
         $countries->phone_code      = $request->phone_code;
         $countries->continent_id    = $request->continent_id;
         $countries->status          = $request->status ? 'Active' : 'Inactive';
-        
+
         $countries->save();
-    
+
         return response()->json(['status' => 'success', 'message' => 'countries updated successfully']);
     }
 

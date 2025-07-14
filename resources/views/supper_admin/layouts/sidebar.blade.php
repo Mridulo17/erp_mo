@@ -86,6 +86,19 @@
 					</ul>
 				</li>
 
+				<li class="treeview">
+					<a href="#">
+					  <i class="fa-solid fa-comments"><span class="path1"></span><span class="path2"></span></i>
+					  <span>Communication</span>
+					  <span class="pull-right-container">
+						<i class="fa fa-angle-right pull-right"></i>
+					  </span>
+					</a>
+					<ul class="treeview-menu">
+						<li><a href="{{ route('supper_admin.important-days.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Important Days</a></li>
+					</ul>
+				</li>
+
                   <li class="treeview">
                       <a href="#">
                           <i class="fa-solid fa fa-balance-scale"><span class="path1"></span><span class="path2"></span></i>

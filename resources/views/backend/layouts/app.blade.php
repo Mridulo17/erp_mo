@@ -25,6 +25,7 @@
 			divisionActive: "{{ route('supper_admin.division.active') }}",
 			districtActive: "{{ route('supper_admin.district.active') }}",
 			thanaActive: "{{ route('supper_admin.thana.active') }}",
+			importantDaysActive: "{{ route('supper_admin.important-days.active') }}",
 			employeeActive: "{{ route('admin.employee.active') }}",
 			branchActive: "{{ route('admin.branch.active') }}",
 			routerActive: "{{ route('admin.router.active') }}",
@@ -34,7 +35,7 @@
 			jobCategoryActive: "{{ route('admin.jobCategory.active') }}",
 			jobListActive: "{{route('admin.jobLists.active')}}",
 			processOfficeActive: "{{route('admin.processOffices.active')}}",
-
+			
         };
     </script>
   </head>
