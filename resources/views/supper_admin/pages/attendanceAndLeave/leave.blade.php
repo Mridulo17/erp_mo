@@ -412,7 +412,7 @@
                                 success: function (response) {
                                     if (response.status === 'success') {
                                         Swal.fire('Success!', response.message, 'success');
-                                        $('#leave-details').modal('hide');
+                                        window.location.reload();
                                         fetchLeaves();
                                     } else {
                                         Swal.fire('Error!', response.message, 'error');

@@ -1,5 +1,5 @@
 @extends('supper_admin.layouts.app')
-@section('title', config('app.name') . ' - Performance Bonus')
+@section('title', config('app.name') . ' - Manage Sponsor')
 
 @section('style')
     <style>
@@ -45,15 +45,15 @@
         <!-- Header Section -->
         <div class="box-header with-border d-flex justify-content-between align-items-center">
             <div>
-                <h3 class="box-title">Performance Bonuses</h3>
-                <h6 class="box-subtitle">This is all Performance Bonuses List</h6>
+                <h3 class="box-title">Manage Sponsor</h3>
+                <h6 class="box-subtitle">This is all Manage Sponsor List</h6>
             </div>
             <button type="button" class="btn btn-warning addBlogButton" data-toggle="modal" data-target="#modal-center">
                 <i class="fa-solid fa-plus"></i> Add Data
             </button>
         </div>
 
-        @include('supper_admin.components.payroll.performance_bonus_modal')
+        @include('supper_admin.components.sponsor.sponsor_modal')
 
         <div class="box-body">
             <div class="table-responsive">
@@ -73,7 +73,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($performanceBonuses as $key =>$bonus)
+                    @foreach($sponsors as $key =>$bonus)
                         <tr>
                             <td>
                                 <div class="btn-group">
@@ -114,9 +114,9 @@
     @section('script')
         <script>
 
-            function fetchPerformanceBonuses() {
+            function fetchSponsors() {
                 $.ajax({
-                    url: '{{ route("supper_admin.performance-bonuses.index") }}',
+                    url: '{{ route("supper_admin.sponsors.index") }}',
                     type: 'GET',
                     success: function (data) {
                         let newBody = $(data).find('table tbody').html();
@@ -139,11 +139,36 @@
 
             $(document).ready(function () {
 
-                fetchDepartments();
+                fetchAgents();
 
-                function fetchDepartments() {
+                function fetchAgents() {
                     $.ajax({
-                        url: "{{ route('admin.department.active') }}",
+                        url: "{{ route('admin.agent.active') }}",
+                        method: "GET",
+                        success: function (data) {
+                            let select = $('#departmentSelect');
+                            select.empty();
+                            select.append('<option value="" disabled selected>Choose Department</option>');
+
+                            data.forEach(function (department) {
+                                select.append(
+                                    '<option value="' + department.id + '">' +
+                                    department.name +
+                                    '</option>'
+                                );
+                            });
+                        },
+                        error: function (xhr) {
+                            console.error("Failed to fetch departments:", xhr);
+                        }
+                    });
+                }
+
+                fetchDelegates();
+
+                function fetchDelegates() {
+                    $.ajax({
+                        url: "{{ route('admin.delegate.active') }}",
                         method: "GET",
                         success: function (data) {
                             let select = $('#departmentSelect');
@@ -165,9 +190,9 @@
                 }
 
                 // Fetch Countries based on Continent
-                function fetchEmployees(departmentId, selectedEmployeeId) {
+                function fetchDelegateOffices(departmentId, selectDelegateId) {
                     $.ajax({
-                        url: "{{ route('admin.employee.active') }}",
+                        url: "{{ route('admin.delegate-office.active') }}",
                         method: "GET",
                         data: {department_id: departmentId}, // Pass department_id to filter employees
                         success: function (data) {
@@ -175,14 +200,14 @@
                             select.empty();
                             select.append('<option value="" disabled selected>Choose Employee</option>');
                             data.forEach(function (employee) {
-                                let selected = employee.id === selectedEmployeeId ? 'selected' : '';
+                                let selected = employee.id === selectDelegateId ? 'selected' : '';
                                 select.append('<option value="' + employee.id + '" ' + selected + '>' +
                                     employee.first_name + ' - ' + employee.last_name +
                                     '</option>');
                             });
 
                             // Ensure the item dropdown value is updated after population
-                            select.val(selectedEmployeeId).trigger('change');  // Set selected employee
+                            select.val(selectDelegateId).trigger('change');  // Set selected employee
                         },
                         error: function (xhr) {
                             console.error("Failed to fetch employees:", xhr);
@@ -190,13 +215,33 @@
                     });
                 }
 
-                // Trigger the fetchEmployees function when a category is selected
+                // Trigger the fetchDelegateOffices function when a category is selected
                 $('#departmentSelect').on('change', function () {
                     const departmentId = $(this).val();
                     if (departmentId) {
-                        fetchEmployees(departmentId);  // Fetch employee based on the selected department
+                        fetchDelegateOffices(departmentId);  // Fetch employee based on the selected department
                     } else {
                         $('#employeeSelect').empty().append('<option value="" disabled selected>Choose Employee</option>');
+                    }
+                });
+
+                $('#leave_type').on('change', function () {
+                    $('#dayDiv').show();
+                    const selectedText = $(this).find('option:selected').text();
+                    let today = moment().startOf('day').format('YYYY-MM-DD');
+
+                    if (selectedText === 'Half Day Leave') {
+                        $('#shiftDiv').show();
+                        $('#leave_date').val(today);
+                        $('#no_of_days').val(0.5);
+                    } else if (selectedText === 'Full Day Leave') {
+                        $('#shiftDiv').hide();
+                        $('#leave_date').attr('type', 'text');
+                        $('#leave_date').val(today+'→'+today);
+                        $('#no_of_days').val(1);
+                    } else {
+                        $('#shiftDiv').hide();
+                        $('#no_of_days').val(0);
                     }
                 });
 
@@ -205,11 +250,11 @@
                     let isEdit = $('#performance_bonus_id').val() !== '';
                     let formData = new FormData(this);
                     let id = $('#performance_bonus_id').val();
-                    const baseUpdateUrl = "{{ url('supper_admin/performance-bonuses') }}";
+                    const baseUpdateUrl = "{{ url('supper_admin/sponsors') }}";
 
                     let url = isEdit
                         ? `${baseUpdateUrl}/${id}`
-                        : `{{ route('supper_admin.performance-bonuses.store') }}`;
+                        : `{{ route('supper_admin.sponsors.store') }}`;
 
                     let method = isEdit ? 'POST' : 'POST';
                     if (isEdit) {
@@ -235,7 +280,7 @@
                                         Swal.fire('Success!', response.message, 'success');
                                         $('#bonusForm')[0].reset();
                                         $('#performance_bonus_id').val('');
-                                        fetchPerformanceBonuses();
+                                        fetchSponsors();
                                     } else {
                                         Swal.fire('Error!', response.message, 'error');
                                     }
@@ -261,7 +306,7 @@
 
                 $(document).on('click', '.deleteBonusBtn', function () {
                     const id = $(this).data('id');
-                    const url = '{{ route("supper_admin.performance-bonuses.destroy", ":id") }}'.replace(':id', id);
+                    const url = '{{ route("supper_admin.sponsors.destroy", ":id") }}'.replace(':id', id);
 
                     Swal.fire({
                         title: 'Delete Performance Bonus?',
@@ -281,7 +326,7 @@
                                 success: function (response) {
                                     if (response.status === 'success') {
                                         Swal.fire('Deleted!', response.message, 'success');
-                                        fetchPerformanceBonuses();
+                                        fetchSponsors();
                                     } else {
                                         Swal.fire('Error!', response.message, 'error');
                                     }

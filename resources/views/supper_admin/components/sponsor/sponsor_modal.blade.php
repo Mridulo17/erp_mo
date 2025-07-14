@@ -9,10 +9,19 @@
             </div>
 
             <!-- The Form -->
-            <form id="mobileAllowanceForm">
+            <form id="bonusForm">
                 @csrf
-                <input type="hidden" id="mobile_allowance_id" name="mobile_allowance_id" value="">
+                <input type="hidden" id="performance_bonus_id" name="performance_bonus_id" value="">
                 <div class="modal-body">
+                    <div class="form-group">
+                        <label class="font-weight-700 font-size-16" for="sponsor_type">Sponsor Type</label>
+                        <select name="sponsor_type" id="sponsor_type" class="form-control" required>
+                            <option value="" disabled selected>Sponsor Type</option>
+                            <option value="Agent">Agent</option>
+                            <option value="Delegate">Delegate</option>
+                            <option value="Prime Sponsor">Prime Sponsor</option>
+                        </select>
+                    </div>
                     <div class="form-group">
                         <label for="department_id" class="font-weight-bold text-dark" style="font-size: 14px;">Choose Department </label>
                         <select name="department_id" id="departmentSelect" class="form-control" required>
@@ -29,14 +38,14 @@
                         <label class="font-weight-700 font-size-16" for="impression_type">Impression Type</label>
                         <select name="impression_type" id="impression_type" class="form-control" required>
                             <option value="" disabled selected>Impression Type</option>
-                            <option value="Increment">Increment</option>
-                            <option value="Decrement">Decrement</option>
+                            <option value="Good impression">Good impression</option>
+                            <option value="Bad impression">Bad impression</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="start_month" class="font-weight-bold text-dark" style="font-size: 14px;">Start Month</label>
-                        <input type="month" id="start_month" name="start_month" class="form-control" placeholder="Month">
+                        <label for="month" class="font-weight-bold text-dark" style="font-size: 14px;">Month</label>
+                        <input type="month" id="month" name="month" class="form-control" placeholder="Month">
                     </div>
                     <div class="form-group">
                         <label class="font-weight-700 font-size-16" for="amount_type">Amount Type</label>
