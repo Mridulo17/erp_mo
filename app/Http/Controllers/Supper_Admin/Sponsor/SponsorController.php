@@ -20,8 +20,8 @@ class SponsorController extends Controller
 
     public function enabledIndex()
     {
-        $expenseCategories = ExpenseCategory::where('status', 'Enabled')->get();
-        return response()->json($expenseCategories);
+        $sponsors = Sponsor::where('status', 'Enabled')->get();
+        return response()->json($sponsors);
     }
 
 
@@ -35,29 +35,34 @@ class SponsorController extends Controller
     {
         try {
             $request->validate([
-                'account_type'    => 'required|in:Assets,Expense',
-                'expense_category_name'      => 'required|string|max:255|unique:expense_categories,expense_category_name',
-                'expense_category_code'      => 'required|string|max:255|unique:expense_categories,expense_category_code',
-                'opening_balance_sheet' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240', // 10MB max
+                'sponsor_type'    => 'required|in:Agent,Delegate,Prime Sponsor',
+                'sponsor_name'      => 'required|string|max:255',
+                'cell_number'      => 'required|string|max:255',
+                'sponsor_photo' => 'nullable|mimes:jpg,jpeg,png|max:10240', // 10MB max
                 'status'    => 'required|in:Enabled,Disabled'
             ]);
 
             $openingBalanceSheetPath = null;
 
-            if ($request->hasFile('opening_balance_sheet')) {
-                $openingBalanceSheetPath = $request->file('opening_balance_sheet')->store('expense_categories', 'public');
+            if ($request->hasFile('sponsor_photo')) {
+                $openingBalanceSheetPath = $request->file('sponsor_photo')->store('sponsors', 'public');
             }
 
-            ExpenseCategory::create([
-                'account_type'      => $request->input('account_type'),
-                'expense_category_name'  => $request->input('expense_category_name'),
-                'expense_category_code'  => $request->input('expense_category_code'),
-                'opening_balance'  => $request->input('opening_balance'),
-                'opening_balance_sheet'         => $openingBalanceSheetPath,
+            Sponsor::create([
+                'sponsor_type'      => $request->input('sponsor_type'),
+                'agent_id'  => $request->input('agent_id'),
+                'delegate_id'  => $request->input('delegate_id'),
+                'delegate_office_id'  => $request->input('delegate_office_id'),
+                'sponsor_name'  => $request->input('sponsor_name'),
+                'cell_number'  => $request->input('cell_number'),
+                'email'  => $request->input('email'),
+                'nid'  => $request->input('nid'),
+                'sponsor_photo'         => $openingBalanceSheetPath,
                 'note'  => $request->input('note'),
+                'address'  => $request->input('address'),
                 'status'    => $request->input('status') === 'Enabled' ? 'Enabled' : 'Disabled'
             ]);
-            return response()->json(['status' => 'success', 'message' => 'Expense category added Successfully']);
+            return response()->json(['status' => 'success', 'message' => 'Sponsor added Successfully']);
         } catch (ValidationException $e) {
             return response()->json(['status' => 'fail', 'message' => $e->validator->errors()]);
         } catch (\Exception $e) {
@@ -78,8 +83,8 @@ class SponsorController extends Controller
      */
     public function edit(string $id)
     {
-        $expenseCategory = ExpenseCategory::findOrFail($id);
-        return response()->json($expenseCategory);
+        $sponsor = Sponsor::findOrFail($id);
+        return response()->json($sponsor);
     }
 
     /**
@@ -89,52 +94,47 @@ class SponsorController extends Controller
     {
         try {
             $request->validate([
-                'account_type'    => 'required|in:Assets,Expense',
-                'expense_category_name' => [
-                    'required',
-                    'string',
-                    'max:255',
-                    Rule::unique('expense_categories')->ignore($id),
-                ],
-                'expense_category_code' => [
-                    'required',
-                    'string',
-                    'max:255',
-                    Rule::unique('expense_categories')->ignore($id),
-                ],
-                'opening_balance_sheet' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240', // 10MB max
+                'sponsor_type'    => 'required|in:Agent,Delegate,Prime Sponsor',
+                'sponsor_name'      => 'required|string|max:255',
+                'cell_number'      => 'required|string|max:255',
+                'sponsor_photo' => 'nullable|mimes:jpg,jpeg,png|max:10240', // 10MB max
                 'status'    => 'required|in:Enabled,Disabled'
             ]);
 
-            $expenseCategory = ExpenseCategory::findOrFail($id);
-            $expenseCategory->account_type = $request->account_type;
-            $expenseCategory->expense_category_name = $request->expense_category_name;
-            $expenseCategory->expense_category_code = $request->expense_category_code;
-            $expenseCategory->opening_balance = $request->opening_balance;
+            $sponsor = Sponsor::findOrFail($id);
+            $sponsor->sponsor_type = $request->sponsor_type;
+            $sponsor->agent_id = $request->agent_id;
+            $sponsor->delegate_id = $request->delegate_id;
+            $sponsor->delegate_office_id = $request->delegate_office_id;
+            $sponsor->sponsor_name = $request->sponsor_name;
+            $sponsor->cell_number = $request->cell_number;
+            $sponsor->email = $request->email;
+            $sponsor->nid = $request->nid;
             // If user asked to remove file
             if ($request->has('remove_file') && $request->remove_file) {
-                if ($expenseCategory->opening_balance_sheet) {
-                    Storage::disk('public')->delete($expenseCategory->opening_balance_sheet);
+                if ($sponsor->sponsor_photo) {
+                    Storage::disk('public')->delete($sponsor->sponsor_photo);
                 }
             }
 
             // If a new file was uploaded
             $openingBalanceSheetPath = null;
-            if ($request->hasFile('opening_balance_sheet')) {
+            if ($request->hasFile('sponsor_photo')) {
 
-                if ($expenseCategory->opening_balance_sheet) {
-                    Storage::disk('public')->delete($expenseCategory->opening_balance_sheet);
+                if ($sponsor->sponsor_photo) {
+                    Storage::disk('public')->delete($sponsor->sponsor_photo);
                 }
-                $openingBalanceSheetPath = $request->file('opening_balance_sheet')->store('expense_categories', 'public');
+                $openingBalanceSheetPath = $request->file('sponsor_photo')->store('sponsors', 'public');
             }
 
-            $expenseCategory->opening_balance_sheet = $openingBalanceSheetPath;
-            $expenseCategory->note = $request->note;
-            $expenseCategory->status = $request->status === 'Enabled' ? 'Enabled' : 'Disabled';
+            $sponsor->sponsor_photo = $openingBalanceSheetPath;
+            $sponsor->address = $request->address;
+            $sponsor->note = $request->note;
+            $sponsor->status = $request->status === 'Enabled' ? 'Enabled' : 'Disabled';
 
-            $expenseCategory->save();
+            $sponsor->save();
 
-            return response()->json(['status' => 'success', 'message' => 'Expense category updated successfully']);
+            return response()->json(['status' => 'success', 'message' => 'Sponsor updated successfully']);
         } catch (ValidationException $e) {
             return response()->json(['status' => 'fail', 'message' => $e->validator->errors()]);
         } catch (\Exception $e) {
@@ -148,9 +148,9 @@ class SponsorController extends Controller
     public function destroy(string $id)
     {
         try {
-            $expenseCategory = ExpenseCategory::findOrFail($id);
-            $expenseCategory->delete();
-            return response()->json(['status' => 'success', 'message' => 'Expense category deleted successfully']);
+            $sponsor = Sponsor::findOrFail($id);
+            $sponsor->delete();
+            return response()->json(['status' => 'success', 'message' => 'Sponsor deleted successfully']);
         } catch (\Exception $e) {
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
         }
