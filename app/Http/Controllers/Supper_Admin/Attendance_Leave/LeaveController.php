@@ -43,29 +43,35 @@ class LeaveController extends Controller
                 'employee_id'      => $request->input('employee_id'),
                 'leave_type'      => $request->input('leave_type'),
                 'no_of_days'      => $request->input('no_of_days'),
-                'shift'      => $request->input('shift'),
+                'shift'      => $request->leave_type === 'Half Day Leave' ? $request->input('shift') : 'Full Day',
                 'attachment'         => $attachmentPath,
                 'note'  => $request->input('note')
             ]);
             if($request->input('leave_date')) {
-                [$start, $end] = explode('→', $request->leave_date);
+                if ($request->leave_type === 'Full Day Leave') {
+                    [$start, $end] = explode('→', $request->leave_date);
+                    $startDate = Carbon::createFromFormat('Y-m-d', trim($start));
+                    $endDate = Carbon::createFromFormat('Y-m-d', trim($end));
 
-                $startDate = Carbon::createFromFormat('Y-m-d', trim($start));
-                $endDate = Carbon::createFromFormat('Y-m-d', trim($end));
+                    $allDates = collect();
+                    for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+                        $allDates->push($date->format('Y-m-d'));
+                    }
+                    foreach ($allDates as $singleDate) {
+                        LeaveDate::create([
+                            'leave_id' => $leave->id, // or any logic
+                            'leave_date' => $singleDate
+                        ]);
+                    }
 
-                $allDates = collect();
-                for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
-                    $allDates->push($date->format('Y-m-d'));
-                }
-
-                foreach ($allDates as $singleDate) {
+                } else {
                     LeaveDate::create([
                         'leave_id' => $leave->id, // or any logic
-                        'leave_date' => $singleDate
+                        'leave_date' => $request->leave_date
                     ]);
                 }
             }
-            return response()->json(['status' => 'success', 'message' => 'Attendance added Successfully']);
+            return response()->json(['status' => 'success', 'message' => 'Leave added Successfully']);
         } catch (ValidationException $e) {
             return response()->json(['status' => 'fail', 'message' => $e->validator->errors()]);
         } catch (\Exception $e) {
@@ -86,41 +92,8 @@ class LeaveController extends Controller
      */
     public function edit(string $id)
     {
-        $attendance = Attendance::findOrFail($id);
-        return response()->json($attendance);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        try {
-            $request->validate([
-                'department_id'      => 'required|integer',
-                'employee_id'      => 'required|integer',
-                'date'      => 'required|string',
-                'check_in'      => 'required|string',
-                'check_out'      => 'required|string'
-            ]);
-            $dateDetails = Carbon::parse($request->input('date'))->format('l, jS \\of F Y');
-
-            $attendance = Attendance::findOrFail($id);
-            $attendance->department_id = $request->department_id;
-            $attendance->employee_id = $request->employee_id;
-            $attendance->date = $request->date;
-            $attendance->date_details = $dateDetails;
-            $attendance->check_in = $request->check_in;
-            $attendance->check_out = $request->check_out;
-            $attendance->note = $request->note;
-            $attendance->save();
-
-            return response()->json(['status' => 'success', 'message' => 'Attendance updated successfully']);
-        } catch (ValidationException $e) {
-            return response()->json(['status' => 'fail', 'message' => $e->validator->errors()]);
-        } catch (\Exception $e) {
-            return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
-        }
+        $leave = Leave::with(['leaveDates', 'department', 'employee'])->findOrFail($id);
+        return response()->json($leave);
     }
 
     /**
@@ -130,8 +103,30 @@ class LeaveController extends Controller
     {
         try {
             $leave = Leave::findOrFail($id);
+            if(isset($leave->leaveDates)){
+                $leave->leaveDates()->delete();
+            }
             $leave->delete();
             return response()->json(['status' => 'success', 'message' => 'Leave deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function withdraw(string $id)
+    {
+        try {
+            $leaveDate = LeaveDate::findOrFail($id);
+            $leave = Leave::where('id', $leaveDate->leave_id)->first();
+            if(isset($leave)){
+                if($leave->leave_type === 'Full Day Leave'){
+                    $leave->update(['no_of_days'=>$leave->no_of_days - 1]);
+                } else {
+                    $leave->update(['no_of_days'=>0]);
+                }
+            }
+            $leaveDate->delete();
+            return response()->json(['status' => 'success', 'message' => 'Leave withdraw successfully']);
         } catch (\Exception $e) {
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
         }

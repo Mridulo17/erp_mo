@@ -151,6 +151,7 @@ Route::middleware(['auth', 'verified'])->prefix('supper_admin')->name('supper_ad
 
     //Resource routes for attendance and leave under super_admin
     Route::resource('attendances', AttendanceController::class);
+    Route::delete('/leave-date/withdraw/{id}', [LeaveController::class, 'withdraw'])->name('leave-date.withdraw');
     Route::resource('leaves', LeaveController::class);
     Route::resource('roastings', RoastingController::class);
     Route::resource('weekends', WeekendController::class);

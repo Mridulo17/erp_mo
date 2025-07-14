@@ -56,6 +56,7 @@
         </div>
 
         @include('supper_admin.components.attendanceAndLeave.leave_modal')
+        @include('supper_admin.components.attendanceAndLeave.leave_details_modal')
 
         <div class="box-body">
             <div class="table-responsive">
@@ -67,9 +68,9 @@
                         <th style="">DB:ID</th>
                         <th style="">Employee</th>
                         <th style="">Department</th>
-                        <th style="">Date</th>
-                        <th style="">In</th>
-                        <th style="">Out</th>
+                        <th style="">Leave Type</th>
+                        <th style="">Shift</th>
+                        <th style="">NOD</th>
                         <th style="">Entry Date</th>
                     </tr>
                     </thead>
@@ -85,8 +86,8 @@
                                     <div class="dropdown-menu">
                                         <!-- Edit Button inside Dropdown -->
                                         <a href="#" class="dropdown-item editBlogButton" data-toggle="modal"
-                                           data-target="#modal-center" data-id="{{ $bonus->id }}">
-                                            <i class="fa fa-edit"></i> Edit
+                                           data-target="#leave-details" data-id="{{ $bonus->id }}">
+                                            <i class="fa fa-bars"></i> View
                                         </a>
 
                                         <!-- Delete Form inside Dropdown -->
@@ -102,9 +103,9 @@
                             <td>{{ $key + 1 }}</td>
                             <td class="wrap-text">{{$bonus->employee ? $bonus->employee->first_name : '' }} {{$bonus->employee ? $bonus->employee->last_name : '' }}</td>
                             <td class="wrap-text">{{$bonus->department ? $bonus->department->name : '' }}</td>
-                            <td class="wrap-text">{{ $bonus->date  }}({{ $bonus->date_details  }})</td>
-                            <td class="wrap-text">{{ $bonus->check_in  }}</td>
-                            <td class="wrap-text">{{ $bonus->check_out  }}</td>
+                            <td class="wrap-text">{{ $bonus->leave_type  }}</td>
+                            <td class="wrap-text">{{ $bonus->shift  }}</td>
+                            <td class="wrap-text">{{ $bonus->no_of_days  }}</td>
                             <td class="wrap-text">{{ $bonus->created_at->format('F d, Y') }}</td>
 
                         </tr>
@@ -117,45 +118,17 @@
     </div>
 
     @section('script')
-        <!-- jQuery (required) -->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-        <!-- moment.js -->
-        <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
 
         <!-- daterangepicker JS -->
         <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
         <script>
-
-            $(document).ready(function () {
-                $('#leave_date').daterangepicker({
-                    opens: 'left', // or 'right'
-                    autoUpdateInput: true,
-                    locale: {
-                        format: 'YYYY-MM-DD',
-                        separator: ' → ', // change dash to arrow
-                        cancelLabel: 'Clear'
-                    }
-                }, function(start, end) {
-                    // Calculate number of days including both start and end
-                    let days = end.diff(start, 'days') + 1;
-                    // Display it in a paragraph
-                    $('#no_of_days').val(days);
-                }
-                );
-
-                // Optional: Clear on cancel
-                $('#leave_date').on('cancel.daterangepicker', function (ev, picker) {
-                    $(this).val('');
-                });
-            });
 
             function fetchLeaves() {
                 $.ajax({
                     url: '{{ route("supper_admin.leaves.index") }}',
                     type: 'GET',
                     success: function (data) {
-                        let newBody = $(data).find('table tbody').html();
+                        let newBody = $(data).find('#customDataTable tbody').html();
                         $('#customDataTable tbody').html(newBody);
                     },
                     error: function () {
@@ -171,6 +144,27 @@
             // When the modal is hidden
             $('#modal-center').on('hidden.bs.modal', function () {
                 $('.wrapper').attr('aria-hidden', 'true');
+            });
+
+            $('#leave_date').daterangepicker({
+                    opens: 'left', // or 'right'
+                    autoUpdateInput: true,
+                    locale: {
+                        format: 'YYYY-MM-DD',
+                        separator: ' → ', // change dash to arrow
+                        cancelLabel: 'Clear'
+                    }
+                }, function(start, end) {
+                    // Calculate number of days including both start and end
+                    let days = end.diff(start, 'days') + 1;
+                    // Display it in a paragraph
+                    $('#no_of_days').val(days);
+                }
+            );
+
+            // Optional: Clear on cancel
+            $('#leave_date').on('cancel.daterangepicker', function (ev, picker) {
+                $(this).val('');
             });
 
             $(document).ready(function () {
@@ -309,11 +303,12 @@
                     $('#leave_id').val('');
                     $('#departmentSelect').val('').trigger('change');
                     $('#employeeSelect').empty().append('<option value="" disabled selected>Choose Employee</option>');
-                    $('#preview').attr('src', '').hide();
                     $('#modalTitle').text('Manage Leave');
                     $('#modal-center').modal('show');
 
                 });
+
+                const storageBaseUrl = "{{ asset('storage') }}/";
 
                 $(document).on('click', '.editBlogButton', function () {
                     const id = $(this).data('id');
@@ -323,17 +318,36 @@
                         url: url,
                         type: 'GET',
                         success: function (res) {
-                            $('#leave_id').val(id);
-                            $('#date').val(res.date);
-                            $('#check_in').val(res.check_in);
-                            $('#check_out').val(res.check_out);
-                            $('#note').val(res.note);
-                            $('#modalTitle').text('Edit attendance');
-                            $('#departmentSelect').val(res.department_id).trigger('change');
-                            $('#employeeSelect').val(res.employee_id).trigger('change');
-                            fetchEmployees(res.department_id, res.employee_id);
-                            $('#modal-center').modal('show');
+                            let createdDate = moment(res.created_at).format('YYYY-MM-DD');
+                            $('#modalTitle').text('Leave Details');
+                            $('#emp_name').text(res.employee.first_name + ' ' + res.employee.last_name);
+                            $('#department').text(res.department.name);
+                            $('#type').text(res.leave_type);
+                            $('#leave_shift').text(res.shift);
+                            $('#nod').text(res.no_of_days);
+                            $('#entry_date').text(createdDate);
+                            if (res.employee.photo) {
+                                $('#preview').attr('src', storageBaseUrl + res.photo);
+                                $('#preview').show();
+                            } else {
+                                console.log('No image path found');  // Log if no image is found
+                                $('#preview').attr('src', '');
+                                $('#preview').hide();
+                            }
+                            let leaveDatesHtml = '';
+                            res.leave_dates.forEach(function (date) {
+                                let formattedDate = moment(date.leave_date).format('dddd, Do [of] MMMM YYYY');
+                                leaveDatesHtml += `
+            <li class="d-flex align-items-center gap-2">
+                <button type="button" class="dropdown-item text-danger deleteDateBtn p-0" data-id="${date.id}">
+                    <i class="fa fa-trash"></i>
+                </button>
+                - <label>${date.leave_date}</label> (${formattedDate})
+            </li>`;
+                            });
+                            $('#leaveDatesList').html(leaveDatesHtml);
 
+                            $('#leave-details').modal('show');
                         },
                         error: function () {
                             Swal.fire('Error', 'Could not load leave data.', 'error');
@@ -370,6 +384,42 @@
                                 },
                                 error: function () {
                                     Swal.fire('Error!', 'Failed to delete the leave.', 'error');
+                                }
+                            });
+                        }
+                    });
+                });
+
+                $(document).on('click', '.deleteDateBtn', function () {
+                    const id = $(this).data('id');
+                    const url = '{{ route("supper_admin.leave-date.withdraw", ":id") }}'.replace(':id', id);
+
+                    Swal.fire({
+                        title: 'Yes, withdraw it!',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Withdraw'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: url,
+                                type: 'POST',
+                                data: {
+                                    _method: 'DELETE',
+                                    _token: '{{ csrf_token() }}'
+                                },
+                                success: function (response) {
+                                    if (response.status === 'success') {
+                                        Swal.fire('Success!', response.message, 'success');
+                                        $('#leave-details').modal('hide');
+                                        fetchLeaves();
+                                    } else {
+                                        Swal.fire('Error!', response.message, 'error');
+                                    }
+                                },
+                                error: function () {
+                                    Swal.fire('Error!', 'Failed to withdraw the leave.', 'error');
                                 }
                             });
                         }

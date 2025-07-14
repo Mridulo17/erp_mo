@@ -27,4 +27,9 @@ class Leave extends Model
     {
         return $this->belongsTo(Employee::class);
     }
+
+    public function leaveDates()
+    {
+        return $this->hasMany(LeaveDate::class);
+    }
 }
