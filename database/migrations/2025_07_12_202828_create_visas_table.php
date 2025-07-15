@@ -23,8 +23,8 @@ return new class extends Migration
             $table->integer('age_from');
             $table->integer('age_to');
             $table->string('visa_number');
-            $table->integer('visa_qty')->nullable();
-            $table->enum('type', ['Air Ticket', 'Business Visa', 'Hazz & Umrah', 'Manpower', 'Patient', 'Tourist', 'Visa processing', 'Worker']);
+            $table->integer('visa_qty');
+            $table->enum('type', ['Air Ticket', 'Business Visa', 'Hazz & Umrah', 'Manpower', 'Patient', 'Tourist', 'Visa Processing', 'Worker']);
             $table->enum('gender', ['Male', 'Female', 'Haji']);
             $table->integer('salary_currency_id')->unsigned();
             $table->foreign('salary_currency_id')->references('id')->on('currencies')->onDelete('cascade');
