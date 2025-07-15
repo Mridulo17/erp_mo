@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('nid_scan_copy')->nullable();
             $table->string('agreement_scan_copy')->nullable();
             $table->json('attachment')->nullable();
+            $table->string('recieved_no', 20)->unique();
+            $table->double('balance', 15, 2)->default(0);
             $table->unsignedBigInteger('country_id')->nullable();
             $table->unsignedBigInteger('division_id')->nullable();
             $table->unsignedBigInteger('district_id')->nullable();
@@ -27,6 +29,11 @@ return new class extends Migration
             $table->text('note')->nullable();
             $table->boolean('status')->default(true);
             $table->timestamps();
+
+            $table->foreign('country_id')->references('id')->on('countries')->cascadeOnDelete();
+            $table->foreign('division_id')->references('id')->on('divisions')->cascadeOnDelete();
+            $table->foreign('district_id')->references('id')->on('districts')->cascadeOnDelete();
+            $table->foreign('employee_id')->references('id')->on('employees')->cascadeOnDelete();
         });
     }
 

@@ -69,14 +69,15 @@
                 <table id="vistorDataTable" style="table-layout: fixed; width: 100%;" class="table table-bordered table-hover display nowrap margin-top-10 w-p100">
                     <thead>
                         <tr>
-                            <th width="50px">Action</th>
-                            <th>Serial</th>
-                            <th>Phone</th>
-                            <th>Name</th>
-                            <th>Address</th>
-                            <th>Category</th>
-                            <th>Entry Time</th>
-                            <th>Find Us</th>
+                            <th width="4%">Action</th>
+                            <th width="3%">Serial</th>
+                            <th width="15%">Phone</th>
+                            <th width="15%">Name</th>
+                            <th width="15%">Address</th>
+                            <th width="5%" title="IN Candidate List">ICL</th>
+                            <th width="15%">Entry Date</th>
+                            <th width="10%">Entry Time</th>
+                            <th width="18%">Entry By</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -88,6 +89,9 @@
                                             <i class="fa fa-bars"></i> Action
                                         </button>
                                         <div class="dropdown-menu">
+                                            <button type="button" class="dropdown-item sendPhoneCall" data-id="{{ $visitor->id }}">
+                                                <i class="fa fa-arrow-up"></i> Send Phone Call
+                                            </button>
                                             <button type="button" class="dropdown-item editVisitorBookBtn" data-id="{{ $visitor->id }}">
                                                 <i class="fa fa-edit"></i> Edit
                                             </button>
@@ -101,14 +105,14 @@
                                 <td>{{ $visitor->phone }}</td>
                                 <td>{{ $visitor->full_name }}</td>
                                 <td>{{ $visitor->address }}</td>
-                                <td>{{ $visitor->candidateType->name ?? '' }}</td>
-                                <td>{{ $visitor->entry_time }}</td>
-                                <td>{{ $visitor->how_find_us }}</td>
+                                <td>{{ $visitor->is_candidate ? 'Yes' : 'No' }}</td>
+                                <td>{{ $visitor->created_at ? \Carbon\Carbon::parse($visitor->created_at)->format('d, F Y') : 'N/A'  }}</td>
+                                <td>{{ $visitor->entry_time ? \Carbon\Carbon::parse($visitor->entry_time)->format('g:i A') : 'N/A' }}</td>
+                                <td>{{ $visitor->employee_id ? $visitor->employee->name : 'N/A'  }}</td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
-                {{-- {{ $visitorBooks->links() }} --}} <!-- Remove pagination for DataTables -->
             </div>
         </div>
     </div>
@@ -138,6 +142,11 @@
             $('#addVisitorBookBtn').on('click', function() {
                 $('#visitorBookForm')[0].reset();
                 $('#visitor_book_id').val('');
+                // Set entry_time to current time by default
+                const now = new Date();
+                const pad = n => n < 10 ? '0' + n : n;
+                const currentTime = pad(now.getHours()) + ':' + pad(now.getMinutes());
+                $('#entry_time').val(currentTime);
                 $('#visitorBookModalTitle').text('Add Visitor Book');
                 $('#visitorBookModalSubmitText').text('Save');
                 $('#visitorBookModal').modal('show');
@@ -154,20 +163,48 @@
                     $('#reference_type').val(res.reference_type).trigger('change');
                     $('#note').val(res.note);
                     $('#entry_time').val(res.entry_time);
-                    $('#how_find_us').val(res.how_find_us).trigger('change');
+                    $('#how_find_us_id').val(res.how_find_us_id).trigger('change');
                     $('#visitorBookModalTitle').text('Edit Visitor Book');
                     $('#visitorBookModalSubmitText').text('Update');
                     $('#visitorBookModal').modal('show');
                 });
             });
-            // Save (Add/Edit) Visitor Book
+            // Client-side validation for required fields
             $('#visitorBookForm').on('submit', function(e) {
-                e.preventDefault();
+                e.preventDefault(); // Always prevent default form submission
+                let valid = true;
+                $(this).find('.is-invalid').removeClass('is-invalid');
+                $(this).find('.invalid-feedback').remove();
+                const requiredFields = [
+                    { id: '#phone', name: 'Phone' },
+                    { id: '#full_name', name: 'Full Name' },
+                    { id: '#candidate_type_id', name: 'Category' },
+                    { id: '#reference_type', name: 'Reference Type' },
+                    { id: '#how_find_us_id', name: 'How to find us' }
+                ];
+                requiredFields.forEach(function (field) {
+                    const $input = $(field.id);
+                    let value = $input.val();
+                    if (!value || value === '') {
+                        valid = false;
+                        $input.addClass('is-invalid');
+                        if ($input.hasClass('select2')) {
+                            $input.next('.select2-container').find('.select2-selection').addClass('is-invalid');
+                        }
+                        $input.after('<div class="invalid-feedback" style="color: #e74c3c; font-size: 13px;">This field is required.</div>');
+                    }
+                });
+                if (!valid) {
+                    return;
+                }
+                // Save (Add/Edit) Visitor Book
                 let id = $('#visitor_book_id').val();
                 let isEdit = id && id !== '';
                 let url = isEdit ? `/admin/enquiry/visitor-books/${id}` : `/admin/enquiry/visitor-books`;
                 let method = isEdit ? 'POST' : 'POST';
                 let formData = $(this).serializeArray();
+                // Remove visitor_book_id from formData before sending
+                formData = formData.filter(function(item) { return item.name !== 'visitor_book_id'; });
                 if (isEdit) {
                     formData.push({ name: '_method', value: 'PUT' });
                 }

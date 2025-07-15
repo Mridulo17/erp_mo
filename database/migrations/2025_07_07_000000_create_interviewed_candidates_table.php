@@ -14,7 +14,10 @@ return new class extends Migration
             $table->string('full_name')->nullable();
             $table->date('date_of_birth')->nullable();
             $table->text('note')->nullable();
+            $table->unsignedBigInteger('employee_id')->nullable();
             $table->timestamps();
+
+            $table->foreign('employee_id')->references('id')->on('employees')->onDelete('set null');
         });
     }
 

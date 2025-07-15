@@ -2,6 +2,7 @@
 
 namespace App\Models\Admin\HRM;
 
+use App\Models\Admin\Enquiry\PhoneCallFollowup;
 use App\Models\Admin\MyOffice\Branch;
 use App\Models\Admin\MyOffice\Department;
 use App\Models\Admin\MyOffice\Designation;
@@ -82,5 +83,9 @@ class Employee extends Model
     public function roster()
     {
         return $this->belongsTo(Roster::class, 'roster_id');
+    }
+    public function phone_call_followups()
+    {
+        return $this->hasMany(PhoneCallFollowup::class);
     }
 }

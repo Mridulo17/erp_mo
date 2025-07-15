@@ -24,6 +24,8 @@
                         <th>Full Name</th>
                         <th>Date Of Birth</th>
                         <th>Note</th>
+                        <th>Entry Date</th>
+                        <th>Entry By</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -47,8 +49,10 @@
                         <td>{{ $key + 1 }}</td>
                         <td>{{ $candidate->phone }}</td>
                         <td>{{ $candidate->full_name }}</td>
-                        <td>{{ $candidate->date_of_birth }}</td>
+                        <td>{{ $candidate->date_of_birth ? \Carbon\Carbon::parse($candidate->date_of_birth)->format('d, F Y') : 'N/A'  }}</td>
                         <td>{{ $candidate->note }}</td>
+                        <td>{{ $candidate->created_at ? \Carbon\Carbon::parse($candidate->created_at)->format('d, F Y') : 'N/A'  }}</td>
+                        <td>{{ $candidate->employee_id ? $candidate->employee->name : 'N/A'  }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -102,6 +106,26 @@ $(document).ready(function() {
     // Save (Add/Edit) Interviewed Candidate
     $('#interviewedCandidateForm').on('submit', function(e) {
         e.preventDefault();
+        let valid = true;
+        $(this).find('.is-invalid').removeClass('is-invalid');
+        $(this).find('.invalid-feedback').remove();
+        const requiredFields = [
+            { id: '#phone', name: 'Phone' },
+            { id: '#full_name', name: 'Full Name' },
+            { id: '#date_of_birth', name: 'Date Of Birth' }
+        ];
+        requiredFields.forEach(function (field) {
+            const $input = $(field.id);
+            let value = $input.val();
+            if (!value || value === '') {
+                valid = false;
+                $input.addClass('is-invalid');
+                $input.after('<div class="invalid-feedback" style="color: #e74c3c; font-size: 13px;">This field is required.</div>');
+            }
+        });
+        if (!valid) {
+            return;
+        }
         let id = $('#interviewed_candidate_id').val();
         let isEdit = id && id !== '';
         let url = isEdit ? `/admin/enquiry/interviewed-candidates/${id}` : `/admin/enquiry/interviewed-candidates`;
