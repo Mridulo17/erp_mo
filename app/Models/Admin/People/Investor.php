@@ -30,6 +30,8 @@ class Investor extends Model
         'permanent_address',
         'note',
         'status',
+        'recieved_no',
+        'balance',
     ];
 
     protected $casts = [
@@ -49,7 +51,7 @@ class Investor extends Model
     {
         return $this->belongsTo(District::class, 'district_id');
     }
-    public function employees()
+    public function employee()
     {
         return $this->belongsTo(Employee::class, 'employee_id');
     }

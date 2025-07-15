@@ -46,6 +46,8 @@ use App\Http\Controllers\Admin\Enquiry\PhoneCallController;
 use App\Http\Controllers\Admin\Enquiry\VisitorBookController;
 use App\Http\Controllers\Admin\Enquiry\InterviewedCandidateController;
 use App\Http\Controllers\Admin\People\InvestorController;
+use App\Http\Controllers\Admin\Enquiry\PhoneCallFollowupController;
+use App\Http\Controllers\Admin\People\InvestorTransactionController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -138,6 +140,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('/jobLists/active', [JobListController::class, 'Activeindex'])->name('jobLists.active');
     Route::get('/processOffices/active', [ProcessOfficeController::class, 'Activeindex'])->name('processOffices.active');
 
+    Route::get('investors/transactions', [InvestorTransactionController::class, 'index'])->name('investors.transactions');
+    Route::post('investors/transactions', [InvestorTransactionController::class, 'store'])->name('investors.transactions');
 
     Route::resource('branches', BranchController::class);
     Route::resource('departments', DepartmentController::class);
@@ -157,6 +161,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('candidates', CandidateController::class);
     Route::resource('enquiry/phone-calls', PhoneCallController::class);
     Route::resource('enquiry/visitor-books', VisitorBookController::class);
+    Route::resource('enquiry/phone-call-followups', PhoneCallFollowupController::class);
     Route::resource('processCategory', ProcessCategoryController::class);
     Route::resource('jobCategory', JobCategoryController::class);
     Route::resource('jobLists', JobListController::class);
