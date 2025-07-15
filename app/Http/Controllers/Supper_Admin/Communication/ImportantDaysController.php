@@ -36,22 +36,52 @@ class ImportantDaysController extends Controller
                 'name' => 'required|string|max:255',
                 'date' => 'required|date',
                 'description' => 'nullable|string|max:1000',
-                'status'      => 'required|in:Active,Inactive'
+                'status'      => 'in:Active,Inactive'
             ]);
 
             $user_id = Auth::id();
 
             ImportantDays::create([
-                'name' => $request->input('name'),
-                'date' => Carbon::parse($request->input('date')),
-                'description' => $request->input('description'),
-                'user_id' => $user_id,
-                'status' => $request->input('status') === 'Active' ? 1 : 0,
+                'name'          => $request->input('name'),
+                'date'          => Carbon::parse($request->input('date')),
+                'description'   => $request->input('description'),
+                'user_id'       => $user_id,
+                'status'        => $request->input('status') === 'Active' ? 1 : 0,
             ]);
 
             return response()->json(['status' => 'success', 'message' => 'Important day added successfully']);
         } catch (ValidationException $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 422);
+        }
+    }
+
+    public function edit(string $id)
+    {
+        $importantDays = ImportantDays::findOrFail($id);
+        return response()->json($importantDays);
+    }
+
+    public function update(Request $request, string $id)
+    {
+        $importantDays = ImportantDays::findOrFail($id);
+        $importantDays->name            = $request->name;
+        $importantDays->date            = $request->date;
+        $importantDays->description     = $request->description;
+        $importantDays->status          = $request->status ? 1 : 0;
+
+        $importantDays->save();
+
+        return response()->json(['status' => 'success', 'message' => 'important day updated successfully']);
+    }
+
+    public function destroy(string $id)
+    {
+        try {
+            $importantDays = ImportantDays::findOrFail($id);
+            $importantDays->delete();
+            return response()->json(['status' => 'success', 'message' => 'important day deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
         }
     }
 }

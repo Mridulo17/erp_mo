@@ -76,12 +76,12 @@
                                     <i class="fa fa-bars"></i> Action
                                 </button>
                                 <div class="dropdown-menu">
-                                    <a href="#" class="dropdown-item editBlogButton" data-toggle="modal" data-target="#modal-center" data-id="{{ $importantDay->id }}">
+                                    <a href="#" class="dropdown-item editImportantDayButton" data-toggle="modal" data-target="#modal-center" data-id="{{ $importantDay->id }}">
                                         <i class="fa fa-edit"></i> Edit
                                     </a>
                                     
                                     <button type="button"
-                                            class="dropdown-item text-danger deletecountryBtn"
+                                            class="dropdown-item text-danger deleteImportantDayBtn"
                                             data-id="{{ $importantDay->id }}">
                                         <i class="fa fa-trash"></i> Delete
                                     </button>
@@ -136,18 +136,29 @@
                     e.preventDefault();
 
                     let formData = new FormData(this);
-                    let url = `{{ route('supper_admin.important-days.store') }}`;
+                    let isEdit = $('#important_days_id').val() !== ''; 
+                    let id = $('#important_days_id').val();
+
+                    // let url = `{{ route('supper_admin.important-days.store') }}`;
+                    let url = isEdit 
+                            ? `{{ route('supper_admin.important-days.update', ['important_day' => '__id__']) }}`.replace('__id__', id)
+                            : `{{ route('supper_admin.important-days.store') }}`;
+
+                    let method = isEdit ? 'POST' : 'POST'; 
+                    if (isEdit) {
+                        formData.append('_method', 'PUT');
+                    }
 
                     Swal.fire({
-                        title: "Add Important Day?",
+                        title: isEdit ? "Update Important Day?" : "Add Important Day?",
                         icon: "question",
                         showCancelButton: true,
-                        confirmButtonText: "Yes, Add"
+                        confirmButtonText: "Yes, proceed"
                     }).then((result) => {
                         if (result.isConfirmed) {
                             $.ajax({
                                 url: url,
-                                type: 'POST',
+                                type: method,
                                 data: formData,
                                 contentType: false,
                                 processData: false,
@@ -156,6 +167,7 @@
                                         $('#modal-center').modal('hide');
                                         Swal.fire('Success!', response.message, 'success');
                                         $('#importantDaysForm')[0].reset();
+                                        $('#important_days_id').val('');
                                         fetchImportantDays();
                                     } else {
                                         Swal.fire('Error!', response.message, 'error');
@@ -169,6 +181,73 @@
                         }
                     });
                 });
+
+                $(document).on('click', '.addBlogButton', function () {
+                    $('#importantDaysForm')[0].reset();
+                    $('#important_days_id').val('');
+                    $('#modalTitle').text('Add Important Days');
+                    $('#modal-center').modal('show');
+                });
+
+                $(document).on('click', '.editImportantDayButton', function () {
+                    const id = $(this).data('id');
+                    const url = '{{ route("supper_admin.important-days.edit", ":id") }}'.replace(':id', id);
+
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        success: function (res) {
+                            $('#important_days_id').val(id);
+                            $('#name').val(res.name);
+                            $('#date').val(res.date);
+                            $('#description').val(res.description);
+                            $('#status').prop('checked', res.status === 1);
+                            $('#modalTitle').text('Edit Important Days');
+                            $('#modal-center').modal('show');
+                            
+                        },
+                        error: function () {
+                            Swal.fire('Error', 'Could not load important days data.', 'error');
+                        }
+                    });
+                });
+
+                $(document).on('click', '.deleteImportantDayBtn', function () {
+                    const id = $(this).data('id');
+                    const url = '{{ route("supper_admin.important-days.destroy", ":id") }}'.replace(':id', id);
+
+                    Swal.fire({
+                        title: 'Delete important day?',
+                        text: "This action cannot be undone.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Delete'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: url,
+                                type: 'POST',
+                                data: {
+                                    _token: '{{ csrf_token() }}',
+                                    _method: 'DELETE'
+                                },
+                                success: function (res) {
+                                    if (res.status === 'success') {
+                                        Swal.fire('Deleted!', res.message, 'success');
+                                        fetchImportantDays();
+                                    } else {
+                                        Swal.fire('Error!', res.message, 'error');
+                                    }
+                                },
+                                error: function () {
+                                    Swal.fire('Error!', 'Failed to delete.', 'error');
+                                }
+                            });
+                        }
+                    });
+                });
+
+                
             });
         </script>
         @endsection
