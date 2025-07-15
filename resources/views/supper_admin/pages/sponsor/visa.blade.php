@@ -63,13 +63,21 @@
                     <tr>
                         <th style="">Action</th>
                         <th style="">DB:ID</th>
-                        <th style="">User Type</th>
-                        <th style="">User Info</th>
                         <th style="">Sponsor Name</th>
-                        <th style="">NID</th>
-                        <th style="">Phone</th>
-                        <th style="">Balance</th>
-                        <th style="">Opening Balance</th>
+                        <th style="">Delegate Name</th>
+                        <th style="">Country</th>
+                        <th style="">Job</th>
+                        <th style="">Gender</th>
+                        <th style="">Age</th>
+                        <th style="">Issue Date</th>
+                        <th style="">Visa Number</th>
+                        <th style="">p:Qty</th>
+                        <th style="">A:Qty</th>
+                        <th style="">Currency</th>
+                        <th style="">Monthly Salary</th>
+                        <th style="">Purchase Price</th>
+                        <th style="">Due Amount</th>
+                        <th style="">Payment</th>
                         <th style="">Status</th>
                     </tr>
                     </thead>
@@ -99,17 +107,30 @@
                             </td>
 
                             <td>{{ $key + 1 }}</td>
+                            <td class="wrap-text">{{ $bonus->sponsor ? $bonus->sponsor->sponsor_name : '' }}</td>
                             <td class="wrap-text">{{ $bonus->sponsor_type  }}</td>
-                            @if($bonus->sponsor_type == 'Agent')
-                                <td class="wrap-text">{{$bonus->agent ? $bonus->agent->first_name : '' }} {{$bonus->agent ? $bonus->agent->last_name : '' }}</td>
-                            @elseif($bonus->sponsor_type == 'Delegate')
-                                <td class="wrap-text">{{$bonus->delegate ? $bonus->delegate->first_name : '' }} {{$bonus->delegate ? $bonus->delegate->last_name : '' }}</td>
+                        @if(isset($bonus->sponsor) && $bonus->sponsor->sponsor_type == 'Prime Sponsor')
+                                <td class="wrap-text">{{$bonus->sponsor ? $bonus->sponsor->sponsor_type : '' }} | {{$bonus->sponsor ? $bonus->sponsor->sponsor_name : ''}}</td>
+                            @elseif(isset($bonus->sponsor) && $bonus->sponsor->sponsor_type == 'Delegate')
+                                <td class="wrap-text">{{$bonus->sponsor ? $bonus->sponsor->sponsor_type : '' }} | {{$bonus->sponsor->delegate ? $bonus->sponsor->delegate->first_name : '' }} {{$bonus->sponsor->delegate ? $bonus->sponsor->delegate->last_name : '' }}</td>
                             @endif
-                            <td class="wrap-text">{{ $bonus->sponsor_name  }}</td>
-                            <td class="wrap-text">{{ $bonus->nid  }}</td>
-                            <td class="wrap-text">{{ $bonus->cell_number  }}</td>
-                            <td class="wrap-text">{{ $bonus->balance  }}</td>
-                            <td class="wrap-text">{{ $bonus->opening_balance  }}</td>
+                            <td class="wrap-text">{{ $bonus->country ? $bonus->country->name : '' }}</td>
+                            <td class="wrap-text">{{ $bonus->jobList ? $bonus->jobList->name : '' }}</td>
+                            <td class="wrap-text">{{ $bonus->gender  }}</td>
+                            <td class="wrap-text">{{ $bonus->age_from  }} - {{ $bonus->age_to  }}</td>
+                            <td class="wrap-text">{{ $bonus->issue_date  }}</td>
+                            <td class="wrap-text">{{ $bonus->visa_number  }}</td>
+                            <td>0.00</td>
+                            <td>0.00</td>
+                            <td class="wrap-text">{{ $bonus->salaryCurrency ? $bonus->salaryCurrency->name : '' }}</td>
+                            <td class="wrap-text">{{ $bonus->monthly_salary  }}</td>
+                            <td class="wrap-text">{{ $bonus->purchase_amount  }}</td>
+                            <td class="wrap-text">0.00</td>
+                            <td>
+                            <span class="badge {{ $bonus->payment_type == 'Paid' ? 'badge-success' : 'badge-danger' }}">
+                                {{ $bonus->payment_type == 'Paid' ? 'Paid' : 'Due' }}
+                            </span>
+                            </td>
                             <td>
                             <span class="badge {{ $bonus->status == 'Enabled' ? 'badge-success' : 'badge-danger' }}">
                                 {{ $bonus->status == 'Enabled' ? 'Enabled' : 'Disabled' }}
@@ -326,7 +347,6 @@
                     formData.set('provide_accommodation', $('#provide_accommodation').is(':checked') ? '1' : '0');
                     formData.set('status', $('#status').is(':checked') ? 'Enabled' : 'Disabled');
                     const baseUpdateUrl = "{{ url('supper_admin/visas') }}";
-
                     let url = isEdit
                         ? `${baseUpdateUrl}/${id}`
                         : `{{ route('supper_admin.visas.store') }}`;
@@ -394,13 +414,44 @@
                             $('#salaryCurrencySelect').val(res.salary_currency_id).trigger('change');
                             $('#purchaseCurrencySelect').val(res.purchase_currency_id).trigger('change');
                             $('#currencySelect').val(res.currency_id).trigger('change');
-                            $('#sponsor_name').val(res.sponsor_name);
-                            $('#cell_number').val(res.cell_number);
-                            $('#email').val(res.email);
-                            $('#nid').val(res.nid);
+                            $('#issue_date').val(res.issue_date);
+                            $('#age_from').val(res.age_from);
+                            $('#age_to').val(res.age_to);
+                            $('#visa_number').val(res.visa_number);
+                            $('#visa_qty').val(res.visa_qty);
+                            $('#type').val(res.type);
+                            $('#gender').val(res.gender);
+                            $('#monthly_salary').val(res.monthly_salary);
+                            $('#purchase_amount').val(res.purchase_amount);
+                            $('#agent_price').val(res.agent_price);
+                            $('#candidate_price').val(res.candidate_price);
+                            $('#payment_type').val(res.payment_type);
                             // Show existing file
-                            if (res.opening_balance_sheet) {
-                                const filePath = res.opening_balance_sheet; // example: expense_categories/filename.pdf
+                            if (res.demand_latter) {
+                                const filePath = res.demand_latter; // example: expense_categories/filename.pdf
+                                const ext = filePath.split('.').pop().toLowerCase();
+
+                                // Prepend Laravel's public storage path
+                                const fileUrl = `/storage/${filePath}`;
+
+                                let previewHtml = '';
+
+                                if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
+                                    previewHtml = `<img src="${fileUrl}" alt="Uploaded File" class="img-thumbnail" style="max-height: 200px;">`;
+                                } else {
+                                    previewHtml = `<a href="${fileUrl}" target="_blank" class="btn btn-outline-primary btn-sm">View File</a>`;
+                                }
+
+                                $('#existing-file-preview1').html(previewHtml);
+                                $('#remove-file-section1').removeClass('d-none');
+                            } else {
+                                $('#existing-file-preview1').empty();
+                                $('#remove-file-section1').addClass('d-none');
+                                $('#remove_file1').prop('checked', false);
+                            }
+                            // Show existing file
+                            if (res.attachment) {
+                                const filePath = res.attachment; // example: expense_categories/filename.pdf
                                 const ext = filePath.split('.').pop().toLowerCase();
 
                                 // Prepend Laravel's public storage path
@@ -421,11 +472,11 @@
                                 $('#remove-file-section').addClass('d-none');
                                 $('#remove_file').prop('checked', false);
                             }
+                            $('#provide_food').prop('checked', res.provide_food == '1');
+                            $('#provide_accommodation').prop('checked', res.provide_accommodation == '1');
                             $('#status').prop('checked', res.status === 'Enabled');
                             $('#modalTitle').text('Edit Visa');
                             $('#modal-center').modal('show');
-                            $('#sponsorSelect').val(res.agent_id).trigger('change');
-                            $('#jobSelect').val(res.delegate_id).trigger('change');
                         },
                         error: function () {
                             Swal.fire('Error', 'Could not load visa data.', 'error');
