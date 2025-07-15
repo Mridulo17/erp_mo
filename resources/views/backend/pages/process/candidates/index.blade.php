@@ -3,14 +3,8 @@
 
 @section('style')
     <style>
-        .wrap-text {
-            white-space: normal !important;
-            word-wrap: break-word !important;
-            word-break: break-word !important;
-        }
-        /* Move DataTables search field to the right */
-        div.dataTables_filter {
-            text-align: right !important;
+        .dataTables_wrapper .form-control {
+            padding: 5px 10px !important;
         }
     </style>
 @endsection
@@ -56,7 +50,7 @@
 
     <div class="box-body">
         <div class="table-responsive">
-            <table id="candidateDataTable" style="table-layout: fixed; width: 100%;" class="table table-bordered table-hover display nowrap margin-top-10 w-p100">
+            <table id="candidateDataTable" class="table table-bordered table-hover display nowrap margin-top-10 w-p100">
                 <thead>
                     <tr>
                         <th style="width: 30px;">ID</th>
@@ -97,7 +91,7 @@
     let datatable_columns_defs = [
         {'bSortable': true, 'aTargets': [0,1,2,3,4]},
         {'bSearchable': false, 'aTargets': [0]},
-        { className: 'text-center', targets: [0,4,5] },
+        { className: 'text-center', targets: [9,10] },
         { className: 'text-uppercase', targets: [1,2] },
     ]
 
@@ -124,6 +118,27 @@
             "regex": true
         },
         columnDefs: datatable_columns_defs,
+        // dom: "<'row'<'col-sm-6'l><'col-sm-6 text-right'B>>" +
+        //      "<'row'<'col-sm-12'f>>" +
+        //      "<'row'<'col-sm-12'tr>>" +
+        //      "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+    //     dom: "<'row mb-2'<'col-sm-6'l><'col-sm-6'f>>" +
+    //  "<'row mb-2'<'col-sm-12 text-right'B>>" +
+    //  "<'row'<'col-sm-12'tr>>" +
+    //  "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
+     dom: "<'row mb-3'<'col-sm-12 text-right'B>>" +   // Buttons top-right
+     "<'row mb-2'<'col-sm-6'l><'col-sm-6'f>>" +   // Length left, Search right
+     "<'row'<'col-sm-12'tr>>" +                   // Table
+     "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",    // Info left, Pagination right
+
+
+        buttons: [
+            'copy',
+            'csv',
+            'excel',
+            'pdf',
+            'print'
+        ],
     });
 </script>
 @endsection
