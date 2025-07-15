@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             ProfessionTableSeeder::class,
             RelationTableSeeder::class,
             ReligionTableSeeder::class,
+            CurrencyTableSeeder::class,
             DivisionsTableSeeder::class,
             DistrictsTableSeeder::class,
             ThanasTableSeeder::class,
@@ -38,6 +39,8 @@ class DatabaseSeeder extends Seeder
             AgentsTableSeeder::class,
             StateTableSeeder::class,
             PostOfficeTableSeeder::class,
+            HowFindUsTableSeeder::class,
+            TransactionPurposeTableSeeder::class
         ]);
     }
 }

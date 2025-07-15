@@ -13,19 +13,19 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="phone">Phone <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="phone" name="phone" required>
+                        <input type="text" class="form-control" id="phone" name="phone" >
                     </div>
                     <div class="form-group">
-                        <label for="full_name">Full Name</label>
-                        <input type="text" class="form-control" id="full_name" name="full_name">
+                        <label for="full_name">Full Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="full_name" name="full_name" >
                     </div>
                     <div class="form-group">
                         <label for="address">Address</label>
                         <input type="text" class="form-control" id="address" name="address">
                     </div>
                     <div class="form-group">
-                        <label for="candidate_type_id">Category</label>
-                        <select class="form-control select2" id="candidate_type_id" name="candidate_type_id">
+                        <label for="candidate_type_id">Category <span class="text-danger">*</span></label>
+                        <select class="form-control select2" id="candidate_type_id" name="candidate_type_id" >
                             <option value="">Choose Category</option>
                             @foreach ($candidateTypes as $type)
                                 <option value="{{ $type->id }}">{{ $type->name }}</option>
@@ -33,10 +33,10 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="reference_type">Reference Type</label>
-                        <select class="form-control select2" id="reference_type" name="reference_type">
+                        <label for="reference_type">Reference Type <span class="text-danger">*</span></label>
+                        <select class="form-control select2" id="reference_type" name="reference_type" >
                             <option value="">Choose</option>
-                            <option value="Employeee">Employeee</option>
+                            <option value="Employee">Employee</option>
                             <option value="Agent">Agent</option>
                         </select>
                     </div>
@@ -49,28 +49,12 @@
                         <input type="time" class="form-control" id="entry_time" name="entry_time">
                     </div>
                     <div class="form-group">
-                        <label for="how_find_us">How to find us</label>
-                        <select class="form-control select2" id="how_find_us" name="how_find_us">
-                            <option value="">Choose</option>
-                            <option value="Old Candidate">Old Candidate</option>
-                            <option value="Neighbor">Neighbor</option>
-                            <option value="Walking Candidate">Walking Candidate</option>
-                            <option value="Online Marketing">Online Marketing</option>
-                            <option value="News Paper">News Paper</option>
-                            <option value="Google">Google</option>
-                            <option value="Facebook">Facebook</option>
-                            <option value="Instagram">Instagram</option>
-                            <option value="Linkedin">Linkedin</option>
-                            <option value="TikTok">TikTok</option>
-                            <option value="SMS">SMS</option>
-                            <option value="WhatsApp">WhatsApp</option>
-                            <option value="Telegram">Telegram</option>
-                            <option value="Youtube">Youtube</option>
-                            <option value="Parents">Parents</option>
-                            <option value="TVC">TVC</option>
-                            <option value="Friends">Friends</option>
-                            <option value="Colleague">Colleague</option>
-                            <option value="Other">Other</option>
+                        <label for="how_find_us_id">How to find us <span class="text-danger">*</span></label>
+                        <select class="form-control select2" id="how_find_us_id" name="how_find_us_id">
+                            <option value="">Choose find us</option>
+                            @foreach ($howFindUs as $type)
+                                <option value="{{ $type->id }}">{{ $type->name }}</option>
+                            @endforeach
                         </select>
                     </div>
                 </div>

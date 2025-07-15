@@ -16,13 +16,18 @@ return new class extends Migration
             $table->string('phone');
             $table->string('full_name')->nullable();
             $table->string('address')->nullable();
+            $table->boolean('is_candidate')->default(false);
             $table->unsignedBigInteger('candidate_type_id')->nullable();
             $table->string('reference_type')->nullable();
-            $table->string('how_find_us')->nullable();
+            $table->unsignedBigInteger('how_find_us_id')->nullable();
             $table->string('entry_time')->nullable();
             $table->text('note')->nullable();
-            $table->unsignedBigInteger('entry_by')->nullable();
+            $table->unsignedBigInteger('employee_id')->nullable();
             $table->timestamps();
+
+            $table->foreign('candidate_type_id')->references('id')->on('candidate_types')->cascadeOnDelete();
+            $table->foreign('how_find_us_id')->references('id')->on('how_find_us')->onDelete('set null');
+            $table->foreign('employee_id')->references('id')->on('employees')->onDelete('set null');
         });
     }
 

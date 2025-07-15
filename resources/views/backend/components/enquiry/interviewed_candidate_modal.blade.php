@@ -13,14 +13,14 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="phone">Phone <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="phone" name="phone" required>
+                        <input type="text" class="form-control" id="phone" name="phone">
                     </div>
                     <div class="form-group">
-                        <label for="full_name">Full Name</label>
+                        <label for="full_name">Full Name <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="full_name" name="full_name">
                     </div>
                     <div class="form-group">
-                        <label for="date_of_birth">Date Of Birth</label>
+                        <label for="date_of_birth">Date Of Birth <span class="text-danger">*</span></label>
                         <input type="date" class="form-control" id="date_of_birth" name="date_of_birth">
                     </div>
                     <div class="form-group">

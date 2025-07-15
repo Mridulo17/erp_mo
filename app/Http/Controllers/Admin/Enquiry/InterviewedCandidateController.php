@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin\Enquiry;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Enquiry\InterviewedCandidate;
+use App\Models\Admin\HRM\Employee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class InterviewedCandidateController extends Controller
 {
@@ -22,13 +24,16 @@ class InterviewedCandidateController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'phone' => 'required',
-            'full_name' => 'nullable|string',
-            'date_of_birth' => 'nullable|date',
+            'full_name' => 'required|string',
+            'date_of_birth' => 'required|date',
             'note' => 'nullable|string',
         ]);
-        $candidate = InterviewedCandidate::create($request->all());
+        $employeeId = Employee::where('user_id', Auth::id())->select('id')->first();
+        $data['employee_id'] = $employeeId->id ?? '';
+        $candidate = InterviewedCandidate::create($data);
+        
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json(['status' => 'success', 'message' => 'Interviewed candidate saved successfully.', 'data' => $candidate]);
         }
@@ -39,8 +44,8 @@ class InterviewedCandidateController extends Controller
     {
         $request->validate([
             'phone' => 'required',
-            'full_name' => 'nullable|string',
-            'date_of_birth' => 'nullable|date',
+            'full_name' => 'required|string',
+            'date_of_birth' => 'required|date',
             'note' => 'nullable|string',
         ]);
         $interviewed_candidate->update($request->all());

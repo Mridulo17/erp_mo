@@ -16,6 +16,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CandidateRequest;
 use App\Models\Admin\Process\Candidate;
+use Yajra\DataTables\Facades\DataTables;
 use App\Http\Requests\CandidateFileRequest;
 use App\Models\Admin\Process\CandidateFile;
 use App\Models\Admin\Process\CandidateType;
@@ -38,11 +39,64 @@ class CandidateController extends Controller
 {
     use FileUpload;
     
-    public function index()
+    public function index(Request $request)
     {
-        $user = Auth::user();
-        $candidates = Candidate::all();
-        return view('backend.pages.process.candidates.index', compact('candidates'));
+        if ($request->ajax()) {
+            $data = Candidate::with(['agent', 'personalInfo', 'personalInfo.gender', 'experiences', 'experiences.workType', 'passport',]);
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('name', function ($row) {
+                    return $row->personalInfo?->full_name ?? '';
+                })
+                ->addColumn('agent', function($row) {
+                    return $row->agent?->full_name ?? '';
+                })
+                ->addColumn('age_gender', function ($row) {
+                    $age = $row->personalInfo?->age . 'y';
+                    $gender = $row->personalInfo?->gender?->name;
+                    return $age . ($gender ? " - {$gender}" : '');
+                })
+                ->addColumn('nid', function ($row) {
+                    return $row->personalInfo?->nid_or_birth_certificate ?? '';
+                })
+                ->addColumn('passport', function ($row) {
+                    return $row->passport?->passport_number ?? '';
+                })
+                ->addColumn('passport_validity', function($row) {
+                    return $row->passport?->passportValidity ?? '';
+                })
+                ->addColumn('interested_country', function ($row) {
+                    return $row->country?->name ?? '';
+                })
+                ->addColumn('interested_profession', function ($row) {
+                    return $row->profession?->name ?? '';
+                })
+                ->addColumn('status', function ($row) {
+                    return $row->status === 1
+                        ? '<span class="badge badge-success">Active</span>'
+                        : '<span class="badge badge-danger">Inactive</span>';
+                })
+                ->addColumn('action', function ($row) {
+                    return '
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary btn-sm" data-toggle="dropdown">
+                            <i class="fa fa-bars"></i> Action
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="#" class="dropdown-item editAgentButton" data-id="' . $row->id . '">
+                                <i class="fa fa-edit"></i> Edit
+                            </a>
+                            <button class="dropdown-item text-danger deleteagentBtn" data-id="' . $row->id . '">
+                                <i class="fa fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </div>';
+                })
+                ->rawColumns(['status', 'action'])
+                ->make(true);
+        }
+
+        return view('backend.pages.process.candidates.index');
     }
 
     public function create(Request $request, $step = 1)
