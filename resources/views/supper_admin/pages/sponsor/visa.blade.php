@@ -74,7 +74,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($sponsors as $key =>$bonus)
+                    @foreach($visas as $key =>$bonus)
                         <tr>
                             <td>
                                 <div class="btn-group">
@@ -129,7 +129,7 @@
         <script>
             function fetchVisas() {
                 $.ajax({
-                    url: '{{ route("supper_admin.sponsors.index") }}',
+                    url: '{{ route("supper_admin.visas.index") }}',
                     type: 'GET',
                     success: function (data) {
                         let newBody = $(data).find('table tbody').html();
@@ -202,11 +202,128 @@
                     });
                 }
 
+                fetchcountriess();
+                function fetchcountriess() {
+                    $.ajax({
+                        url: "{{ route('supper_admin.country.active') }}",
+                        method: "GET",
+                        success: function(data) {
+                            let select = $('#countrySelect');
+                            select.empty();
+                            select.append('<option value="" disabled selected>Country</option>');
+                            data.forEach(function(State) {
+                                select.append('<option value="' + State.id + '">' + State.name + '</option>');
+                            });
+                        },
+                        error: function(xhr) {
+                            console.error("Failed to fetch countries:", xhr);
+                        }
+                    });
+                }
+
+                fetchCurrencies();
+
+                function fetchCurrencies() {
+                    $.ajax({
+                        url: "{{ route('supper_admin.currency.active') }}",
+                        method: "GET",
+                        success: function (data) {
+                            let select = $('#currencySelect');
+                            select.empty();
+                            select.append('<option value="" disabled selected>Choose Currency</option>');
+                            data.forEach(function (currency) {
+                                select.append(
+                                    '<option data-bdt_amount="' + currency.bdt_amount + '" data-name="' + currency.name + '" value="' + currency.id + '">' +
+                                    currency.name + '</option>'
+                                );
+                            });
+
+                        },
+                        error: function (xhr) {
+                            console.error("Failed to fetch currencies:", xhr);
+                        }
+                    });
+                }
+
+                fetchSalaryCurrencies();
+
+                function fetchSalaryCurrencies() {
+                    $.ajax({
+                        url: "{{ route('supper_admin.currency.active') }}",
+                        method: "GET",
+                        success: function (data) {
+                            let select = $('#salaryCurrencySelect');
+                            select.empty();
+                            select.append('<option value="" disabled selected>Choose Currency</option>');
+                            data.forEach(function (currency) {
+                                select.append(
+                                    '<option data-bdt_amount="' + currency.bdt_amount + '" data-name="' + currency.name + '" value="' + currency.id + '">' +
+                                    currency.name + '</option>'
+                                );
+                            });
+
+                        },
+                        error: function (xhr) {
+                            console.error("Failed to fetch currencies:", xhr);
+                        }
+                    });
+                }
+
+                fetchPurchaseCurrencies();
+
+                function fetchPurchaseCurrencies() {
+                    $.ajax({
+                        url: "{{ route('supper_admin.currency.active') }}",
+                        method: "GET",
+                        success: function (data) {
+                            let select = $('#purchaseCurrencySelect');
+                            select.empty();
+                            select.append('<option value="" disabled selected>Choose Currency</option>');
+                            data.forEach(function (currency) {
+                                select.append(
+                                    '<option data-bdt_amount="' + currency.bdt_amount + '" data-name="' + currency.name + '" value="' + currency.id + '">' +
+                                    currency.name + '</option>'
+                                );
+                            });
+
+                        },
+                        error: function (xhr) {
+                            console.error("Failed to fetch currencies:", xhr);
+                        }
+                    });
+                }
+
+                $('#currencySelect').on('change', function () {
+                    const selectedOption = $(this).find('option:selected');
+                    const bdt_amount = selectedOption.data('bdt_amount');
+                    const name = selectedOption.data('name');
+                    $('#currency_details').text("(1 " + name + " = " + bdt_amount + " BDT)");
+                    $('#bdt_price').val(bdt_amount);
+                });
+
+                $('#salaryCurrencySelect').on('change', function () {
+                    const selectedOption = $(this).find('option:selected');
+                    const bdt_amount = selectedOption.data('bdt_amount');
+                    const name = selectedOption.data('name');
+                    $('#salary_currency_details').text("(1 " + name + " = " + bdt_amount + " BDT)");
+                    $('#salary_bdt_amount').val(bdt_amount);
+                });
+
+                $('#purchaseCurrencySelect').on('change', function () {
+                    const selectedOption = $(this).find('option:selected');
+                    const bdt_amount = selectedOption.data('bdt_amount');
+                    const name = selectedOption.data('name');
+                    $('#purchase_currency_details').text("(1 " + name + " = " + bdt_amount + " BDT)");
+                    $('#purchase_bdt_amount').val(bdt_amount);
+                });
+
                 $('#visaForm').on('submit', function (e) {
                     e.preventDefault();
                     let isEdit = $('#visa_id').val() !== '';
                     let formData = new FormData(this);
                     let id = $('#visa_id').val();
+                    formData.set('provide_food', $('#provide_food').is(':checked') ? '1' : '0');
+                    formData.set('provide_accommodation', $('#provide_accommodation').is(':checked') ? '1' : '0');
                     formData.set('status', $('#status').is(':checked') ? 'Enabled' : 'Disabled');
                     const baseUpdateUrl = "{{ url('supper_admin/visas') }}";
 
@@ -254,17 +371,14 @@
                 $(document).on('click', '.addBlogButton', function () {
                     $('#visaForm')[0].reset();
                     $('#visa_id').val('');
-                    $('#sponsor_type').val('').trigger('change');
-                    $('#agentSelect').val('').trigger('change');
-                    $('#delegateSelect').val('').trigger('change');
-                    $('#delegateOfficeSelect').empty().append('<option value="" disabled selected>Delegate Office</option>');
-                    $('#preview').attr('src', '').hide();
-                    $('#modalTitle').text('Manage Sponsor');
+                    $('#currencySelect').val('').trigger('change');
+                    $('#purchaseCurrencySelect').val('').trigger('change');
+                    $('#salaryCurrencySelect').val('').trigger('change');
+                    $('#modalTitle').text('Manage Visa');
                     $('#modal-center').modal('show');
 
                 });
 
-                const storageBaseUrl = "{{ asset('storage') }}/";
                 $(document).on('click', '.editBlogButton', function () {
                     const id = $(this).data('id');
                     const url = '{{ route("supper_admin.visas.edit", ":id") }}'.replace(':id', id);
@@ -274,21 +388,41 @@
                         type: 'GET',
                         success: function (res) {
                             $('#visa_id').val(id);
-                            $('#sponsor_type').val(res.sponsor_type).trigger('change');
+                            $('#sponsorSelect').val(res.sponsor_id).trigger('change');
+                            $('#jobSelect').val(res.job_list_id).trigger('change');
+                            $('#countrySelect').val(res.country_id).trigger('change');
+                            $('#salaryCurrencySelect').val(res.salary_currency_id).trigger('change');
+                            $('#purchaseCurrencySelect').val(res.purchase_currency_id).trigger('change');
+                            $('#currencySelect').val(res.currency_id).trigger('change');
                             $('#sponsor_name').val(res.sponsor_name);
                             $('#cell_number').val(res.cell_number);
                             $('#email').val(res.email);
                             $('#nid').val(res.nid);
-                            if (res.sponsor_photo) {
-                                $('#preview').attr('src', storageBaseUrl + res.sponsor_photo);
-                                $('#preview').show();
+                            // Show existing file
+                            if (res.opening_balance_sheet) {
+                                const filePath = res.opening_balance_sheet; // example: expense_categories/filename.pdf
+                                const ext = filePath.split('.').pop().toLowerCase();
+
+                                // Prepend Laravel's public storage path
+                                const fileUrl = `/storage/${filePath}`;
+
+                                let previewHtml = '';
+
+                                if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
+                                    previewHtml = `<img src="${fileUrl}" alt="Uploaded File" class="img-thumbnail" style="max-height: 200px;">`;
+                                } else {
+                                    previewHtml = `<a href="${fileUrl}" target="_blank" class="btn btn-outline-primary btn-sm">View File</a>`;
+                                }
+
+                                $('#existing-file-preview').html(previewHtml);
+                                $('#remove-file-section').removeClass('d-none');
                             } else {
-                                console.log('No image path found');  // Log if no image is found
-                                $('#preview').attr('src', '');
-                                $('#preview').hide();
+                                $('#existing-file-preview').empty();
+                                $('#remove-file-section').addClass('d-none');
+                                $('#remove_file').prop('checked', false);
                             }
                             $('#status').prop('checked', res.status === 'Enabled');
-                            $('#modalTitle').text('Edit Sponsor');
+                            $('#modalTitle').text('Edit Visa');
                             $('#modal-center').modal('show');
                             $('#sponsorSelect').val(res.agent_id).trigger('change');
                             $('#jobSelect').val(res.delegate_id).trigger('change');

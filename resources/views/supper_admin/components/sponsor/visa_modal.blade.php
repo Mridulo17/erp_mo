@@ -40,7 +40,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Issue Date</label>
-                                <input type="text" name="issue_date" id="issue_date" autocomplete="off" placeholder="Choose Issue Date" class="form-control" required>
+                                <input type="date" name="issue_date" id="issue_date" autocomplete="off" placeholder="Choose Issue Date" class="form-control" required>
                             </div>
                         </div>
                     </div>
@@ -104,11 +104,12 @@
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <div class="form-group">
-                                            <label for="salary_currency_id" class="font-weight-bold text-dark" style="font-size: 14px;">Currency <small id="currency_details" style="color: #ff0000"></small></label>
+                                            <label for="salary_currency_id" class="font-weight-bold text-dark" style="font-size: 14px;">Currency <small id="salary_currency_details" style="color: #ff0000"></small></label>
                                             <select name="salary_currency_id" id="salaryCurrencySelect" class="form-control" required>
                                                 <option value="" disabled selected>Choose Currency</option>
                                             </select>
                                         </div>
+                                        <input type="hidden" name="salary_bdt_amount" id="salary_bdt_amount" value="">
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -127,10 +128,11 @@
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <div class="form-group">
-                                            <label for="purchase_currency_id" class="font-weight-bold text-dark" style="font-size: 14px;">Currency <small id="currency_details" style="color: #ff0000"></small></label>
-                                            <select name="purchase_currency_id" id="purchaseCurrencySelect" class="form-control" required>
+                                            <label for="purchase_currency_id" class="font-weight-bold text-dark" style="font-size: 14px;">Currency <small id="purchase_currency_details" style="color: #ff0000"></small></label>
+                                            <select name="purchase_currency_id" id="purchaseCurrencySelect" class="form-control">
                                                 <option value="" disabled selected>Choose Currency</option>
                                             </select>
+                                            <input type="hidden" name="purchase_bdt_amount" id="purchase_bdt_amount" value="">
                                         </div>
                                     </div>
                                 </div>
@@ -162,18 +164,19 @@
                                         <select name="currency_id" id="currencySelect" class="form-control" required>
                                             <option value="" disabled selected>Choose Currency</option>
                                         </select>
+                                        <input type="hidden" name="bdt_price" id="bdt_price" value="">
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label>Agent Price </label>
-                                        <input type="number" step="any" name="agent_price" id="agent_price" placeholder="Agent Sell Amount" class="form-control" required="">
+                                        <input type="number" step="any" name="agent_price" id="agent_price" placeholder="Agent Sell Amount" class="form-control" required>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label>Candidate Price </label>
-                                        <input type="number" step="any" name="candidate_price" id="candidate_price" placeholder="Candidate Sell Amount" class="form-control" required="">
+                                        <input type="number" step="any" name="candidate_price" id="candidate_price" placeholder="Candidate Sell Amount" class="form-control" required>
                                     </div>
                                 </div>
                             </div>
@@ -185,12 +188,12 @@
                                 <label>Demand Latter <span class="demand_latter"></span></label>
                                 <input type="file" id="demand_latter" style="padding: 3px;" name="demand_latter" class="form-control">
                                 <!-- Existing file preview -->
-                                <div id="existing-file-preview" style="margin-top: 10px;"></div>
+                                <div id="existing-file-preview1" style="margin-top: 10px;"></div>
 
                                 <!-- Remove file toggle -->
-                                <div id="remove-file-section" class="form-check mt-2 d-none">
-                                    <input type="checkbox" class="form-check-input" id="remove_file" name="remove_file" value="1">
-                                    <label class="form-check-label" for="remove_file">Remove existing file</label>
+                                <div id="remove-file-section1" class="form-check mt-2 d-none">
+                                    <input type="checkbox" class="form-check-input" id="remove_file11" name="remove_file" value="1">
+                                    <label class="form-check-label" for="remove_file1">Remove existing file</label>
                                 </div>
                             </div>
                         </div>
@@ -215,14 +218,14 @@
                     </div>
                     <div class="form-group">
                         <div class="checkbox checkbox-success">
-                            <input name="is_food" id="food" type="checkbox">
-                            <label for="food"> Food will be provided </label>
+                            <input name="provide_food" id="provide_food" type="checkbox">
+                            <label for="provide_food"> Food will be provided </label>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="checkbox checkbox-success">
-                            <input name="is_accommodation" id="accommodation" type="checkbox">
-                            <label for="accommodation"> Accommodation will be provided </label>
+                            <input name="provide_accommodation" id="provide_accommodation" type="checkbox">
+                            <label for="provide_accommodation"> Accommodation will be provided </label>
                         </div>
                     </div>
                     <div class="form-group form-check">

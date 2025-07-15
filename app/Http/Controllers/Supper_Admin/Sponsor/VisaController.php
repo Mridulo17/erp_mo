@@ -13,14 +13,8 @@ class VisaController extends Controller
 {
     public function index()
     {
-        $sponsors = Sponsor::get();
-        return view('supper_admin.pages.sponsor.visa', compact('sponsors'));
-    }
-
-    public function enabledIndex()
-    {
-        $sponsors = Sponsor::where('status', 'Enabled')->get();
-        return response()->json($sponsors);
+        $visas = Visa::get();
+        return view('supper_admin.pages.sponsor.visa', compact('visas'));
     }
 
 
@@ -34,34 +28,69 @@ class VisaController extends Controller
     {
         try {
             $request->validate([
-                'sponsor_type'    => 'required|in:Agent,Delegate,Prime Sponsor',
-                'sponsor_name'      => 'required|string|max:255',
-                'cell_number'      => 'required|string|max:255',
-                'sponsor_photo' => 'nullable|mimes:jpg,jpeg,png|max:10240', // 10MB max
+                'sponsor_id'      => 'required|integer',
+                'job_list_id'      => 'required|integer',
+                'country_id'      => 'required|integer',
+                'salary_currency_id'      => 'required|integer',
+                'currency_id'      => 'required|integer',
+                'issue_date'      => 'required',
+                'age_from'      => 'required',
+                'age_to'      => 'required',
+                'visa_number'      => 'required',
+                'visa_qty'      => 'required',
+                'type'    => 'required|in:Air Ticket,Business Visa,Hazz & Umrah,Manpower,Patient,Tourist,Visa Processing,Worker',
+                'gender'    => 'required|in:Male,Female,Haji',
+                'monthly_salary'      => 'required',
+                'salary_bdt_amount'      => 'required',
+                'agent_price'      => 'required',
+                'bdt_price'      => 'required',
+                'candidate_price'      => 'required',
+                'demand_letter' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240', // 10MB max
+                'attachment' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240', // 10MB max
                 'status'    => 'required|in:Enabled,Disabled'
             ]);
 
-            $openingBalanceSheetPath = null;
+            $demandLetterPath = null;
+            $attachmentPath = null;
 
-            if ($request->hasFile('sponsor_photo')) {
-                $openingBalanceSheetPath = $request->file('sponsor_photo')->store('sponsors', 'public');
+            if ($request->hasFile('demand_letter')) {
+                $demandLetterPath = $request->file('demand_letter')->store('visas', 'public');
             }
 
-            Sponsor::create([
-                'sponsor_type'      => $request->input('sponsor_type'),
-                'agent_id'  => $request->input('agent_id'),
-                'delegate_id'  => $request->input('delegate_id'),
-                'delegate_office_id'  => $request->input('delegate_office_id'),
-                'sponsor_name'  => $request->input('sponsor_name'),
-                'cell_number'  => $request->input('cell_number'),
-                'email'  => $request->input('email'),
-                'nid'  => $request->input('nid'),
-                'sponsor_photo'         => $openingBalanceSheetPath,
+            if ($request->hasFile('attachment')) {
+                $attachmentPath = $request->file('attachment')->store('visas', 'public');
+            }
+
+            Visa::create([
+                'sponsor_id'      => $request->input('sponsor_id'),
+                'job_list_id'  => $request->input('job_list_id'),
+                'country_id'  => $request->input('country_id'),
+                'issue_date'  => $request->input('issue_date'),
+                'age_from'  => $request->input('age_from'),
+                'age_to'  => $request->input('age_to'),
+                'visa_number'  => $request->input('visa_number'),
+                'visa_qty'  => $request->input('visa_qty'),
+                'type'  => $request->input('type'),
+                'gender'  => $request->input('gender'),
+                'salary_currency_id'  => $request->input('salary_currency_id'),
+                'monthly_salary'  => $request->input('monthly_salary'),
+                'salary_bdt_amount'  => $request->input('salary_bdt_amount')*$request->input('monthly_salary'),
+                'purchase_currency_id'  => $request->input('purchase_currency_id'),
+                'purchase_amount'  => $request->input('purchase_amount'),
+                'purchase_bdt_amount'  => $request->input('purchase_bdt_amount')*$request->input('purchase_amount'),
+                'currency_id'  => $request->input('currency_id'),
+                'agent_price'  => $request->input('agent_price'),
+                'agent_bdt_price'  => $request->input('bdt_price')*$request->input('agent_price'),
+                'candidate_price'  => $request->input('candidate_price'),
+                'candidate_bdt_price'  => $request->input('bdt_price')*$request->input('candidate_price'),
+                'demand_letter'         => $demandLetterPath,
+                'attachment'         => $attachmentPath,
                 'note'  => $request->input('note'),
-                'address'  => $request->input('address'),
+                'provide_food'    => $request->input('provide_food') === '1' ? '1' : '0',
+                'provide_accommodation'    => $request->input('provide_accommodation') === '1' ? '1' : '0',
                 'status'    => $request->input('status') === 'Enabled' ? 'Enabled' : 'Disabled'
             ]);
-            return response()->json(['status' => 'success', 'message' => 'Sponsor added Successfully']);
+            return response()->json(['status' => 'success', 'message' => 'Visa added Successfully']);
         } catch (ValidationException $e) {
             return response()->json(['status' => 'fail', 'message' => $e->validator->errors()]);
         } catch (\Exception $e) {
@@ -82,8 +111,8 @@ class VisaController extends Controller
      */
     public function edit(string $id)
     {
-        $sponsor = Sponsor::findOrFail($id);
-        return response()->json($sponsor);
+        $visa = Visa::findOrFail($id);
+        return response()->json($visa);
     }
 
     /**
@@ -93,47 +122,95 @@ class VisaController extends Controller
     {
         try {
             $request->validate([
-                'sponsor_type'    => 'required|in:Agent,Delegate,Prime Sponsor',
-                'sponsor_name'      => 'required|string|max:255',
-                'cell_number'      => 'required|string|max:255',
-                'sponsor_photo' => 'nullable|mimes:jpg,jpeg,png|max:10240', // 10MB max
+                'sponsor_id'      => 'required|integer',
+                'job_list_id'      => 'required|integer',
+                'country_id'      => 'required|integer',
+                'salary_currency_id'      => 'required|integer',
+                'currency_id'      => 'required|integer',
+                'issue_date'      => 'required',
+                'age_from'      => 'required',
+                'age_to'      => 'required',
+                'visa_number'      => 'required',
+                'visa_qty'      => 'required',
+                'type'    => 'required|in:Air Ticket,Business Visa,Hazz & Umrah,Manpower,Patient,Tourist,Visa Processing,Worker',
+                'gender'    => 'required|in:Male,Female,Haji',
+                'monthly_salary'      => 'required',
+                'salary_bdt_amount'      => 'required',
+                'agent_price'      => 'required',
+                'bdt_price'      => 'required',
+                'candidate_price'      => 'required',
+                'demand_letter' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240', // 10MB max
+                'attachment' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240', // 10MB max
                 'status'    => 'required|in:Enabled,Disabled'
             ]);
 
-            $sponsor = Sponsor::findOrFail($id);
-            $sponsor->sponsor_type = $request->sponsor_type;
-            $sponsor->agent_id = $request->agent_id;
-            $sponsor->delegate_id = $request->delegate_id;
-            $sponsor->delegate_office_id = $request->delegate_office_id;
-            $sponsor->sponsor_name = $request->sponsor_name;
-            $sponsor->cell_number = $request->cell_number;
-            $sponsor->email = $request->email;
-            $sponsor->nid = $request->nid;
+            $visa = Visa::findOrFail($id);
+            $visa->sponsor_id = $request->sponsor_id;
+            $visa->job_list_id = $request->job_list_id;
+            $visa->country_id = $request->country_id;
+            $visa->issue_date = $request->issue_date;
+            $visa->age_from = $request->age_from;
+            $visa->age_to = $request->age_to;
+            $visa->visa_number = $request->visa_number;
+            $visa->visa_qty = $request->visa_qty;
+            $visa->type = $request->type;
+            $visa->gender = $request->gender;
+            $visa->salary_currency_id = $request->salary_currency_id;
+            $visa->monthly_salary = $request->monthly_salary;
+            $visa->salary_bdt_amount = $request->monthly_salary * $request->salary_bdt_amount;
+            $visa->purchase_currency_id = $request->purchase_currency_id;
+            $visa->purchase_amount = $request->purchase_amount;
+            $visa->purchase_bdt_amount = $request->purchase_amount * $request->purchase_bdt_amount;
+            $visa->payment_type = $request->payment_type;
+            $visa->currency_id = $request->currency_id;
+            $visa->agent_price = $request->agent_price;
+            $visa->agent_bdt_price = $request->agent_price * $request->bdt_price;
+            $visa->candidate_price = $request->candidate_price;
+            $visa->candidate_bdt_price = $request->candidate_price * $request->bdt_price;
             // If user asked to remove file
-            if ($request->has('remove_file') && $request->remove_file) {
-                if ($sponsor->sponsor_photo) {
-                    Storage::disk('public')->delete($sponsor->sponsor_photo);
+            if ($request->has('remove_file1') && $request->remove_file1) {
+                if ($visa->demand_letter) {
+                    Storage::disk('public')->delete($visa->demand_letter);
                 }
             }
 
             // If a new file was uploaded
-            $openingBalanceSheetPath = null;
-            if ($request->hasFile('sponsor_photo')) {
+            $demandLetterPath = null;
+            if ($request->hasFile('demand_letter')) {
 
-                if ($sponsor->sponsor_photo) {
-                    Storage::disk('public')->delete($sponsor->sponsor_photo);
+                if ($visa->demand_letter) {
+                    Storage::disk('public')->delete($visa->demand_letter);
                 }
-                $openingBalanceSheetPath = $request->file('sponsor_photo')->store('sponsors', 'public');
+                $demandLetterPath = $request->file('demand_letter')->store('visas', 'public');
             }
 
-            $sponsor->sponsor_photo = $openingBalanceSheetPath;
-            $sponsor->address = $request->address;
-            $sponsor->note = $request->note;
-            $sponsor->status = $request->status === 'Enabled' ? 'Enabled' : 'Disabled';
+            // If user asked to remove file
+            if ($request->has('remove_file') && $request->remove_file) {
+                if ($visa->attachment) {
+                    Storage::disk('public')->delete($visa->attachment);
+                }
+            }
 
-            $sponsor->save();
+            // If a new file was uploaded
+            $attachmentPath = null;
+            if ($request->hasFile('attachment')) {
 
-            return response()->json(['status' => 'success', 'message' => 'Sponsor updated successfully']);
+                if ($visa->sponsor_photo) {
+                    Storage::disk('public')->delete($visa->attachment);
+                }
+                $attachmentPath = $request->file('attachment')->store('visas', 'public');
+            }
+
+            $visa->demand_letter = $demandLetterPath;
+            $visa->attachment = $attachmentPath;
+            $visa->note = $request->note;
+            $visa->provide_food = $request->provide_food === '1' ? '1' : '0';
+            $visa->provide_accommodation = $request->provide_accommodation === '1' ? '1' : '0';
+            $visa->status = $request->status === 'Enabled' ? 'Enabled' : 'Disabled';
+
+            $visa->save();
+
+            return response()->json(['status' => 'success', 'message' => 'Visa updated successfully']);
         } catch (ValidationException $e) {
             return response()->json(['status' => 'fail', 'message' => $e->validator->errors()]);
         } catch (\Exception $e) {
@@ -147,9 +224,9 @@ class VisaController extends Controller
     public function destroy(string $id)
     {
         try {
-            $sponsor = Sponsor::findOrFail($id);
-            $sponsor->delete();
-            return response()->json(['status' => 'success', 'message' => 'Sponsor deleted successfully']);
+            $visa = Visa::findOrFail($id);
+            $visa->delete();
+            return response()->json(['status' => 'success', 'message' => 'Visa deleted successfully']);
         } catch (\Exception $e) {
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
         }

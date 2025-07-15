@@ -35,12 +35,12 @@ return new class extends Migration
             $table->decimal('purchase_amount', 25, 2)->nullable();
             $table->decimal('purchase_bdt_amount', 25, 2)->nullable();
             $table->enum('payment_type', ['Free', 'Due'])->nullable();
-            $table->integer('currency_id')->unsigned()->nullable();
+            $table->integer('currency_id')->unsigned();
             $table->foreign('currency_id')->references('id')->on('currencies')->onDelete('cascade');
-            $table->decimal('agent_price', 25, 2)->nullable();
-            $table->decimal('agent_bdt_price', 25, 2)->nullable();
-            $table->decimal('candidate_price', 25, 2)->nullable();
-            $table->decimal('candidate_bdt_price', 25, 2)->nullable();
+            $table->decimal('agent_price', 25, 2);
+            $table->decimal('agent_bdt_price', 25, 2);
+            $table->decimal('candidate_price', 25, 2);
+            $table->decimal('candidate_bdt_price', 25, 2);
             $table->string('demand_letter')->nullable();
             $table->string('attachment')->nullable();
             $table->string('note', 2000)->nullable();
