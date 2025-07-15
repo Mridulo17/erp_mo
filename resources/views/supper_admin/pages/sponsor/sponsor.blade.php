@@ -63,13 +63,14 @@
                     <tr>
                         <th style="">Action</th>
                         <th style="">DB:ID</th>
-                        <th style="">Employee</th>
-                        <th style="">Department</th>
-                        <th style="">Month</th>
-                        <th style="">Impression</th>
-                        <th style="">Type</th>
-                        <th style="">Amount</th>
-                        <th style="">Entry Date</th>
+                        <th style="">User Type</th>
+                        <th style="">User Info</th>
+                        <th style="">Sponsor Name</th>
+                        <th style="">NID</th>
+                        <th style="">Phone</th>
+                        <th style="">Balance</th>
+                        <th style="">Opening Balance</th>
+                        <th style="">Status</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -98,19 +99,28 @@
                             </td>
 
                             <td>{{ $key + 1 }}</td>
-                            <td class="wrap-text">{{$bonus->employee ? $bonus->employee->first_name : '' }} {{$bonus->employee ? $bonus->employee->last_name : '' }}</td>
-                            <td class="wrap-text">{{$bonus->department ? $bonus->department->name : '' }}</td>
-                            <td class="wrap-text">{{ $bonus->month  }}</td>
-                            <td class="wrap-text">{{ $bonus->impression_type  }}</td>
-                            <td class="wrap-text">{{ $bonus->amount_type  }}</td>
-                            <td class="wrap-text">{{ $bonus->amount  }}</td>
-                            <td class="wrap-text">{{ $bonus->created_at->format('F d, Y') }}</td>
+                            <td class="wrap-text">{{ $bonus->sponsor_type  }}</td>
+                            @if($bonus->sponsor_type == 'Agent')
+                                <td class="wrap-text">{{$bonus->agent ? $bonus->agent->first_name : '' }} {{$bonus->agent ? $bonus->agent->last_name : '' }}</td>
+                            @elseif($bonus->sponsor_type == 'Delegate')
+                                <td class="wrap-text">{{$bonus->delegate ? $bonus->delegate->first_name : '' }} {{$bonus->delegate ? $bonus->delegate->last_name : '' }}</td>
+                            @endif
+                            <td class="wrap-text">{{ $bonus->sponsor_name  }}</td>
+                            <td class="wrap-text">{{ $bonus->nid  }}</td>
+                            <td class="wrap-text">{{ $bonus->cell_number  }}</td>
+                            <td class="wrap-text">{{ $bonus->balance  }}</td>
+                            <td class="wrap-text">{{ $bonus->opening_balance  }}</td>
+                            <td>
+                            <span class="badge {{ $bonus->status == 'Enabled' ? 'badge-success' : 'badge-danger' }}">
+                                {{ $bonus->status == 'Enabled' ? 'Enabled' : 'Disabled' }}
+                            </span>
+                            </td>
 
                         </tr>
                     @endforeach
                     </tbody>
                 </table>
-
+1
             </div>
         </div>
     </div>

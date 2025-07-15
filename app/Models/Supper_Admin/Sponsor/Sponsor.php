@@ -20,6 +20,7 @@ class Sponsor extends Model
             'cell_number',
             'email',
             'opening_balance',
+            'balance',
             'nid',
             'sponsor_photo',
             'address',
