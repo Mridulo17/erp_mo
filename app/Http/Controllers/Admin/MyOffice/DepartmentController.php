@@ -23,7 +23,9 @@ class DepartmentController extends Controller
     public function Activeindex()
     {
         $user = Auth::user();
-        $departments = Department::where('company_id', $user->company_id)->where('status', 1)->get();
+        $departments = Department::
+//        where('company_id', $user->company_id)->
+        where('status', 1)->get();
         return response()->json($departments);
     }
 
@@ -44,9 +46,9 @@ class DepartmentController extends Controller
                 'note'           => 'nullable|string|max:2000',
                 'status'         => 'required|in:1,0'
             ]);
-    
+
             $user = Auth::user();
-    
+
             Department::create([
                 'company_id'     => $user->company_id,
                 'name'           => $request->name,
@@ -58,16 +60,16 @@ class DepartmentController extends Controller
                 'user_id'        => $user->id,
                 'status'         => $request->status
             ]);
-    
+
             return response()->json(['status' => 'success','message' => 'Department added successfully']);
-    
+
         } catch (ValidationException $e) {
-            return response()->json(['status' => 'fail','errors' => $e->validator->errors()], 422); 
+            return response()->json(['status' => 'fail','errors' => $e->validator->errors()], 422);
         } catch (\Exception $e) {
             return response()->json(['status' => 'fail','message' => $e->getMessage()], 500);
         }
     }
-    
+
 
 
     public function show(string $id)
@@ -94,14 +96,14 @@ class DepartmentController extends Controller
         ]);
         $user = Auth::user();
         $department = Department::findOrFail($id);
-    
+
         $department->name           = $request->name;
         $department->code           = $request->code;
         $department->include_status = $request->include_status;
         $department->note           = $request->note;
         $department->status         = $request->status ? 1 : 0;
         $department->user_id        = $user->id;
-    
+
         if ($request->include_status == 1) {
             $department->bonous_type   = $request->bonous_type;
             $department->bonous_amount = $request->bonous_amount;
@@ -116,7 +118,7 @@ class DepartmentController extends Controller
             'message' => 'Department updated successfully',
         ]);
     }
-    
+
 
     public function destroy(string $id)
     {

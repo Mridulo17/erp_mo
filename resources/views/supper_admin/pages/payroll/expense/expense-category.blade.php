@@ -13,51 +13,53 @@
 
 @section('content')
 
-@if (session('status'))
-<div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content text-center">
-            <div class="modal-header border-0">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                @if (session('status') == 'success')
-                    <i class="fas fa-check-circle text-success"></i>
-                    <h5 class="mt-3 text-success">Success</h5>
-                @else
-                    <i class="fas fa-times-circle text-danger"></i>
-                    <h5 class="mt-3 text-danger">Error</h5>
-                @endif
-                <p class="mt-2">{{ session('message') }}</p>
-            </div>
-            <div class="modal-footer border-0">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+    @if (session('status'))
+        <div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content text-center">
+                    <div class="modal-header border-0">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @if (session('status') == 'success')
+                            <i class="fas fa-check-circle text-success"></i>
+                            <h5 class="mt-3 text-success">Success</h5>
+                        @else
+                            <i class="fas fa-times-circle text-danger"></i>
+                            <h5 class="mt-3 text-danger">Error</h5>
+                        @endif
+                        <p class="mt-2">{{ session('message') }}</p>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-@endif
+    @endif
 
-<div class="box">
-    <!-- Header Section -->
-    <div class="box-header with-border d-flex justify-content-between align-items-center">
-        <div>
-            <h3 class="box-title">Expense Categories</h3>
-            <h6 class="box-subtitle">This is all Expense Categories List</h6>
+    <div class="box">
+        <!-- Header Section -->
+        <div class="box-header with-border d-flex justify-content-between align-items-center">
+            <div>
+                <h3 class="box-title">Expense Categories</h3>
+                <h6 class="box-subtitle">This is all Expense Categories List</h6>
+            </div>
+            <button type="button" class="btn btn-warning addBlogButton" data-toggle="modal" data-target="#modal-center">
+                <i class="fa-solid fa-plus"></i> Add Data
+            </button>
         </div>
-        <button type="button" class="btn btn-warning addBlogButton" data-toggle="modal" data-target="#modal-center">
-            <i class="fa-solid fa-plus"></i> Add Data
-        </button>
-    </div>
 
-    @include('supper_admin.components.expense.expense_category_modal')
+        @include('supper_admin.components.payroll.expense.expense_category_modal')
 
-    <div class="box-body">
-        <div class="table-responsive">
-            <table id="customDataTable" style="table-layout: fixed; width: 100%;" class="table table-bordered table-hover display nowrap margin-top-10 w-p100">
-                <thead>
+        <div class="box-body">
+            <div class="table-responsive">
+                <table id="customDataTable" style="table-layout: fixed; width: 100%;"
+                       class="table table-bordered table-hover display nowrap margin-top-10 w-p100">
+                    <thead>
                     <tr>
                         <th style="">Action</th>
                         <th style="">DB.Id</th>
@@ -70,53 +72,55 @@
                         <th style="">Status</th>
 
                     </tr>
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
                     @foreach($expenseCategories as $key =>$category)
-                    <tr>
-                        <td>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-primary btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fa fa-bars"></i> Action
-                                </button>
-                                <div class="dropdown-menu">
-                                    <!-- Edit Button inside Dropdown -->
-                                    <a href="#" class="dropdown-item editBlogButton" data-toggle="modal" data-target="#modal-center" data-id="{{ $category->id }}">
-                                        <i class="fa fa-edit"></i> Edit
-                                    </a>
-
-                                    <!-- Delete Form inside Dropdown -->
-                                    <button type="button"
-                                            class="dropdown-item text-danger deleteContinentBtn"
-                                            data-id="{{ $category->id }}">
-                                        <i class="fa fa-trash"></i> Delete
+                        <tr>
+                            <td>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-bars"></i> Action
                                     </button>
+                                    <div class="dropdown-menu">
+                                        <!-- Edit Button inside Dropdown -->
+                                        <a href="#" class="dropdown-item editBlogButton" data-toggle="modal"
+                                           data-target="#modal-center" data-id="{{ $category->id }}">
+                                            <i class="fa fa-edit"></i> Edit
+                                        </a>
+
+                                        <!-- Delete Form inside Dropdown -->
+                                        <button type="button"
+                                                class="dropdown-item text-danger deleteContinentBtn"
+                                                data-id="{{ $category->id }}">
+                                            <i class="fa fa-trash"></i> Delete
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
+                            </td>
 
-                        <td>{{ $key + 1 }}</td>
-                        <td>{{ $category->account_type}}</td>
+                            <td>{{ $key + 1 }}</td>
+                            <td>{{ $category->account_type}}</td>
 
-                        <td class="wrap-text">{{ $category->expense_category_name  }}</td>
-                        <td class="wrap-text">{{ $category->expense_category_code  }}</td>
-                        <td>{{ $category->opening_balance}}</td>
-                        <td>{{ $category->opening_balance}}</td>
-                        <td class="wrap-text">{{ $category->created_at->format('F d, Y') }}</td>
-                        <td>
+                            <td class="wrap-text">{{ $category->expense_category_name  }}</td>
+                            <td class="wrap-text">{{ $category->expense_category_code  }}</td>
+                            <td>{{ $category->opening_balance}}</td>
+                            <td>{{ $category->opening_balance}}</td>
+                            <td class="wrap-text">{{ $category->created_at->format('F d, Y') }}</td>
+                            <td>
                             <span class="badge {{ $category->status == 'Enabled' ? 'badge-success' : 'badge-danger' }}">
                                 {{ $category->status == 'Enabled' ? 'Enabled' : 'Disabled' }}
                             </span>
-                        </td>
+                            </td>
 
-                    </tr>
+                        </tr>
                     @endforeach
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
 
+            </div>
         </div>
     </div>
-</div>
 
     @section('script')
         <script>
@@ -218,7 +222,6 @@
                             $('#expense_category_name').val(res.expense_category_name);
                             $('#expense_category_code').val(res.expense_category_code);
                             $('#opening_balance').val(res.opening_balance);
-                            // $('#opening_balance_sheet').val(res.opening_balance_sheet);
                             $('#note').val(res.note);
 
                             // Show existing file

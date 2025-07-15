@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Models\Supper_Admin\Sponsor;
+
+use App\Models\Admin\HRM\Employee;
+use App\Models\Admin\People\Agent;
+use App\Models\Admin\People\Delegate;
+use App\Models\Admin\People\DelegateOffice;
+use Illuminate\Database\Eloquent\Model;
+
+class Sponsor extends Model
+{
+    protected $fillable =
+        [
+            'sponsor_type',
+            'agent_id',
+            'delegate_id',
+            'delegate_office_id',
+            'sponsor_name',
+            'cell_number',
+            'email',
+            'opening_balance',
+            'balance',
+            'nid',
+            'sponsor_photo',
+            'address',
+            'note'
+        ];
+
+    public function agent()
+    {
+        return $this->belongsTo(Agent::class);
+    }
+
+    public function delegate()
+    {
+        return $this->belongsTo(Delegate::class);
+    }
+    public function delegateOffice()
+    {
+        return $this->belongsTo(DelegateOffice::class);
+    }
+}

@@ -16,6 +16,12 @@ class CurrencyController extends Controller
         return view('supper_admin.pages.location.currency', compact('currencies'));
     }
 
+    public function Activeindex()
+    {
+        $currencies = Currency::where('status', 'Active')->get();
+        return response()->json($currencies);
+    }
+
     public function create()
     {
         //

@@ -14,7 +14,8 @@
 @section('content')
 
     @if (session('status'))
-        <div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel" aria-hidden="true">
+        <div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel"
+             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content text-center">
                     <div class="modal-header border-0">
@@ -52,11 +53,12 @@
             </button>
         </div>
 
-        @include('supper_admin.components.expense.expense_item_modal')
+        @include('supper_admin.components.payroll.expense.expense_item_modal')
 
         <div class="box-body">
             <div class="table-responsive">
-                <table id="customDataTable" style="table-layout: fixed; width: 100%;" class="table table-bordered table-hover display nowrap margin-top-10 w-p100">
+                <table id="customDataTable" style="table-layout: fixed; width: 100%;"
+                       class="table table-bordered table-hover display nowrap margin-top-10 w-p100">
                     <thead>
                     <tr>
                         <th style="">Action</th>
@@ -72,12 +74,14 @@
                         <tr>
                             <td>
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false">
                                         <i class="fa fa-bars"></i> Action
                                     </button>
                                     <div class="dropdown-menu">
                                         <!-- Edit Button inside Dropdown -->
-                                        <a href="#" class="dropdown-item editBlogButton" data-toggle="modal" data-target="#modal-center" data-id="{{ $item->id }}">
+                                        <a href="#" class="dropdown-item editBlogButton" data-toggle="modal"
+                                           data-target="#modal-center" data-id="{{ $item->id }}">
                                             <i class="fa fa-edit"></i> Edit
                                         </a>
 
@@ -137,15 +141,16 @@
 
             $(document).ready(function () {
                 fetchExpenseCategories();
+
                 function fetchExpenseCategories() {
                     $.ajax({
                         url: "{{ route('supper_admin.expense-category.enabled') }}",
                         method: "GET",
-                        success: function(data) {
+                        success: function (data) {
                             let select = $('#categorySelect');
                             select.empty();
                             select.append('<option value="" disabled selected>Choose Category</option>');
-                            data.forEach(function(category) {
+                            data.forEach(function (category) {
                                 select.append(
                                     '<option value="' + category.id + '">' +
                                     category.expense_category_name + ' - ' + category.expense_category_code +
@@ -154,7 +159,7 @@
                             });
 
                         },
-                        error: function(xhr) {
+                        error: function (xhr) {
                             console.error("Failed to fetch expense categories:", xhr);
                         }
                     });

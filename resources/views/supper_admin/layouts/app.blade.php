@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -33,25 +33,25 @@
   </head>
 
 <body class="hold-transition light-skin sidebar-mini theme-primary fixed">
-	
+
 <div class="wrapper">
   <div id="loader"></div>
   <header class="main-header">
 	<div class="d-flex align-items-center logo-box justify-content-start">
 		<a href="#" class="waves-effect waves-light nav-link d-none d-md-inline-block mx-10 push-btn bg-transparent" data-toggle="push-menu" role="button">
 			<span class="icon-Align-left"><span class="path1"></span><span class="path2"></span><span class="path3"></span></span>
-		</a>	
+		</a>
 		<a href="{{route('dashboard')}}" class="logo">
 		  <div class="logo-lg">
 			  <span class="light-logo"><img src="{{ asset('backend\images\overseas.jpeg')}}" alt="logo"></span>
 			  <span class="dark-logo"><img src="{{ asset('backend\images\overseas.jpeg')}}" alt="logo"></span>
 		  </div>
-		</a>	
-	</div>  
+		</a>
+	</div>
 
         @include('supper_admin.layouts.navbar')
   </header>
-  
+
   @include('supper_admin.layouts.sidebar')
 
 
@@ -67,13 +67,13 @@
 
 
   <div class="control-sidebar-bg"></div>
-  
+
 </div>
 
 	<!-- Vendor JS -->
 	<script src="{{ asset('backend/assets/js/vendors.min.js')}}"></script>
 	<script src="{{ asset('backend/assets/js/pages/chat-popup.js')}}"></script>
-    <script src="{{ asset('backend/assets/icons/feather-icons/feather.min.js')}}"></script>	
+    <script src="{{ asset('backend/assets/icons/feather-icons/feather.min.js')}}"></script>
 	<script src="{{asset('backend/assets/vendor_components/select2/dist/js/select2.full.js')}}"></script>
 
 	{{-- <script src="{{ asset('backend/assets/vendor_components/apexcharts-bundle/dist/apexcharts.js')}}"></script> --}}
@@ -99,14 +99,14 @@
 
 	<script src="{{ asset('backend/assets/vendor_components/gallery/js/animated-masonry-gallery.js')}}"></script>
 	<script src="{{ asset('backend/assets/vendor_components/gallery/js/jquery.isotope.min.js')}}"></script>
-	<script src="{{ asset('backend/assets/vendor_components/lightbox-master/dist/ekko-lightbox.js')}}"></script>	    
+	<script src="{{ asset('backend/assets/vendor_components/lightbox-master/dist/ekko-lightbox.js')}}"></script>
 	<script src="{{ asset('backend/assets/js/pages/gallery.js')}}"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 	<script src="{{ asset('js/global.js') }}"></script>
 
-	
+
 	@yield('script')
 	<script>
 		$(document).ready(function() {
@@ -117,10 +117,10 @@
 			});
 
 			$('#summernote').summernote({
-				height: 200,                 
-				minHeight: null,             
-				maxHeight: null,             
-				focus: true                 
+				height: 200,
+				minHeight: null,
+				maxHeight: null,
+				focus: true
 			});
 		});
 
@@ -151,7 +151,7 @@
 	  </script>
 
 
-	
+
 </body>
 
 </html>
