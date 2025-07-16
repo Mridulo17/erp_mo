@@ -11,7 +11,7 @@
             <!-- The Form -->
             <form id="visaForm">
                 @csrf
-                <input type="hidden" id="visa_id" name="visa_id" value="">
+                <input type="hidden" id="marketing_visa_id" name="marketing_visa_id" value="">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6">
@@ -84,17 +84,15 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Cost</label>
-                                <input type="number" step="any" name="purchase_amount" id="purchase_amount" placeholder="Cost" class="form-control">
+                                <input type="number" step="any" name="cost" id="cost" placeholder="Cost" class="form-control">
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <div class="form-group">
-                                    <label for="purchase_currency_id" class="font-weight-bold text-dark" style="font-size: 14px;">Cost Currency</label>
-                                    <select name="purchase_currency_id" id="purchaseCurrencySelect" class="form-control">
-                                        <option value="" disabled selected>Choose Currency</option>
-                                    </select>
-                                </div>
+                                <label for="cost_currency_id" class="font-weight-bold text-dark" style="font-size: 14px;">Cost Currency</label>
+                                <select name="cost_currency_id" id="costCurrencySelect" class="form-control">
+                                    <option value="" disabled selected>Choose Currency</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -103,20 +101,20 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Available Quantity</label>
-                                <input type="number" step="any" name="visa_qty" id="visa_qty" placeholder="Available Quantity" class="form-control" required>
+                                <input type="number" step="any" name="available_qty" id="available_qty" placeholder="Available Quantity" class="form-control" required>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Registration Fee</label>
-                                <input type="number" step="any" name="visa_qty" id="visa_qty" placeholder="Registration Fee" class="form-control" required>
+                                <input type="number" step="any" name="registration_fee" id="registration_fee" placeholder="Registration Fee" class="form-control" required>
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="checkbox checkbox-success">
-                            <input name="provide_food" id="provide_food" type="checkbox">
-                            <label for="provide_food"> Send SMS to Agent </label>
+                            <input name="send_sms_to_agent" id="send_sms_to_agent" type="checkbox">
+                            <label for="send_sms_to_agent"> Send SMS to Agent </label>
                         </div>
                     </div>
                     <div class="form-group">
