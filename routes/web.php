@@ -149,7 +149,8 @@ Route::middleware(['auth', 'verified'])->prefix('supper_admin')->name('supper_ad
     Route::resource('attendances', AttendanceController::class);
     Route::delete('/leave-date/withdraw/{id}', [LeaveController::class, 'withdraw'])->name('leave-date.withdraw');
     Route::resource('leaves', LeaveController::class);
-    Route::resource('roastings', RoastingController::class);
+    Route::get('/roastings', [RoastingController::class, 'index'])->name('roastings.index');
+    Route::post('/roastings/{employeeId}', [RoastingController::class, 'update'])->name('roastings.update');
     Route::resource('weekends', WeekendController::class);
 });
 

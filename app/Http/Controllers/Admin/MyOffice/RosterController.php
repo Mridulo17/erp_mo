@@ -19,11 +19,13 @@ class RosterController extends Controller
         return view('backend.pages.myoffice.roster', compact('rosters'));
     }
 
-    
+
     public function activeIndex()
     {
         $user = Auth::user();
-        $rosters = Roster::where('company_id', $user->company_id)->where('status', 1)->get();
+        $rosters = Roster::
+//        where('company_id', $user->company_id)->
+        where('status', 1)->get();
         return response()->json($rosters);
     }
 
@@ -45,7 +47,7 @@ class RosterController extends Controller
                 'note'        => 'nullable|string|max:2000',
                 'status'      => 'required|in:1,0'
             ]);
-    
+
             $user = Auth::user();
             Roster::create([
                 'company_id'     => $user->company_id,
@@ -59,16 +61,16 @@ class RosterController extends Controller
                 'user_id'        => $user->id,
                 'status'         => $request->status
             ]);
-    
+
             return response()->json(['status' => 'success','message' => 'Roster added successfully']);
-    
+
         } catch (ValidationException $e) {
-            return response()->json(['status' => 'fail','errors' => $e->validator->errors()], 422); 
+            return response()->json(['status' => 'fail','errors' => $e->validator->errors()], 422);
         } catch (\Exception $e) {
             return response()->json(['status' => 'fail','message' => $e->getMessage()], 500);
         }
     }
-    
+
 
 
     public function show(string $id)
@@ -97,7 +99,7 @@ class RosterController extends Controller
         ]);
         $user = Auth::user();
         $Roster = Roster::findOrFail($id);
-    
+
         $Roster->name           = $request->name;
         $Roster->code           = $request->code;
         $Roster->duty_hours     = $request->duty_hours;
@@ -114,7 +116,7 @@ class RosterController extends Controller
             'message' => 'Roster updated successfully',
         ]);
     }
-    
+
 
     public function destroy(string $id)
     {

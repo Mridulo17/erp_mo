@@ -32,7 +32,9 @@ class EmployeeController extends Controller
                 ->where('department_id', $departmentId)
                 ->get();
         } else {
-            $employees = Employee::with('branch')->where('company_id', $user->company_id)->where('status', 1)->get();
+            $employees = Employee::with('branch')
+//                ->where('company_id', $user->company_id)
+                ->where('status', 1)->get();
 
         }
          return response()->json($employees);
