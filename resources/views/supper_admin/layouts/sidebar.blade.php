@@ -112,6 +112,7 @@
                           'supper_admin.expense-categories.*',
                           'supper_admin.expense-items.*',
                           'supper_admin.expenses.*',
+                          'supper_admin.salary-generate.*',
                           'supper_admin.performance-bonuses.*',
                           'supper_admin.inc-and-deces.*',
                           'supper_admin.advance-salaries.*',
@@ -152,7 +153,7 @@
                                       <li class="{{ Request::routeIs('supper_admin.expenses.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.expenses.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Add Expense</a></li>
                                   </ul>
                               </a></li>
-                          <li class="{{ Request::routeIs('supper_admin.countries.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.countries.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Salary Generate</a></li>
+                          <li class="{{ Request::routeIs('supper_admin.salary-generate.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.salary-generate.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Salary Generate</a></li>
                           <li class="{{ Request::routeIs('supper_admin.performance-bonuses.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.performance-bonuses.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Performance Bonus</a></li>
                           <li class="{{ Request::routeIs('supper_admin.inc-and-deces.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.inc-and-deces.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Inc & Dec</a></li>
                           <li class="{{ Request::routeIs('supper_admin.advance-salaries.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.advance-salaries.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Advance Salary</a></li>

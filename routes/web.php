@@ -49,6 +49,7 @@ use App\Http\Controllers\Supper_Admin\Payroll\HoldOrAllowanceController;
 use App\Http\Controllers\Supper_Admin\Payroll\IncAndDecController;
 use App\Http\Controllers\Supper_Admin\Payroll\MobileAllowanceController;
 use App\Http\Controllers\Supper_Admin\Payroll\PerformanceBonusController;
+use App\Http\Controllers\Supper_Admin\Payroll\SalaryGenerateController;
 use App\Http\Controllers\Supper_Admin\Payroll\TravellingAndDearnessController;
 use App\Http\Controllers\Supper_Admin\service\AirTicketcontroller;
 use App\Http\Controllers\Supper_Admin\service\HazzUmrahcontroller;
@@ -134,6 +135,7 @@ Route::middleware(['auth', 'verified'])->prefix('supper_admin')->name('supper_ad
     Route::resource('expense-categories', ExpenseCategoryController::class);
     Route::resource('expense-items', ExpenseItemController::class);
     Route::resource('expenses', ExpenseController::class);
+    Route::resource('salary-generate', SalaryGenerateController::class);
     Route::resource('performance-bonuses', PerformanceBonusController::class);
     Route::resource('inc-and-deces', IncAndDecController::class);
     Route::resource('advance-salaries', AdvanceSalaryController::class);
