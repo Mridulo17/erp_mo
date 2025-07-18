@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Supper_Admin\Attendance_Leave;
+namespace App\Http\Controllers\Supper_Admin\Payroll;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin\HRM\Employee;
 use App\Models\Admin\MyOffice\Department;
-use App\Models\Supper_Admin\Attendance_Leave\Weekend;
+use App\Models\Supper_Admin\Payroll\HoldOrAllowance;
 use Illuminate\Http\Request;
 
-class WeekendController extends Controller
+class HoldOrAllowanceController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -31,10 +31,11 @@ class WeekendController extends Controller
         $departments = Department::
 //        where('company_id', $user->company_id)->
         where('status', 1)->get();
-        return view('supper_admin.pages.attendanceAndLeave.setup-weekend', compact('employees', 'departments'));
+        return view('supper_admin.pages.payroll.hold-or-allowance', compact('employees', 'departments'));
 
     }
-        /**
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create()
@@ -53,7 +54,7 @@ class WeekendController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Weekend $weekend)
+    public function show(HoldOrAllowance $holdOrAllowance)
     {
         //
     }
@@ -61,7 +62,7 @@ class WeekendController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Weekend $weekend)
+    public function edit(HoldOrAllowance $holdOrAllowance)
     {
         //
     }
@@ -80,10 +81,11 @@ class WeekendController extends Controller
         }
     }
 
+
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Weekend $weekend)
+    public function destroy(HoldOrAllowance $holdOrAllowance)
     {
         //
     }

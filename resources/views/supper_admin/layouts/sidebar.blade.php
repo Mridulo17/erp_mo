@@ -116,6 +116,7 @@
                           'supper_admin.inc-and-deces.*',
                           'supper_admin.advance-salaries.*',
                           'supper_admin.traveling-and-darenesses.*',
+                          'supper_admin.hold-or-allowances.*',
                           'supper_admin.mobile-allowances.*',
                           'supper_admin.festival-bonuses.*',
                       ];
@@ -156,7 +157,7 @@
                           <li class="{{ Request::routeIs('supper_admin.inc-and-deces.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.inc-and-deces.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Inc & Dec</a></li>
                           <li class="{{ Request::routeIs('supper_admin.advance-salaries.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.advance-salaries.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Advance Salary</a></li>
                           <li class="{{ Request::routeIs('supper_admin.traveling-and-darenesses.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.traveling-and-darenesses.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>TA - DA</a></li>
-                          <li class="{{ Request::routeIs('supper_admin.states.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.states.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Hold / Allowance</a></li>
+                          <li class="{{ Request::routeIs('supper_admin.hold-or-allowances.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.hold-or-allowances.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Hold / Allowance</a></li>
                           <li class="{{ Request::routeIs('supper_admin.mobile-allowances.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.mobile-allowances.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Mobile Allowance</a></li>
                           <li class="{{ Request::routeIs('supper_admin.festival-bonuses.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.festival-bonuses.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Festival Bonus</a></li>
                       </ul>

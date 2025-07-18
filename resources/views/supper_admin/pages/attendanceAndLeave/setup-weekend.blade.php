@@ -1,5 +1,5 @@
 @extends('supper_admin.layouts.app')
-@section('title', config('app.name') . ' - Assign Roasting')
+@section('title', config('app.name') . ' - Setup Weekend')
 
 @section('style')
     <style>
@@ -9,7 +9,6 @@
             word-break: break-word !important;
         }
     </style>
-    <!-- daterangepicker CSS -->
     @endsection
 
 @section('content')
@@ -46,8 +45,8 @@
         <!-- Header Section -->
         <div class="box-header with-border d-flex justify-content-between align-items-center">
             <div>
-                <h3 class="box-title">Assign Roasting</h3>
-                <h6 class="box-subtitle">This is all assign roasting List</h6>
+                <h3 class="box-title">Setup Weekend</h3>
+                <h6 class="box-subtitle">This is all setup weekend List</h6>
             </div>
         </div>
 
@@ -58,7 +57,10 @@
                         <div class="form-group">
                             <label>Choose department</label>
                             <select name="department_id" id="departmentSelect" class="form-control" required>
-                                <option value="" disabled selected>Choose Department</option>
+                                <option value="" disabled>Choose Department</option>
+                                @foreach($departments as $department)
+                                    <option value="{{ $department->id }}">{{ $department->name }}</option>
+                                @endforeach
                             </select>
                             </div>
                     </div>
@@ -74,7 +76,13 @@
                         <th style="">Employee ID</th>
                         <th style="">Department</th>
                         <th style="">Designation</th>
-                        <th style="">Roasting Option</th>
+                        <th>Saturday</th>
+                        <th>Sunday</th>
+                        <th>Monday</th>
+                        <th>Tuesday</th>
+                        <th>Wednesday</th>
+                        <th>Thursday</th>
+                        <th>Friday</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -85,22 +93,29 @@
                             <td>{{$bonus->employee_code}}</td>
                             <td class="wrap-text">{{$bonus->department ? $bonus->department->name : '' }}</td>
                             <td class="wrap-text">{{$bonus->designation ? $bonus->designation->name : '' }}</td>
-                            <td>
-                                <select name="roster_id"
-                                        id="rosterSelect_{{ $bonus->id }}"
-                                        class="form-control"
-                                        onchange="update_employee_roasting({{ $bonus->id }}, this)">
-                                    <option value="">Select Roster</option>
-                                    @foreach($rosters as $roster)
-                                        <option value="{{ $roster->id }}"
-                                            {{ $bonus->roster_id == $roster->id ? 'selected' : '' }}>
-                                            {{ $roster->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </td>
-                        </tr>
-                    @endforeach
+
+                            {{-- Weekend Day Selection --}}
+                            @php
+                                $weekdays = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+                            @endphp
+
+                            @foreach($weekdays as $day)
+                                <td class="wrap-text">
+                                    <div class="form-check">
+                                        <input type="radio"
+                                               class="form-check-input"
+                                               name="weekend_day_{{ $bonus->id }}"
+                                               id="weekend_day_{{ $bonus->id }}_{{ $day }}"
+                                               value="{{ $day }}"
+                                               {{ $bonus->weekend_day == $day ? 'checked' : '' }}
+                                               onclick="update_employee_weekend({{ $bonus->id }}, this)">
+                                        <label class="form-check-label" for="weekend_day_{{ $bonus->id }}_{{ $day }}">
+                                        </label>
+                                    </div>
+                                </td>
+                            @endforeach
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
 
@@ -110,14 +125,19 @@
 
     @section('script')
         <script>
-            function fetchAssignRoasting(departmentId = null) {
+            function fetchSetupWeekend(departmentId = null) {
                 $.ajax({
-                    url: '{{ route("supper_admin.roastings.index") }}',
+                    url: '{{ route("supper_admin.weekends.index") }}',
                     type: 'GET',
                     data: {department_id: departmentId}, // Pass department_id to filter employees
                     success: function (data) {
                         let newBody = $(data).find('#customDataTable tbody').html();
                         $('#customDataTable tbody').html(newBody);
+                        // Explicitly set selected department in dropdown after update
+                        if (departmentId) {
+                            $('#departmentSelect').val(departmentId);
+
+                        }
                     },
                     error: function () {
                         console.error('Failed to refresh assign roasting table.');
@@ -134,64 +154,37 @@
                 $('.wrapper').attr('aria-hidden', 'true');
             });
 
-            function update_employee_roasting(employeeId, selectElement) {
-                const selectedRosterId = selectElement.value;
+            function update_employee_weekend(employeeId, selectElement) {
+                const selectedWeekendId = selectElement.value;
 
                 $.ajax({
-                    url: `/supper_admin/roastings/${employeeId}`, // adjust route
+                    url: `/supper_admin/weekends/${employeeId}`, // adjust route
                     type: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}',
-                        roster_id: selectedRosterId
+                        weekend_day: selectedWeekendId
                     },
                     success: function (response) {
                         if (response.status === 'success') {
                             Swal.fire('Success!', response.message, 'success');
-                            fetchAssignRoasting();
+                            fetchSetupWeekend();
                         } else {
                             Swal.fire('Error!', response.message, 'error');
                         }
                     },
                     error: function () {
-                        Swal.fire('Error!', 'Failed to assign roasting.', 'error');
+                        Swal.fire('Error!', 'Failed to setup weekend.', 'error');
                     }
                 });
             }
 
             $(document).ready(function () {
 
-                fetchDepartments();
-
-                function fetchDepartments() {
-                    $.ajax({
-                        url: "{{ route('admin.department.active') }}",
-                        method: "GET",
-                        success: function (data) {
-                            let select = $('#departmentSelect');
-                            select.empty();
-                            select.append('<option value="" disabled selected>Choose Department</option>');
-
-                            data.forEach(function (department) {
-                                select.append(
-                                    '<option value="' + department.id + '">' +
-                                    department.name +
-                                    '</option>'
-                                );
-                            });
-                        },
-                        error: function (xhr) {
-                            console.error("Failed to fetch departments:", xhr);
-                        }
-                    });
-                }
-
-                // Fetch Countries based on Continent
-
                 // Trigger the fetchEmployees function when a category is selected
                 $('#departmentSelect').on('change', function () {
                     const departmentId = $(this).val();
                     if (departmentId) {
-                        fetchAssignRoasting(departmentId);  // Fetch employee based on the selected department
+                        fetchSetupWeekend(departmentId);
                     }
                 });
             });

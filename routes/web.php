@@ -45,6 +45,7 @@ use App\Http\Controllers\Supper_Admin\Payroll\Expense\ExpenseCategoryController;
 use App\Http\Controllers\Supper_Admin\Payroll\Expense\ExpenseController;
 use App\Http\Controllers\Supper_Admin\Payroll\Expense\ExpenseItemController;
 use App\Http\Controllers\Supper_Admin\Payroll\FestivalBonusController;
+use App\Http\Controllers\Supper_Admin\Payroll\HoldOrAllowanceController;
 use App\Http\Controllers\Supper_Admin\Payroll\IncAndDecController;
 use App\Http\Controllers\Supper_Admin\Payroll\MobileAllowanceController;
 use App\Http\Controllers\Supper_Admin\Payroll\PerformanceBonusController;
@@ -137,6 +138,7 @@ Route::middleware(['auth', 'verified'])->prefix('supper_admin')->name('supper_ad
     Route::resource('inc-and-deces', IncAndDecController::class);
     Route::resource('advance-salaries', AdvanceSalaryController::class);
     Route::resource('traveling-and-darenesses', TravellingAndDearnessController::class);
+    Route::resource('hold-or-allowances', HoldOrAllowanceController::class);
     Route::resource('mobile-allowances', MobileAllowanceController::class);
     Route::resource('festival-bonuses', FestivalBonusController::class);
 
@@ -151,7 +153,8 @@ Route::middleware(['auth', 'verified'])->prefix('supper_admin')->name('supper_ad
     Route::resource('leaves', LeaveController::class);
     Route::get('/roastings', [RoastingController::class, 'index'])->name('roastings.index');
     Route::post('/roastings/{employeeId}', [RoastingController::class, 'update'])->name('roastings.update');
-    Route::resource('weekends', WeekendController::class);
+    Route::get('/weekends', [WeekendController::class, 'index'])->name('weekends.index');
+    Route::post('/weekends/{employeeId}', [WeekendController::class, 'update'])->name('weekends.update');
 });
 
 // Group routes for 'admin' with prefix and middleware
