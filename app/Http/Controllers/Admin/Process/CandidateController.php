@@ -48,13 +48,28 @@ class CandidateController extends Controller
                 ->addColumn('name', function ($row) {
                     return $row->personalInfo?->full_name ?? '';
                 })
+                ->filterColumn('name', function ($query, $keyword) {
+                    $query->whereHas('personalInfo', function ($q) use ($keyword) {
+                        $q->whereRaw("LOWER(CONCAT(first_name, ' ', last_name)) LIKE ?", ["%" . strtolower($keyword) . "%"]);
+                    });
+                })
                 ->addColumn('agent', function($row) {
                     return $row->agent?->full_name ?? '';
+                })
+                ->filterColumn('agent', function ($query, $keyword) {
+                    $query->whereHas('agent', function ($q) use ($keyword) {
+                        $q->whereRaw("LOWER(CONCAT(first_name, ' ', last_name)) LIKE ?", ["%" . strtolower($keyword) . "%"]);
+                    });
                 })
                 ->addColumn('age_gender', function ($row) {
                     $age = $row->personalInfo?->age . 'y';
                     $gender = $row->personalInfo?->gender?->name;
                     return $age . ($gender ? " - {$gender}" : '');
+                })
+                ->filterColumn('age_gender', function ($query, $keyword) {
+                    $query->whereHas('personalInfo', function ($q) use ($keyword) {
+                        $q->whereRaw("LOWER(date_of_birth) LIKE ?", ["%" . strtolower($keyword) . "%"]);
+                    });
                 })
                 ->addColumn('nid', function ($row) {
                     return $row->personalInfo?->nid_or_birth_certificate ?? '';
@@ -68,8 +83,18 @@ class CandidateController extends Controller
                 ->addColumn('interested_country', function ($row) {
                     return $row->country?->name ?? '';
                 })
+                ->filterColumn('interested_country', function ($query, $keyword) {
+                    $query->whereHas('country', function ($q) use ($keyword) {
+                        $q->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($keyword) . '%']);
+                    });
+                })
                 ->addColumn('interested_profession', function ($row) {
                     return $row->profession?->name ?? '';
+                })
+                ->filterColumn('interested_profession', function ($query, $keyword) {
+                    $query->whereHas('profession', function ($q) use ($keyword) {
+                        $q->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($keyword) . '%']);
+                    });
                 })
                 ->addColumn('status', function ($row) {
                     return $row->status === 1

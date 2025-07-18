@@ -4,7 +4,8 @@
 @section('style')
     <style>
         .dataTables_wrapper .form-control {
-            padding: 5px 10px !important;
+            margin: 0 0;
+            padding: 5px 5px 5px 5px;
         }
     </style>
 @endsection
@@ -43,7 +44,7 @@
             <h3 class="box-title">Candidates Information</h3>
             <h6 class="box-subtitle">This is all Candidate List</h6>
         </div>
-        <a href="{{ route('admin.candidates.create') }}" type="button" class="btn btn-warning addAgentButton" >
+        <a href="{{ route('admin.candidates.create') }}" type="button" class="btn btn-md btn-warning addAgentButton" >
             <i class="fa-solid fa-plus"></i> Add Candidates
         </a>
     </div>
@@ -76,14 +77,14 @@
 <script type="text/javascript">
     let datatable_columns = [
         { data: 'DT_RowIndex',name:"DT_RowIndex", orderable: false, searchable: false },
-        { data: 'name', name: 'personalInfo.full_name', defaultContent: '' },
-        { data: 'agent', name: 'agent.full_name', defaultContent: '' },
-        { data: 'age_gender', name: 'personalInfo.date_of_birth', defaultContent: '' },
+        { data: 'name', name: 'name', defaultContent: '' },
+        { data: 'agent', name: 'agent', defaultContent: '' },
+        { data: 'age_gender', name: 'age_gender', defaultContent: '' },
         { data: 'nid', name: 'personalInfo.nid_or_birth_certificate', defaultContent: '' },
         { data: 'passport', name: 'passport.passport_number', defaultContent: '' },
         { data: 'passport_validity', name: 'passport.passport_expired_date', defaultContent: '' },
-        { data: 'interested_country', name: 'country.name', defaultContent: '' },
-        { data: 'interested_profession', name: 'profession.name', defaultContent: '' },
+        { data: 'interested_country', name: 'interested_country', defaultContent: '' },
+        { data: 'interested_profession', name: 'interested_profession', defaultContent: '' },
         { data: 'status', name: 'status', orderable: false, searchable: false },
         { data: 'action', name: 'action', orderable: false, searchable: false }
     ]
@@ -118,27 +119,35 @@
             "regex": true
         },
         columnDefs: datatable_columns_defs,
-        // dom: "<'row'<'col-sm-6'l><'col-sm-6 text-right'B>>" +
-        //      "<'row'<'col-sm-12'f>>" +
-        //      "<'row'<'col-sm-12'tr>>" +
-        //      "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-    //     dom: "<'row mb-2'<'col-sm-6'l><'col-sm-6'f>>" +
-    //  "<'row mb-2'<'col-sm-12 text-right'B>>" +
-    //  "<'row'<'col-sm-12'tr>>" +
-    //  "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",
-     dom: "<'row mb-3'<'col-sm-12 text-right'B>>" +   // Buttons top-right
-     "<'row mb-2'<'col-sm-6'l><'col-sm-6'f>>" +   // Length left, Search right
-     "<'row'<'col-sm-12'tr>>" +                   // Table
-     "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",    // Info left, Pagination right
 
+        dom: "<'row mb-3'<'col-sm-12 text-right'B>>" +   // Buttons top-right
+        "<'row mb-2'<'col-sm-6'l><'col-sm-6'f>>" +   // Length left, Search right
+        "<'row'<'col-sm-12'tr>>" +                   // Table
+        "<'row mt-2'<'col-sm-5'i><'col-sm-7'p>>",    // Info left, Pagination right
 
         buttons: [
-            'copy',
-            'csv',
-            'excel',
-            'pdf',
-            'print'
-        ],
+            {
+                extend: 'copy',
+                className: 'btn btn-md btn-warning'
+            },
+            {
+                extend: 'csv',
+                className: 'btn btn-md btn-warning'
+            },
+            {
+                extend: 'excel',
+                className: 'btn btn-md btn-warning'
+            },
+            {
+                extend: 'pdf',
+                className: 'btn btn-md btn-warning'
+            },
+            {
+                extend: 'print',
+                className: 'btn btn-md btn-warning'
+            }
+        ]
+
     });
 </script>
 @endsection
