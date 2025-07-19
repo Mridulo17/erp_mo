@@ -29,6 +29,7 @@
 			companyActive: "{{ route('supper_admin.company.active') }}",
 			branchActive: "{{ route('admin.branch.active') }}",
 			importantDaysActive: "{{ route('supper_admin.important-days.active') }}",
+			importantTemplateActive: "{{ route('supper_admin.important-template.active') }}",
         };
     </script>
   </head>

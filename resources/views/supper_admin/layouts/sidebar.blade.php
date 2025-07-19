@@ -96,7 +96,11 @@
 					</a>
 					<ul class="treeview-menu">
 						<li><a href="{{ route('supper_admin.important-days.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Important Days</a></li>
+						<li><a href="{{ route('supper_admin.important-template.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Important Template</a></li>
 					</ul>
+					{{-- <ul class="treeview-menu">
+						
+					</ul> --}}
 				</li>
 
                   <li class="treeview">

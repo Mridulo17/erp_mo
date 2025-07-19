@@ -19,7 +19,7 @@ class ImportantDaysController extends Controller
 
     public function ActiveIndex(Request $request)
     {
-        $importantDays = ImportantDays::where('status', 'Active')->get();
+        $importantDays = ImportantDays::where('status', '1')->get();
         return response()->json($importantDays);
     }
 

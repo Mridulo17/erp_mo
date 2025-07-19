@@ -45,6 +45,7 @@ use App\Http\Controllers\Admin\Process\CandidateController;
 use App\Http\Controllers\Admin\Enquiry\PhoneCallController;
 use App\Http\Controllers\Admin\Enquiry\VisitorBookController;
 use App\Http\Controllers\Supper_Admin\Communication\ImportantDaysController;
+use App\Http\Controllers\Supper_Admin\Communication\ImportantTemplateController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -86,6 +87,7 @@ Route::middleware(['auth', 'verified'])->prefix('supper_admin')->name('supper_ad
     Route::get('/company/active', [CompaniesController::class, 'Activeindex'])->name('company.active');
     Route::get('/expense-categories/enabled', [ExpenseCategoryController::class, 'enabledIndex'])->name('expense-category.enabled');
     Route::get('/important-days/active', [ImportantDaysController::class, 'ActiveIndex'])->name('important-days.active');
+    Route::get('/important-template/active', [ImportantTemplateController::class, 'ActiveIndex'])->name('important-template.active');
 
 
 
@@ -111,6 +113,7 @@ Route::middleware(['auth', 'verified'])->prefix('supper_admin')->name('supper_ad
     Route::resource('currencies', CurrencyController::class);
     Route::resource('mikrotik-devices', MikrotikDeviceController::class);
     Route::resource('important-days', ImportantDaysController::class);
+    Route::resource('important-template', ImportantTemplateController::class);
 
     //Resource routes for payroll under super_admin
     Route::resource('expense-categories', ExpenseCategoryController::class);
