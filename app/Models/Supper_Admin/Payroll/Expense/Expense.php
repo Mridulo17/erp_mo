@@ -17,7 +17,6 @@ class Expense extends Model
             'bdt_amount',
             'attachment',
             'month_year',
-            'is_expire',
             'expiry_date',
             'transaction_note',
             'note'

@@ -37,14 +37,12 @@ return new class extends Migration
 
             // Nominee
             $table->string('nominee_name')->nullable();
-            $table->string('relation_with_nominee')->nullable();
             $table->foreignId('relation_with_nominee_id')->nullable()->constrained('relations')->onDelete('set null');
 
             // Other Info
             $table->foreignId('religion_id')->nullable()->constrained('religions')->onDelete('set null');
-            $table->string('blood_group')->nullable();
             $table->foreignId('blood_group_id')->nullable()->constrained('blood_groups')->onDelete('set null');
-            $table->text('note')->nullable();
+            $table->longText('note')->nullable();
 
             $table->timestamps();
         });

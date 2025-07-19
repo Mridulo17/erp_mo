@@ -17,8 +17,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             CompaniesTableSeeder::class,
-            UserTableSeeder::class,
-            RoleTableSeeder::class,
+            UsersTableSeeder::class,
+            RolesTableSeeder::class,
             ContinentsTableSeeder::class,
             CountriesTableSeeder::class,
             CandidateTypesTableSeeder::class,
@@ -27,6 +27,20 @@ class DatabaseSeeder extends Seeder
             ProfessionTableSeeder::class,
             RelationTableSeeder::class,
             ReligionTableSeeder::class,
+            CurrencyTableSeeder::class,
+            DivisionsTableSeeder::class,
+            DistrictsTableSeeder::class,
+            ThanasTableSeeder::class,
+            BranchesTableSeeder::class,
+            DepartmentsTableSeeder::class,
+            DesignationsTableSeeder::class,
+            RostersTableSeeder::class,
+            EmployeesTableSeeder::class,
+            AgentsTableSeeder::class,
+            StateTableSeeder::class,
+            PostOfficeTableSeeder::class,
+            HowFindUsTableSeeder::class,
+            TransactionPurposeTableSeeder::class
         ]);
     }
 }

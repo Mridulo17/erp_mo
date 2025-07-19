@@ -23,7 +23,9 @@ class AgentController extends Controller
     public function Activeindex()
     {
         $user = Auth::user();
-        $agents = Agent::with('branch')->where('company_id', $user->company_id)->where('status', 1)->get();
+        $agents = Agent::with('branch')
+//            ->where('company_id', $user->company_id)
+            ->where('status', 1)->get();
         return response()->json($agents);
     }
 
@@ -44,11 +46,11 @@ class AgentController extends Controller
                 'date_of_birth'             => 'required|date',
                 'take_registration_fee'     => 'required|in:0,1',
                 'registration_fee_amount'   => 'nullable|string|max:255',
-                'branch_id'                 => 'required|exists:branches,id', 
-                'country_id'                => 'required|exists:countries,id', 
-                'division_id'               => 'required|exists:divisions,id', 
-                'district_id'               => 'required|exists:districts,id', 
-                'thana_id'                  => 'required|exists:thanas,id', 
+                'branch_id'                 => 'required|exists:branches,id',
+                'country_id'                => 'required|exists:countries,id',
+                'division_id'               => 'required|exists:divisions,id',
+                'district_id'               => 'required|exists:districts,id',
+                'thana_id'                  => 'required|exists:thanas,id',
                 'employee_id'               => 'required|exists:employees,id',
                 'agent_photo'               => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'passport_scan_copy'        => 'nullable|file|mimes:jpeg,png,jpg,gif,pdf|max:2048',
@@ -72,13 +74,13 @@ class AgentController extends Controller
             ->where('agent_code', 'like', 'AGT' . $companyNumber . '%')
             ->orderByDesc('agent_code')
             ->first();
-        
+
             if ($lastEmployee && preg_match('/AGT' . $companyNumber . '(\d+)/', $lastEmployee->agent_code, $codeMatch)) {
                 $lastNumber = (int)$codeMatch[1];
             } else {
                 $lastNumber = 0;
             }
-            
+
             $nextNumber = $lastNumber + 1;
             $agentCode = 'AGT' . $companyNumber . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
 
@@ -159,11 +161,11 @@ class AgentController extends Controller
                 'date_of_birth'             => 'required|date',
                 'take_registration_fee'     => 'required|in:0,1',
                 'registration_fee_amount'   => 'nullable|string|max:255',
-                'branch_id'                 => 'required|exists:branches,id', 
-                'country_id'                => 'required|exists:countries,id', 
-                'division_id'               => 'required|exists:divisions,id', 
-                'district_id'               => 'required|exists:districts,id', 
-                'thana_id'                  => 'required|exists:thanas,id', 
+                'branch_id'                 => 'required|exists:branches,id',
+                'country_id'                => 'required|exists:countries,id',
+                'division_id'               => 'required|exists:divisions,id',
+                'district_id'               => 'required|exists:districts,id',
+                'thana_id'                  => 'required|exists:thanas,id',
                 'employee_id'               => 'required|exists:employees,id',
                 'agent_photo'               => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'passport_scan_copy'        => 'nullable|file|mimes:jpeg,png,jpg,gif,pdf|max:2048',

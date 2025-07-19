@@ -24,7 +24,9 @@ class DelegateController extends Controller
     public function Activeindex()
     {
         $user = Auth::user();
-        $delegates = Delegate::with('branch')->where('company_id', $user->company_id)->where('status', 1)->get();
+        $delegates = Delegate::with('branch')
+//            ->where('company_id', $user->company_id)
+            ->where('status', 1)->get();
         return response()->json($delegates);
     }
 
@@ -42,11 +44,11 @@ class DelegateController extends Controller
                 'phone_number'              => 'required|string|max:20',
                 'email'                     => 'nullable|email|max:255',
                 'opening_balance'           => 'nullable|string|max:255',
-                'branch_id'                 => 'required|exists:branches,id', 
+                'branch_id'                 => 'required|exists:branches,id',
                 'country_id'                => 'required|exists:countries,id',
                 'state'                     => 'nullable|string|max:255',
                 'sponsor_type'              => 'required|string|max:255',
-                'agent_id'                  => 'nullable|exists:agents,id', 
+                'agent_id'                  => 'nullable|exists:agents,id',
                 'employee_id'               => 'nullable|exists:employees,id',
                 'delegate_photo'            => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'opening_balance_sheet'     => 'nullable|file|mimes:jpeg,png,jpg,gif,pdf|max:2048',
@@ -67,13 +69,13 @@ class DelegateController extends Controller
             ->where('delegate_code', 'like', 'DEL' . $companyNumber . '%')
             ->orderByDesc('delegate_code')
             ->first();
-        
+
             if ($lastDelegate && preg_match('/DEL' . $companyNumber . '(\d+)/', $lastDelegate->delegate_code, $codeMatch)) {
                 $lastNumber = (int)$codeMatch[1];
             } else {
                 $lastNumber = 0;
             }
-            
+
             $nextNumber = $lastNumber + 1;
             $delegateCode = 'DEL' . $companyNumber . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
 

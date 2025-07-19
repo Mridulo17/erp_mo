@@ -20,6 +20,19 @@ class DelegateOfficeController extends Controller
         return view('backend.pages.people.delegate_office', compact('delegateOffice'));
     }
 
+    public function Activeindex(Request $request)
+    {
+        if ($request->has('delegate_id') && $request->delegate_id) {
+            $delegateId = $request->get('delegate_id');
+            $delegateOffices = DelegateOffice::where('status', '1')
+                ->where('delegate_id', $delegateId)
+                ->get();
+        } else {
+            $delegateOffices = DelegateOffice::where('status', '1')->get();
+        }
+        return response()->json($delegateOffices);
+    }
+
     public function create()
     {
         //

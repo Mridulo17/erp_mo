@@ -31,7 +31,9 @@ class JobListController extends Controller
         if (!$jobCategoryId && $user->role === 'admin') {
             return response()->json(['error' => 'Please select a Job category.'], 400);
         }
-        $query = JobList::where('company_id', $user->company_id)->where('status', 1);
+        $query = JobList::
+//        where('company_id', $user->company_id)->
+        where('status', 1);
         if ($jobCategoryId) {
             $query->where('job_category_id', $jobCategoryId);
         }
@@ -48,13 +50,13 @@ class JobListController extends Controller
     {
         try {
             $request->validate([
-                'job_category_id'       => 'required|exists:job_categories,id', 
+                'job_category_id'       => 'required|exists:job_categories,id',
                 'name'                  => 'required|string|max:255',
                 'job_type'              => 'required|string|max:255',
                 'note'                  => 'nullable|string|max:2000',
                 'status'                => 'nullable|in:1,0'
             ]);
-    
+
             $user = Auth::user();
             JobList::create([
                 'company_id'            => $user->company_id,
@@ -65,16 +67,16 @@ class JobListController extends Controller
                 'user_id'               => $user->id,
                 'status'                => $request->status
             ]);
-    
+
             return response()->json(['status' => 'success','message' => 'Job Category added successfully']);
-    
+
         } catch (ValidationException $e) {
-            return response()->json(['status' => 'fail','errors' => $e->validator->errors()], 422); 
+            return response()->json(['status' => 'fail','errors' => $e->validator->errors()], 422);
         } catch (\Exception $e) {
             return response()->json(['status' => 'fail','message' => $e->getMessage()], 500);
         }
     }
-    
+
 
 
     public function show(string $id)
@@ -92,7 +94,7 @@ class JobListController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-                'job_category_id'       => 'required|exists:job_categories,id', 
+                'job_category_id'       => 'required|exists:job_categories,id',
                 'name'                  => 'required|string|max:255',
                 'job_type'              => 'required|string|max:255',
                 'note'                  => 'nullable|string|max:2000',
@@ -113,7 +115,7 @@ class JobListController extends Controller
             'message' => 'Job Category updated successfully',
         ]);
     }
-    
+
 
     public function destroy(string $id)
     {
