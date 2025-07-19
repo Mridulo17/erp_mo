@@ -7,37 +7,32 @@
             margin: 0 0;
             padding: 5px 5px 5px 5px;
         }
+        .table-responsive {
+            overflow: visible !important;
+        }
+        .table-responsive .dropdown-menu {
+            position: absolute !important;
+            z-index: 1050;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .table-responsive .dropdown-menu .dropdown-item {
+            padding: 3px 10px;
+            margin: 3px 0;
+            text-transform: capitalize;
+        }
+        .table-responsive .dropdown-menu .dropdown-item:hover {
+            background-color: #f5a4a4;
+            color: #000;
+            border-radius: 4px;
+        }
     </style>
 @endsection
 
 @section('content')
-{{-- @if (session('status'))
-<div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content text-center">
-            <div class="modal-header border-0">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                @if (session('status') == 'success')
-                    <i class="fas fa-check-circle text-success"></i>
-                    <h5 class="mt-3 text-success">Success</h5>
-                @else
-                    <i class="fas fa-times-circle text-danger"></i>
-                    <h5 class="mt-3 text-danger">Error</h5>
-                @endif
-                <p class="mt-2">{{ session('message') }}</p>
-            </div>
-            <div class="modal-footer border-0">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
-            </div>
-        </div>
-    </div>
-</div>
-@endif --}}
-
 <div class="box">
     <div class="box-header with-border d-flex justify-content-between align-items-center">
         <div>

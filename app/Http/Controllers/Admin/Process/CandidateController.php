@@ -45,16 +45,46 @@ class CandidateController extends Controller
             $data = Candidate::with(['agent', 'personalInfo', 'personalInfo.gender', 'experiences', 'experiences.workType', 'passport',]);
             return DataTables::of($data)
                 ->addIndexColumn()
-                ->addColumn('name', function ($row) {
-                    return $row->personalInfo?->full_name ?? '';
+                ->addColumn('name', function($row){
+                    $name = $row->personalInfo?->full_name ?? 'N/A';
+                    return '
+                    <div class="dropdown" style="position: relative;">
+                        <a href="#" class="badge badge-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa-solid fa-list"></i> '.$name.'
+                        </a>
+
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="' . route('admin.candidates.show', $row->id) . '">View Profile</a>
+                            <a class="dropdown-item" href="#">View Transactions</a>
+                            <a class="dropdown-item" href="#">Make Transaction</a>
+                            <a class="dropdown-item" href="#">Type Transfer</a>
+                            <a class="dropdown-item" href="#">Print Dynamic Form</a>
+                            <a class="dropdown-item text-danger" href="#">Delete</a>
+                            <a class="dropdown-item" href="#">Applications Logs</a>
+                            <a class="dropdown-item" href="#">Candidate Photo</a>
+                            <a class="dropdown-item text-success" href="#">Comments</a>
+                        </div>
+                    </div>';
                 })
                 ->filterColumn('name', function ($query, $keyword) {
                     $query->whereHas('personalInfo', function ($q) use ($keyword) {
                         $q->whereRaw("LOWER(CONCAT(first_name, ' ', last_name)) LIKE ?", ["%" . strtolower($keyword) . "%"]);
                     });
                 })
-                ->addColumn('agent', function($row) {
-                    return $row->agent?->full_name ?? '';
+                ->addColumn('agent', function($row){
+                    $agent = $row->agent?->full_name ?? '';
+                    return '
+                    <div class="dropdown" style="position: relative;">
+                        <a href="#" class="badge badge-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa-solid fa-list"></i> '.$agent.'
+                        </a>
+
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="' . route('admin.candidates.show', $row->id) . '">View Profile</a>
+                            <a class="dropdown-item" href="#">View Transactions</a>
+                            <a class="dropdown-item" href="#">Make Transaction</a>
+                        </div>
+                    </div>';
                 })
                 ->filterColumn('agent', function ($query, $keyword) {
                     $query->whereHas('agent', function ($q) use ($keyword) {
@@ -117,7 +147,7 @@ class CandidateController extends Controller
                         </div>
                     </div>';
                 })
-                ->rawColumns(['status', 'action'])
+                ->rawColumns(['name', 'agent', 'status', 'action'])
                 ->make(true);
         }
 
