@@ -85,22 +85,6 @@
 						<li><a href="{{ route('supper_admin.currencies.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Currency</a></li>
 					</ul>
 				</li>
-                  @php
-                      $sponsorRoutes = [
-                          'supper_admin.sponsors.*',
-                          'supper_admin.visas.*',
-                          'supper_admin.marketing-visas.*',
-                      ];
-                  @endphp
-                  <li class="treeview {{ Request::routeIs(...$sponsorRoutes) ? 'active' : '' }}">
-                      <a href="#">
-                          <i class="mdi mdi-account-star"><span class="path1"></span><span class="path2"></span></i>
-                          <span>Sponsor</span>
-                          <span class="pull-right-container">
-						<i class="fa fa-angle-right pull-right"></i>
-					  </span>
-                      </a>
-                      <ul class="treeview-menu" @if (Request::routeIs(...$sponsorRoutes)) style="display: block;" @endif>
 
 				<li class="treeview">
 					<a href="#">
@@ -118,6 +102,25 @@
 						
 					</ul> --}}
 				</li>
+				
+                  @php
+                      $sponsorRoutes = [
+                          'supper_admin.sponsors.*',
+                          'supper_admin.visas.*',
+                          'supper_admin.marketing-visas.*',
+                      ];
+                  @endphp
+                  <li class="treeview {{ Request::routeIs(...$sponsorRoutes) ? 'active' : '' }}">
+                      <a href="#">
+                          <i class="mdi mdi-account-star"><span class="path1"></span><span class="path2"></span></i>
+                          <span>Sponsor</span>
+                          <span class="pull-right-container">
+						<i class="fa fa-angle-right pull-right"></i>
+					  </span>
+                      </a>
+                      <ul class="treeview-menu" @if (Request::routeIs(...$sponsorRoutes)) style="display: block;" @endif>
+
+				
 
                   <li class="treeview">
                           <li class="{{ Request::routeIs('supper_admin.sponsors.*') ? 'active' : '' }}"><a href="{{ route('supper_admin.sponsors.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Manage Sponsor</a></li>
