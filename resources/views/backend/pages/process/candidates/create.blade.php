@@ -236,5 +236,17 @@
             $('#referral_agent_id').trigger('change');
         }
     });
+
+    // Enable submit button only if confirmation checkbox is checked (on step 7)
+    $(document).on('change', '#confirmInfoCheckbox', function() {
+        $('#finalSubmitBtn').prop('disabled', !this.checked);
+    });
+
+    // When step 7 is loaded via AJAX, ensure the button is disabled until checked
+    $(document).on('change', '#step', function() {
+        if ($(this).val() == 7) {
+            $('#finalSubmitBtn').prop('disabled', !$('#confirmInfoCheckbox').is(':checked'));
+        }
+    });
 </script>
 @endsection

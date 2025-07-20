@@ -9,4 +9,13 @@
             @endforeach
         @endfor
     </ul>
+    
+    <div class="form-group mt-4">
+        <div class="form-check" style="padding-left: 0;">
+            <input class="form-check-input" type="checkbox" id="confirmInfoCheckbox">
+            <label class="form-check-label" for="confirmInfoCheckbox">
+                I've confirmed that all the information I filled in is correct!
+            </label>
+        </div>
+    </div>
 </div>
