@@ -212,8 +212,17 @@ class CandidateController extends Controller
             }
 
             if ($step == 6) {
-                if ($request->hasFile('file_path')) {
-                    $data['file_path'] = $this->uploadFile('candidate', $request->file('file_path'), 'candidate/files');
+                if ($request->hasFile('candidate_photo')) {
+                    $data['candidate_photo'] = $this->uploadFile('candidate', $request->file('candidate_photo'), 'candidate/files');
+                }
+                if ($request->hasFile('police_verification')) {
+                    $data['police_verification'] = $this->uploadFile('candidate', $request->file('police_verification'), 'candidate/files');
+                }
+                if ($request->hasFile('other_certification')) {
+                    $data['other_certification'] = $this->uploadFile('candidate', $request->file('other_certification'), 'candidate/files');
+                }
+                if ($request->hasFile('optional_file')) {
+                    $data['optional_file'] = $this->uploadFile('candidate', $request->file('optional_file'), 'candidate/files');
                 }
             }
 
