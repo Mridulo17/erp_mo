@@ -368,6 +368,9 @@ class CandidateController extends Controller
     {
         $candidate->load([
             'personalInfo',
+            'experiences',
+            'experiences.workType',
+            'experiences.travelledCountry',
             'passport',
             'agent',
             'country',

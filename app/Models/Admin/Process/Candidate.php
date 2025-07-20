@@ -47,7 +47,7 @@ class Candidate extends Model
 
     public function experiences()
     {
-        return $this->hasMany(CandidateExperience::class);
+        return $this->hasOne(CandidateExperience::class);
     }
 
     public function passport()

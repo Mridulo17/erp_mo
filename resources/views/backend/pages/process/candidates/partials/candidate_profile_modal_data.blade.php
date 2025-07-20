@@ -172,27 +172,41 @@
                 <tr>
                     <td style="width: 180px;">Experience Type</td>
                     <td style="width: 10px;">:</td>
-                    <td colspan="4"><b>Experienced</b></td>									
+                    <td colspan="4"><b>{{ $candidate->experiences?->experience_type ?? '' }}</b></td>									
                 </tr>
 
                 <tr>									
                     <td style="width: 180px;">Company Name</td>
                     <td style="width: 10px;">:</td>
-                    <td style="width: 250px;"><b>Mcintyre and Shepherd Plc</b></td>
+                    <td style="width: 250px;"><b>{{ $candidate->experiences?->company_name ?? '' }}</b></td>
 
                     <td style="width: 180px;">Work Type</td>
                     <td style="width: 10px;">:</td>
-                    <td style="width: 250px;"><b>Agriculture test</b></td>
+                    <td style="width: 250px;"><b>{{ $candidate->experiences?->workType?->name ?? '' }}</b></td>
                 </tr>
 
                 <tr>									
                     <td style="width: 180px;">Departure Date</td>
                     <td style="width: 10px;">:</td>
-                    <td style="width: 250px;"><b>2025-07-19</b></td>
+                    <td style="width: 250px;">
+                        <b>
+                            {{ $candidate->experiences?->departure_date 
+                                ? \Carbon\Carbon::parse($candidate->experiences->departure_date)->format('d-m-Y') 
+                                : '' 
+                            }}
+                        </b>
+                    </td>
 
                     <td style="width: 180px;">Arrival Date</td>
                     <td style="width: 10px;">:</td>
-                    <td style="width: 250px;"><b>2025-07-15</b></td>
+                    <td style="width: 250px;">
+                        <b>
+                            {{ $candidate->experiences?->arrival_date 
+                                ? \Carbon\Carbon::parse($candidate->experiences->arrival_date)->format('d-m-Y') 
+                                : '' 
+                            }}
+                        </b>
+                    </td>
                 </tr>
 
                 <tr>
@@ -200,7 +214,7 @@
                     <td style="width: 10px;">:</td>
                     <td style="width: 250px;">
                         <b>
-                            <a href="http://erp.mahfuza-overseas.com/mahfuza_v2/assets/uploads/documents/candidate/files_2025_07_19_614565171593462580.png" target="_blank" title="Click to view files">
+                            <a href="{{ asset($candidate->experiences->departure_seal) }}" target="_blank" title="Click to view files">
                                 <i class="fa fa-eye"></i>
                             </a>
                         </b>
@@ -210,7 +224,7 @@
                     <td style="width: 10px;">:</td>
                     <td style="width: 250px;">
                         <b>
-                            <a href="http://erp.mahfuza-overseas.com/mahfuza_v2/assets/uploads/documents/candidate/files_2025_07_19_683312559148126165.png" target="_blank" title="Click to view files">
+                            <a href="{{ asset($candidate->experiences->arrival_seal) }}" target="_blank" title="Click to view files">
                                 <i class="fa fa-eye"></i>
                             </a>
                         </b>
@@ -220,13 +234,13 @@
                 <tr>
                     <td style="width: 180px;">Old Company Address</td>
                     <td style="width: 10px;">:</td>
-                    <td colspan="4"><b>Irure laborum Quide</b></td>									
+                    <td colspan="4"><b>{{ $candidate->experiences?->old_company_address ?? '' }}</b></td>									
                 </tr>
 
                 <tr>
                     <td style="width: 180px;">Travelled Country</td>
                     <td style="width: 10px;">:</td>
-                    <td colspan="4"><b>Albania, Algeria</b></td>									
+                    <td colspan="4"><b>{{ $candidate->experiences?->travelled_country_id ?? '' }}</b></td>									
                 </tr>
             </tbody>
         </table>
