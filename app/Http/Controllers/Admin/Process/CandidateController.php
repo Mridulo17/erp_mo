@@ -330,6 +330,20 @@ class CandidateController extends Controller
             $data['thanas'] = Thana::where('status', 1)->pluck('name', 'id');
             $data['postOffices'] = PostOffice::where('status', 1)->pluck('name', 'id');
             $data['states'] = State::where('status', 1)->pluck('name', 'id');
+        } elseif ($step == 7) {
+            $data['candidateTypes'] = CandidateType::where('status', 1)->pluck('name', 'id')->toArray();
+            $data['agents'] = Agent::where('status', 1)->get()->pluck('full_name', 'id')->toArray();
+            $data['professions'] = Profession::where('status', 1)->pluck('name', 'id')->toArray();
+            $data['genders'] = Gender::where('status', 1)->pluck('name', 'id')->toArray();
+            $data['relations'] = Relation::where('status', 1)->pluck('name', 'id')->toArray();
+            $data['religions'] = Religion::where('status', 1)->pluck('name', 'id')->toArray();
+            $data['bloodGroups'] = BloodGroup::where('status', 1)->pluck('name', 'id')->toArray();
+            $data['countries'] = Country::where('status', 1)->pluck('name', 'id')->toArray();
+            $data['divisions'] = Division::where('status', 1)->pluck('name', 'id')->toArray();
+            $data['districts'] = District::where('status', 1)->pluck('name', 'id')->toArray();
+            $data['thanas'] = Thana::where('status', 1)->pluck('name', 'id')->toArray();
+            $data['postOffices'] = PostOffice::where('status', 1)->pluck('name', 'id')->toArray();
+            $data['states'] = State::where('status', 1)->pluck('name', 'id')->toArray();
         }
 
         // Render next form step
