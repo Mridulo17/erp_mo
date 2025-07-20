@@ -87,3 +87,58 @@
     <textarea id="permanent_address" name="permanent_address" class="form-control" placeholder="Permanent Address" rows="2">{{ session('form.step_5.permanent_address') }}</textarea>
 </div>
 </div>
+<script>
+$(document).on('change', '#country_id', function() {
+    var countryId = $(this).val();
+    // Fetch divisions
+    $.get('/admin/location/divisions/' + countryId, function(data) {
+        var $division = $('#division_id');
+        $division.empty().append('<option value="">--Select One--</option>');
+        $.each(data, function(id, name) {
+            $division.append('<option value="'+id+'">'+name+'</option>');
+        });
+        $division.trigger('change');
+    });
+    
+    // Fetch states
+    $.get('/admin/location/states/' + countryId, function(data) {
+        var $state = $('#state_id');
+        $state.empty().append('<option value="">--Select One--</option>');
+        $.each(data, function(id, name) {
+            $state.append('<option value="'+id+'">'+name+'</option>');
+        });
+    });
+});
+$(document).on('change', '#division_id', function() {
+    var divisionId = $(this).val();
+    // Fetch districts
+    $.get('/admin/location/districts/' + divisionId, function(data) {
+        var $district = $('#district_id');
+        $district.empty().append('<option value="">--Select One--</option>');
+        $.each(data, function(id, name) {
+            $district.append('<option value="'+id+'">'+name+'</option>');
+        });
+        $district.trigger('change');
+    });
+});
+$(document).on('change', '#district_id', function() {
+    var districtId = $(this).val();
+    // Fetch thanas
+    $.get('/admin/location/thanas/' + districtId, function(data) {
+        var $thana = $('#thana_id');
+        $thana.empty().append('<option value="">--Select One--</option>');
+        $.each(data, function(id, name) {
+            $thana.append('<option value="'+id+'">'+name+'</option>');
+        });
+    });
+
+    // Fetch post offices
+    $.get('/admin/location/postoffices/' + districtId, function(data) {
+        var $postOffice = $('#post_office_id');
+        $postOffice.empty().append('<option value="">--Select One--</option>');
+        $.each(data, function(id, name) {
+            $postOffice.append('<option value="'+id+'">'+name+'</option>');
+        });
+    });
+});
+</script>

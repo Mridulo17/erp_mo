@@ -207,6 +207,13 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('enquiry/interviewed-candidates', InterviewedCandidateController::class);
 });
 
+// Dependent dropdowns for candidate location
+Route::get('/admin/location/divisions/{country_id}', [App\Http\Controllers\Supper_Admin\Location\DivisionController::class, 'getDivisionByCountry']);
+Route::get('/admin/location/districts/{division_id}', [App\Http\Controllers\Supper_Admin\Location\DistrictController::class, 'getDistrictByDivision']);
+Route::get('/admin/location/thanas/{district_id}', [App\Http\Controllers\Supper_Admin\Location\ThanaController::class, 'getThanaByDistrict']);
+Route::get('/admin/location/postoffices/{district_id}', [App\Http\Controllers\Supper_Admin\Location\PostOfficeController::class, 'getPostOfficeByDistrict']);
+Route::get('/admin/location/states/{country_id}', [App\Http\Controllers\Supper_Admin\Location\StateController::class, 'getStateByCountry']);
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

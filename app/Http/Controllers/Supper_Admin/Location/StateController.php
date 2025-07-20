@@ -82,4 +82,10 @@ class StateController extends Controller
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
         }
     }
+
+    public function getStateByCountry($country_id)
+    {
+        $states = \App\Models\Supper_Admin\Location\State::where('country_id', $country_id)->pluck('name', 'id');
+        return response()->json($states);
+    }
 }
