@@ -203,6 +203,10 @@ class CandidateController extends Controller
                 if ($request->hasFile('arrival_seal')) {
                     $data['arrival_seal'] = $this->uploadFile('candidate', $request->file('arrival_seal'), 'candidate/arrival_seal');
                 }
+                
+                if (isset($data['travelled_country_id']) && is_array($data['travelled_country_id'])) {
+                    $data['travelled_country_id'] = json_encode($data['travelled_country_id']);
+                }
             }
 
             if ($step == 4) {
@@ -258,6 +262,9 @@ class CandidateController extends Controller
                     ]));
 
                     // Step 3 → Experience
+                    if (isset($step3['travelled_country_id']) && is_array($step3['travelled_country_id'])) {
+                        $step3['travelled_country_id'] = json_encode($step3['travelled_country_id']);
+                    }
                     CandidateExperience::create(array_merge($step3, [
                         'candidate_id' => $candidate->id,
                     ]));
@@ -344,6 +351,7 @@ class CandidateController extends Controller
             $data['thanas'] = Thana::where('status', 1)->pluck('name', 'id')->toArray();
             $data['postOffices'] = PostOffice::where('status', 1)->pluck('name', 'id')->toArray();
             $data['states'] = State::where('status', 1)->pluck('name', 'id')->toArray();
+            $data['travelledCountries'] = Country::where('status', 1)->pluck('name', 'id')->toArray();
         }
 
         // Render next form step

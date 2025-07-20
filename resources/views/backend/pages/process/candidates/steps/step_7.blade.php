@@ -14,6 +14,7 @@
     $thanas = $thanas ?? [];
     $postOffices = $postOffices ?? [];
     $states = $states ?? [];
+    $travelledCountries = $travelledCountries ?? [];
 @endphp
 <div class="mb-3">
     <h5>Review Your Information</h5>
@@ -50,7 +51,16 @@
                                 @elseif($key === 'work_type_id')
                                     <b>{{ $professions[$value] ?? $value }}</b>
                                 @elseif($key === 'travelled_country_id')
-                                    <b>{{ $countries[$value] ?? $value }}</b>
+                                    @php
+                                        $ids = is_array($value) ? $value : (is_string($value) ? json_decode($value, true) : []);
+                                        $names = [];
+                                        if (is_array($ids)) {
+                                            foreach ($ids as $id) {
+                                                $names[] = $travelledCountries[$id] ?? $id;
+                                            }
+                                        }
+                                    @endphp
+                                    <b>{{ implode(', ', $names) }}</b>
                                 @elseif($key === 'passport_issue_place_id')
                                     <b>{{ $districts[$value] ?? $value }}</b>
                                 @elseif($key === 'country_id')
