@@ -66,6 +66,7 @@
         </div>
     </div>
 </div>
+@include('backend.pages.process.candidates.partials.candidate_profile_modal')
 @endsection
 
 @section('script')
@@ -143,6 +144,30 @@
             }
         ]
 
+    });
+</script>
+
+<script>
+    $(document).on('click', '.view-profile-btn', function(e) {
+        e.preventDefault();
+        const candidateId = $(this).data('id');    
+
+        // Optional: show loading
+        $('#modalContent').html('<p>Loading...</p>');
+
+        // Fetch candidate details
+        $.ajax({
+            url: '/admin/candidates/' + candidateId,
+            type: 'GET',
+            success: function(response) {
+                console.log(response);
+                
+                $('#modalContent').html(response);
+            },
+            error: function() {
+                $('#modalContent').html('<p class="text-danger">Failed to load candidate profile.</p>');
+            }
+        });
     });
 </script>
 @endsection

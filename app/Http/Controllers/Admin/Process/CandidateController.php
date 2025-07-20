@@ -54,7 +54,7 @@ class CandidateController extends Controller
                         </a>
 
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="' . route('admin.candidates.show', $row->id) . '">View Profile</a>
+                            <a href="#" class="dropdown-item view-profile-btn" data-toggle="modal" data-target="#candidateProfileModal" data-id="'.$row->id.'">View Profile</a>
                             <a class="dropdown-item" href="#">View Transactions</a>
                             <a class="dropdown-item" href="#">Make Transaction</a>
                             <a class="dropdown-item" href="#">Type Transfer</a>
@@ -335,7 +335,15 @@ class CandidateController extends Controller
 
     public function show(Candidate $candidate)
     {
-        //
+        $candidate->load([
+            'personalInfo',
+            'passport',
+            'agent',
+            'country',
+            'profession',
+        ]);
+
+        return view('backend.pages.process.candidates.partials.candidate_profile_modal_data', compact('candidate'));
     }
 
     public function edit(Candidate $candidate)
