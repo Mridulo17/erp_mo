@@ -195,4 +195,39 @@
         });
     });
 </script>
+
+<script>
+    $(document).on('change', '#candidate_photo_update', function() {
+        const [file] = this.files;
+        if (file) {
+            $('#candidate_photo_preview').attr('src', URL.createObjectURL(file));
+        }
+        // Automatically upload the image
+        var form = $('#candidatePhotoForm')[0];
+        var formData = new FormData(form);
+        $.ajax({
+            url: '/admin/candidates/update-candidate-photo',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if(response.status === 'success') {
+                    if(response.photo_url) {
+                        $('#candidate_photo_preview').attr('src', response.photo_url);
+                    }
+                } else {
+                    alert('Failed to update photo.');
+                }
+            },
+            error: function(xhr) {
+                let msg = 'Error uploading photo.';
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    msg = Object.values(xhr.responseJSON.errors).join('\n');
+                }
+                alert(msg);
+            }
+        });
+    });
+</script>
 @endsection

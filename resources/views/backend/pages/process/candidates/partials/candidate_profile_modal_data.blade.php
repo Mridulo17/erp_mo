@@ -5,7 +5,7 @@
                 @csrf
                 <input type="hidden" name="candidate_id" value="{{ $candidate->id }}">
 
-                <label for="candidate_photo_upload" class="profile-image-wrapper">
+                <label for="candidate_photo_update" class="profile-image-wrapper">
                     <img 
                         src="{{ asset($candidate->files?->candidate_photo ?? 'backend/images/avatar/no-photo.jpg') }}"
                         alt="Candidate Image"
@@ -20,51 +20,13 @@
                         type="file" 
                         name="candidate_photo" 
                         class="image" 
-                        id="candidate_photo_upload" 
+                        id="candidate_photo_update" 
                         accept="image/*" 
                         style="display: none;"
                     >
                 </label>
-                <button type="submit" class="btn btn-primary btn-sm mt-2">Update Photo</button>
             </form>
         </div>
-
-        <script>
-            $(document).on('change', '#candidate_photo_upload', function() {
-                const [file] = this.files;
-                if (file) {
-                    $('#candidate_photo_preview').attr('src', URL.createObjectURL(file));
-                }
-            });
-
-            $(document).on('submit', '#candidatePhotoForm', function(e) {
-                e.preventDefault();
-                var formData = new FormData(this);
-
-                $.ajax({
-                    url: '/admin/candidates/update-candidate-photo',
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(response) {
-                        if(response.status === 'success') {
-                            // Update the preview with the new photo from the server
-                            $('#candidate_photo_preview').attr('src', response.photo_url);
-                        } else {
-                            alert('Failed to update photo.');
-                        }
-                    },
-                    error: function(xhr) {
-                        let msg = 'Error uploading photo.';
-                        if (xhr.responseJSON && xhr.responseJSON.errors) {
-                            msg = Object.values(xhr.responseJSON.errors).join('\\n');
-                        }
-                        alert(msg);
-                    }
-                });
-            });
-        </script>
     </div>
 
     <div class="col-md-9">
