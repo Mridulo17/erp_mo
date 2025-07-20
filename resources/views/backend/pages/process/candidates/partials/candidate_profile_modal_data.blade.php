@@ -4,9 +4,11 @@
             <form method="post">
                 <label for="upload_image">
                     <img 
-                        src="http://erp.mahfuza-overseas.com/mahfuza_v2/assets/uploads/documents/candidate/2025_07_19_05_00_17_pm__32db70e1de36463cf18592626fc89311.png" 
+                        src="{{ asset($candidate->files?->candidate_photo ?? 'backend/images/avatar/no-photo.jpg') }}"
+                        alt="Candidate Image"
                         id="uploaded_image" 
-                        class="img-responsive img-circle"
+                        class="img-responsive img-thumbnail rounded-circle"
+                        style="width: 250px; height: 250px; object-fit: cover;"
                     >
                     <div class="overlay">
                         <div class="text">Click to Change Profile Picture</div>
@@ -214,7 +216,7 @@
                     <td style="width: 10px;">:</td>
                     <td style="width: 250px;">
                         <b>
-                            <a href="{{ asset($candidate->experiences->departure_seal) }}" target="_blank" title="Click to view files">
+                            <a href="{{ asset($candidate->experiences->departure_seal ?? 'backend/images/avatar/no-photo.jpg') }}" target="_blank" title="Click to view files">
                                 <i class="fa fa-eye"></i>
                             </a>
                         </b>
@@ -224,7 +226,7 @@
                     <td style="width: 10px;">:</td>
                     <td style="width: 250px;">
                         <b>
-                            <a href="{{ asset($candidate->experiences->arrival_seal) }}" target="_blank" title="Click to view files">
+                            <a href="{{ asset($candidate->experiences->arrival_seal ?? 'backend/images/avatar/no-photo.jpg') }}" target="_blank" title="Click to view files">
                                 <i class="fa fa-eye"></i>
                             </a>
                         </b>
@@ -240,7 +242,23 @@
                 <tr>
                     <td style="width: 180px;">Travelled Country</td>
                     <td style="width: 10px;">:</td>
-                    <td colspan="4"><b>{{ $candidate->experiences?->travelled_country_id ?? '' }}</b></td>									
+                    <td colspan="4">
+                        <b>
+                            @php
+                                $ids = $candidate->experiences?->travelled_country_id;
+                                if (is_string($ids)) {
+                                    $ids = json_decode($ids, true);
+                                }
+                                $names = [];
+                                if (is_array($ids)) {
+                                    foreach ($ids as $id) {
+                                        $names[] = $countries[$id] ?? $id;
+                                    }
+                                }
+                            @endphp
+                            {{ !empty($names) ? implode(', ', $names) : '' }}
+                        </b>
+                    </td>									
                 </tr>
             </tbody>
         </table>
@@ -255,29 +273,34 @@
                 <tr>
                     <td style="width: 180px;">Passport Number</td>
                     <td style="width: 10px;">:</td>
-                    <td style="width: 250px;"><b>A17326489</b></td>
+                    <td style="width: 250px;"><b>{{ $candidate->passport?->passport_number ?? '' }}</b></td>
                     
                     <td style="width: 180px;">Passport Issue Date</td>
                     <td style="width: 10px;">:</td>
-                    <td style="width: 250px;"><b>2024-12-26</b></td>
+                    <td style="width: 250px;">
+                        <b>
+                            {{ $candidate->passport?->passport_issue_date 
+                                ? \Carbon\Carbon::parse($candidate->passport->passport_issue_date)->format('d-m-Y') 
+                                : '' 
+                            }}
+                        </b>
+                    </td>
                 </tr>
                 <tr>
                     <td style="width: 180px;">Passport Issue Place</td>
                     <td style="width: 10px;">:</td>
-                    <td style="width: 250px;"><b>Bangladesh - Dhaka - Dhaka</b></td>
+                    <td style="width: 250px;"><b>{{ $candidate->passport?->issuePlace?->name ?? '' }}</b></td>
 
                     <td style="width: 180px;">Validity Year</td>
                     <td style="width: 10px;">:</td>
-                    <td style="width: 250px;"><b>10 Years</b></td>
+                    <td style="width: 250px;"><b>{{ $candidate->passport?->validity_years ?? '' }} years</b></td>
                 </tr>
                 <tr>
                     <td style="width: 180px;">Passport Scan Copy</td>
                     <td style="width: 10px;">:</td>
                     <td style="width: 250px;">
                         <b>
-                            <a href="http://erp.mahfuza-overseas.com/mahfuza_v2/assets/uploads/documents/candidate/files_2025_05_20_2304860949747314357.jpg"
-                               target="_blank"
-                               title="Click to view files">
+                            <a href="{{ asset($candidate->passport->passport_scan_copy ?? 'backend/images/avatar/no-photo.jpg') }}" target="_blank" title="Click to view files">
                                 <i class="fa fa-eye"></i>
                             </a>
                         </b>
@@ -285,7 +308,7 @@
 
                     <td style="width: 180px;">Note</td>
                     <td style="width: 10px;">:</td>
-                    <td style="width: 250px;"><b>NA</b></td>
+                    <td style="width: 250px;"><b>{{ $candidate->passport?->note ?? '' }}</b></td>
                 </tr>
             </tbody>
         </table>
@@ -300,36 +323,36 @@
                 <tr>
                     <td style="width: 180px;">Country</td>
                     <td style="width: 10px;">:</td>
-                    <td style="width: 250px;"><b>Bangladesh</b></td>
+                    <td style="width: 250px;"><b>{{ $candidate->location?->country?->name }}</b></td>
                     <td style="width: 180px;">Division</td>
                     <td style="width: 10px;">:</td>
-                    <td style="width: 250px;"><b>Dhaka</b></td>
+                    <td style="width: 250px;"><b>{{ $candidate->location?->division?->name }}</b></td>
                 </tr>
                 <tr>
                     <td style="width: 180px;">District</td>
                     <td style="width: 10px;">:</td>
-                    <td style="width: 250px;"><b>Narsingdi</b></td>
+                    <td style="width: 250px;"><b>{{ $candidate->location?->district?->name }}</b></td>
                     <td style="width: 180px;">Thana</td>
                     <td style="width: 10px;">:</td>
-                    <td style="width: 250px;"><b>Shibpur</b></td>
+                    <td style="width: 250px;"><b>{{ $candidate->location?->thana?->name }}</b></td>
                 </tr>
                 <tr>
                     <td style="width: 180px;">Post Office</td>
                     <td style="width: 10px;">:</td>
-                    <td style="width: 250px;"><b>Joynagar</b></td>
+                    <td style="width: 250px;"><b>{{ $candidate->location?->postOffice?->name }}</b></td>
                     <td style="width: 180px;">State</td>
                     <td style="width: 10px;">:</td>
-                    <td style="width: 250px;"><b></b></td>
+                    <td style="width: 250px;"><b>{{ $candidate->location?->state?->name }}</b></td>
                 </tr>
                 <tr>
                     <td style="width: 180px;">Current Address</td>
                     <td style="width: 10px;">:</td>
-                    <td colspan="4"><b>Joynagar, Shibpur, Joynagar-1630, Narsingdi</b></td>
+                    <td colspan="4"><b>{{ $candidate->location?->current_address }}</b></td>
                 </tr>
                 <tr>
                     <td style="width: 180px;">Permanent Address</td>
                     <td style="width: 10px;">:</td>
-                    <td colspan="4"><b>Same as current address</b></td>
+                    <td colspan="4"><b>{{ $candidate->location?->current_address }}</b></td>
                 </tr>
             </tbody>
         </table>
@@ -338,51 +361,7 @@
 
 <div class="row">
     <div class="col-md-6">
-        <b><u>Candidate Related All Files</u></b>
-        <table class="table table-sm">
-            <tbody>
-                <tr>
-                    <td style="width: 180px;">Candidate Photo</td>
-                    <td style="width: 10px;">:</td>
-                    <td style="width: 250px;">
-                        <a href="http://erp.mahfuza-overseas.com/mahfuza_v2/assets/uploads/documents/candidate/2025_07_19_05_00_17_pm__32db70e1de36463cf18592626fc89311.png" target="_blank">
-                            <i class="fa fa-eye"></i>
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="width: 180px;">Departure Seal</td>
-                    <td style="width: 10px;">:</td>
-                    <td style="width: 250px;">
-                        <a href="http://erp.mahfuza-overseas.com/mahfuza_v2/assets/uploads/documents/candidate/files_2025_07_19_614565171593462580.png" target="_blank">
-                            <i class="fa fa-eye"></i>
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="width: 180px;">Arrival Seal</td>
-                    <td style="width: 10px;">:</td>
-                    <td style="width: 250px;">
-                        <a href="http://erp.mahfuza-overseas.com/mahfuza_v2/assets/uploads/documents/candidate/files_2025_07_19_683312559148126165.png" target="_blank">
-                            <i class="fa fa-eye"></i>
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="width: 180px;">Passport Scan Copy</td>
-                    <td style="width: 10px;">:</td>
-                    <td style="width: 250px;">
-                        <a href="http://erp.mahfuza-overseas.com/mahfuza_v2/assets/uploads/documents/candidate/files_2025_05_20_2304860949747314357.jpg" target="_blank">
-                            <i class="fa fa-eye"></i>
-                        </a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div class="col-md-6">
-        <b><u>Document Information:</u></b>
+        <b><u>All Files & Documents:</u></b>
         <table class="table table-sm">
             <tbody>
                 <tr>									
@@ -390,8 +369,8 @@
                     <td style="width: 10px;">:</td>
                     <td style="width: 250px;">
                         <b>
-                            <a href="#" title="Click to view file" target="_blank" class="mr-5">
-                                <i class="fa fa-file"></i>
+                            <a href="{{ asset($candidate->files?->candidate_photo ?? 'backend/images/avatar/no-photo.jpg') }}" target="_blank" title="Click to view files">
+                                <i class="fa fa-eye"></i>
                             </a>
                         </b>
                     </td>									
@@ -399,17 +378,35 @@
                 <tr>									
                     <td style="width: 180px;">Police Verification</td>
                     <td style="width: 10px;">:</td>
-                    <td style="width: 250px;"><b>N/A</b></td>									
+                    <td style="width: 250px;">
+                        <b>
+                            <a href="{{ asset($candidate->files?->police_verification ?? 'backend/images/avatar/no-photo.jpg') }}" target="_blank" title="Click to view files">
+                                <i class="fa fa-eye"></i>
+                            </a>
+                        </b>
+                    </td>									
                 </tr>
                 <tr>
                     <td style="width: 180px;">Other Certification</td>
                     <td style="width: 10px;">:</td>
-                    <td style="width: 250px;"><b>N/A</b></td>									
+                    <td style="width: 250px;">
+                        <b>
+                            <a href="{{ asset($candidate->files?->other_certification ?? 'backend/images/avatar/no-photo.jpg') }}" target="_blank" title="Click to view files">
+                                <i class="fa fa-eye"></i>
+                            </a>
+                        </b>
+                    </td>									
                 </tr>
                 <tr>
                     <td style="width: 180px;">Optional File/Files</td>
                     <td style="width: 10px;">:</td>
-                    <td style="width: 250px;"><b>N/A</b></td>									
+                    <td style="width: 250px;">
+                        <b>
+                            <a href="{{ asset($candidate->files?->optional_file ?? 'backend/images/avatar/no-photo.jpg') }}" target="_blank" title="Click to view files">
+                                <i class="fa fa-eye"></i>
+                            </a>
+                        </b>
+                    </td>									
                 </tr>								
             </tbody>
         </table>

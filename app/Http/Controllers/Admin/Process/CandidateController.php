@@ -366,18 +366,16 @@ class CandidateController extends Controller
 
     public function show(Candidate $candidate)
     {
+        $countries = \App\Models\Supper_Admin\Location\Country::pluck('name', 'id')->toArray();
         $candidate->load([
             'personalInfo',
             'experiences',
-            'experiences.workType',
-            'experiences.travelledCountry',
             'passport',
-            'agent',
-            'country',
-            'profession',
+            'location',
+            'files',
         ]);
 
-        return view('backend.pages.process.candidates.partials.candidate_profile_modal_data', compact('candidate'));
+        return view('backend.pages.process.candidates.partials.candidate_profile_modal_data', compact('candidate', 'countries'));
     }
 
     public function edit(Candidate $candidate)
