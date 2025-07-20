@@ -150,6 +150,13 @@
                         currentStep = res.step;
                         $('#content-wrapper').html(res.html);
                         initSelect2();
+                        // If step 1, trigger agent info display if agent is selected
+                        if (currentStep == 1) {
+                            var preSelectedAgentId = $('#referral_agent_id').val();
+                            if (preSelectedAgentId) {
+                                $('#referral_agent_id').trigger('change');
+                            }
+                        }
                     }
                 },
                 error: function (xhr) {
@@ -164,72 +171,70 @@
         $('.select2').select2({ width: '100%' });
     }
 
-    $(document).ready(function() {
-        $('#referral_agent_id').on('change', function() {
-            const agentId = $(this).val();
+    $(document).on('change', '#referral_agent_id', function() {
+        const agentId = $(this).val();
 
-            if (agentId) {
-                $.ajax({
-                    url: `/admin/agents/${agentId}`,
-                    method: 'GET',
-                    success: function(data) {
-                        $('#agent_info').html(`
-                            <div class="card p-3 d-flex flex-row align-items-start" style="gap: 1.5rem;">
-                                <!-- Agent Image -->
-                                <div style="flex: 0 0 100px;">
-                                    <img src="${data.agent_photo_url}" 
-                                        alt="Agent Image" 
-                                        class="img-thumbnail rounded-circle" 
-                                        style="width: 100px; height: 100px; object-fit: cover;">
-                                </div>
-
-                                <!-- Agent Info Table -->
-                                <div style="flex: 1;">
-                                    <table class="table table-sm mb-0">
-                                        <tbody>
-                                            <tr>
-                                                <th class="align-label">Name</th>
-                                                <td>${data.first_name} ${data.last_name}</td>
-                                            </tr>
-                                            <tr>
-                                                <th class="align-label">Email</th>
-                                                <td>${data.email}</td>
-                                            </tr>
-                                            <tr>
-                                                <th class="align-label">Phone</th>
-                                                <td>${data.phone_number}</td>
-                                            </tr>
-                                            <tr>
-                                                <th class="align-label">Country</th>
-                                                <td>${data.country.name}</td>
-                                            </tr>
-                                            <tr>
-                                                <th class="align-label">Address</th>
-                                                <td>${data.current_address}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+        if (agentId) {
+            $.ajax({
+                url: `/admin/agents/${agentId}`,
+                method: 'GET',
+                success: function(data) {
+                    $('#agent_info').html(`
+                        <div class="card p-3 d-flex flex-row align-items-start" style="gap: 1.5rem;">
+                            <!-- Agent Image -->
+                            <div style="flex: 0 0 100px;">
+                                <img src="${data.agent_photo_url}" 
+                                    alt="Agent Image" 
+                                    class="img-thumbnail rounded-circle" 
+                                    style="width: 100px; height: 100px; object-fit: cover;">
                             </div>
-                        `);
-                    },
 
-                    error: function() {
-                        $('#agent_info').html('<p class="text-danger">Unable to fetch agent info.</p>');
-                    }
-                });
-            } else {
-                $('#agent_info').html('');
-            }
-        });
+                            <!-- Agent Info Table -->
+                            <div style="flex: 1;">
+                                <table class="table table-sm mb-0">
+                                    <tbody>
+                                        <tr>
+                                            <th class="align-label">Name</th>
+                                            <td>${data.first_name} ${data.last_name}</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="align-label">Email</th>
+                                            <td>${data.email}</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="align-label">Phone</th>
+                                            <td>${data.phone_number}</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="align-label">Country</th>
+                                            <td>${data.country.name}</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="align-label">Address</th>
+                                            <td>${data.current_address}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    `);
+                },
+
+                error: function() {
+                    $('#agent_info').html('<p class="text-danger">Unable to fetch agent info.</p>');
+                }
+            });
+        } else {
+            $('#agent_info').html('');
+        }
     });
 
-    // Initialize agent info if there's a pre-selected agent (from session)
-    // $(document).ready(function() {
-    //     const preSelectedAgentId = $('#referral_agent_id').val();
-    //     if (preSelectedAgentId) {
-    //         $('#referral_agent_id').trigger('change');
-    //     }
-    // });
+    // Show agent info if agent is already selected on page load
+    $(function() {
+        var preSelectedAgentId = $('#referral_agent_id').val();
+        if (preSelectedAgentId) {
+            $('#referral_agent_id').trigger('change');
+        }
+    });
 </script>
 @endsection
