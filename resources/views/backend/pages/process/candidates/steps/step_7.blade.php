@@ -29,7 +29,7 @@
                 @for ($i = 1; $i <= 6; $i++)
                     @foreach(session("form.step_$i", []) as $key => $value)
                         <tr>
-                            <td>{{ ucwords(str_replace(['_id', 'id', '_',], ['','', ' '], $key)) }}</td>
+                            <td>{{ ucwords(str_replace('_', ' ', preg_replace('/_id$/', '', $key))) }}</td>
                             <td>
                                 @if($key === 'candidate_type_id')
                                     <b>{{ $candidateTypes[$value] ?? $value }}</b>
