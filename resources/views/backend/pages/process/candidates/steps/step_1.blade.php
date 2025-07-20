@@ -55,4 +55,9 @@
         <label for="nationality" class="font-weight-bold text-dark" style="font-size: 14px;">Nationality</label>
         <input type="text" id="nationality" name="nationality" class="form-control" value="{{ session('form.step_1.nationality') ?? 'Bangladeshi' }}">
     </div>
+
+    <!-- Agent Info Display Area (below Interested Country) -->
+    <div class="form-group col-md-3 mt-0">
+        <div id="agent_info"></div>
+    </div>
 </div>

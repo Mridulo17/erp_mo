@@ -138,7 +138,8 @@ class AgentController extends Controller
 
     public function show(string $id)
     {
-        //
+        $agents = Agent::with('country')->findOrFail($id);
+        return response()->json($agents);
     }
 
 
