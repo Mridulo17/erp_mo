@@ -194,6 +194,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('delegateOffice', DelegateOfficeController::class);
     Route::resource('candidateTypes', CandidateTypeController::class);
     Route::resource('candidates', CandidateController::class);
+    Route::post('candidates/update-candidate-photo', [CandidateController::class, 'updateCandidatePhoto'])->name('candidates.updateCandidatePhoto');
     Route::resource('enquiry/phone-calls', PhoneCallController::class);
     Route::resource('enquiry/visitor-books', VisitorBookController::class);
     Route::resource('enquiry/phone-call-followups', PhoneCallFollowupController::class);

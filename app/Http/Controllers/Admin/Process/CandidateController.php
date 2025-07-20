@@ -392,4 +392,33 @@ class CandidateController extends Controller
     {
         //
     }
+
+    public function updateCandidatePhoto(Request $request)
+    {
+        $request->validate([
+            'candidate_id' => 'required|exists:candidates,id',
+            'candidate_photo' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        $candidate = \App\Models\Admin\Process\Candidate::findOrFail($request->candidate_id);
+        $candidateFile = $candidate->files; // Assuming relation: files() in Candidate model
+
+
+        if (!$candidateFile) {
+            // If no file record exists, create one
+            $candidateFile = new \App\Models\Admin\Process\CandidateFile();
+            $candidateFile->candidate_id = $candidate->id;
+        }
+        
+        if ($request->hasFile('candidate_photo')) {
+            $path = $this->uploadFile('candidate', $request->file('candidate_photo'), 'candidate/files');
+            $candidateFile->candidate_photo = $path;
+            $candidateFile->save();
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'photo_url' => asset($candidateFile->candidate_photo),
+        ]);
+    }
 }

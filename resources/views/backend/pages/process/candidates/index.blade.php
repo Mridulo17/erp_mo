@@ -29,6 +29,31 @@
             color: #000;
             border-radius: 4px;
         }
+        .profile-image-wrapper {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .profile-image-wrapper .overlay {
+            position: absolute;
+            top: 0;
+            width: 250px;
+            height: 250px;
+            background: rgba(102, 98, 98, 0.6);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 16px;
+            padding: 10px;
+        }
+        .profile-image-wrapper:hover .overlay {
+            opacity: 1;
+        }
     </style>
 @endsection
 

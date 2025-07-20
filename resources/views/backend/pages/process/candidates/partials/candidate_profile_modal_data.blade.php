@@ -1,29 +1,70 @@
 <div class="row">
     <div class="col-md-3">
         <div class="image_area">
-            <form method="post">
-                <label for="upload_image">
+            <form id="candidatePhotoForm" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" name="candidate_id" value="{{ $candidate->id }}">
+
+                <label for="candidate_photo_upload" class="profile-image-wrapper">
                     <img 
                         src="{{ asset($candidate->files?->candidate_photo ?? 'backend/images/avatar/no-photo.jpg') }}"
                         alt="Candidate Image"
-                        id="uploaded_image" 
+                        id="candidate_photo_preview" 
                         class="img-responsive img-thumbnail rounded-circle"
                         style="width: 250px; height: 250px; object-fit: cover;"
                     >
                     <div class="overlay">
-                        <div class="text">Click to Change Profile Picture</div>
+                        Click to Change Profile Picture
                     </div>
                     <input 
                         type="file" 
-                        name="image" 
+                        name="candidate_photo" 
                         class="image" 
-                        id="upload_image" 
+                        id="candidate_photo_upload" 
                         accept="image/*" 
-                        style="display:none"
+                        style="display: none;"
                     >
                 </label>
+                <button type="submit" class="btn btn-primary btn-sm mt-2">Update Photo</button>
             </form>
         </div>
+
+        <script>
+            $(document).on('change', '#candidate_photo_upload', function() {
+                const [file] = this.files;
+                if (file) {
+                    $('#candidate_photo_preview').attr('src', URL.createObjectURL(file));
+                }
+            });
+
+            $(document).on('submit', '#candidatePhotoForm', function(e) {
+                e.preventDefault();
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: '/admin/candidates/update-candidate-photo',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if(response.status === 'success') {
+                            // Update the preview with the new photo from the server
+                            $('#candidate_photo_preview').attr('src', response.photo_url);
+                        } else {
+                            alert('Failed to update photo.');
+                        }
+                    },
+                    error: function(xhr) {
+                        let msg = 'Error uploading photo.';
+                        if (xhr.responseJSON && xhr.responseJSON.errors) {
+                            msg = Object.values(xhr.responseJSON.errors).join('\\n');
+                        }
+                        alert(msg);
+                    }
+                });
+            });
+        </script>
     </div>
 
     <div class="col-md-9">
