@@ -40,6 +40,7 @@ class SponsorController extends Controller
                 'sponsor_type'    => 'required|in:Agent,Delegate,Prime Sponsor',
                 'sponsor_name'      => 'required|string|max:255',
                 'cell_number'      => 'required|string|max:255',
+                'nid'      => 'required',
                 'sponsor_photo' => 'nullable|mimes:jpg,jpeg,png|max:10240', // 10MB max
                 'status'    => 'required|in:Enabled,Disabled'
             ]);
@@ -58,6 +59,7 @@ class SponsorController extends Controller
                 'sponsor_name'  => $request->input('sponsor_name'),
                 'cell_number'  => $request->input('cell_number'),
                 'email'  => $request->input('email'),
+                'opening_balance'  => $request->input('opening_balance'),
                 'nid'  => $request->input('nid'),
                 'sponsor_photo'         => $openingBalanceSheetPath,
                 'note'  => $request->input('note'),
@@ -85,7 +87,7 @@ class SponsorController extends Controller
      */
     public function edit(string $id)
     {
-        $sponsor = Sponsor::with(['sponsorTransactions'])->findOrFail($id);
+        $sponsor = Sponsor::with(['sponsorTransactions', 'agent', 'delegate'])->findOrFail($id);
         return response()->json($sponsor);
     }
 
@@ -99,6 +101,7 @@ class SponsorController extends Controller
                 'sponsor_type'    => 'required|in:Agent,Delegate,Prime Sponsor',
                 'sponsor_name'      => 'required|string|max:255',
                 'cell_number'      => 'required|string|max:255',
+                'nid'      => 'required',
                 'sponsor_photo' => 'nullable|mimes:jpg,jpeg,png|max:10240', // 10MB max
                 'status'    => 'required|in:Enabled,Disabled'
             ]);
@@ -111,6 +114,7 @@ class SponsorController extends Controller
             $sponsor->sponsor_name = $request->sponsor_name;
             $sponsor->cell_number = $request->cell_number;
             $sponsor->email = $request->email;
+            $sponsor->opening_balance = $request->opening_balance;
             $sponsor->nid = $request->nid;
             // If user asked to remove file
             if ($request->has('remove_file') && $request->remove_file) {

@@ -53,9 +53,13 @@
                         <label for="email" class="font-weight-bold text-dark" style="font-size: 14px;">Email:</label>
                         <input type="text" id="email" name="email" class="form-control" placeholder="Email">
                     </div>
+                    <div class="form-group" id="openingBalanceDiv" style=display:none;>
+                        <label for="opening_balance" class="font-weight-bold text-dark" style="font-size: 14px;">Opening Balance</label>
+                        <input type="number" step="any" min="0" id="opening_balance" name="opening_balance" class="form-control form-control-lg" placeholder="Opening Balance">
+                    </div>
                     <div class="form-group">
                         <label for="nid" class="font-weight-bold text-dark" style="font-size: 14px;">NID Number:</label>
-                        <input type="text" id="nid" name="nid" class="form-control" placeholder="NID Number">
+                        <input type="text" id="nid" name="nid" class="form-control" placeholder="NID Number" required>
                     </div>
                     <div class="form-group">
                         <label for="sponsor_photo" class="font-weight-bold text-dark" style="font-size: 14px;">Sponsor Photo</label>

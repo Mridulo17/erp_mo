@@ -67,7 +67,8 @@
                         <th style="">DB:ID</th>
                         <th style="">User Type</th>
                         <th style="">User Info</th>
-                        <th style="">Sponsor Name</th>                        <th style="">NID</th>
+                        <th style="">Sponsor Name</th>
+                        <th style="">NID</th>
                         <th style="">Phone</th>
                         <th style="">Balance</th>
                         <th style="">Opening Balance</th>
@@ -489,14 +490,17 @@
                         $('#agentDiv').show();
                         $('#delegateDiv').hide();
                         $('#delegateOfficeDiv').hide();
+                        $('#openingBalanceDiv').hide();
                     } else if (selectedText === 'Delegate') {
                         $('#delegateDiv').show();
                         $('#delegateOfficeDiv').show();
                         $('#agentDiv').hide();
+                        $('#openingBalanceDiv').hide();
                     } else {
                         $('#agentDiv').hide();
                         $('#delegateDiv').hide();
                         $('#delegateOfficeDiv').hide();
+                        $('#openingBalanceDiv').show();
                     }
                 });
 
@@ -649,6 +653,7 @@
                             $('#sponsor_type').val(res.sponsor_type).trigger('change');
                             $('#sponsor_name').val(res.sponsor_name);
                             $('#cell_number').val(res.cell_number);
+                            $('#opening_balance').val(res.opening_balance);
                             $('#email').val(res.email);
                             $('#nid').val(res.nid);
                             if (res.sponsor_photo) {
@@ -681,8 +686,16 @@
                         url: url,
                         type: 'GET',
                         success: function (res) {
-                            $('#sponsor_name_transaction').text(res.sponsor_name);
-                            $('#sponsor_name_transaction1').text(res.sponsor_name);
+                            if (res.sponsor_type === 'Agent') {
+                                $('#sponsor_name_transaction').text(res.agent.first_name + ' '+ res.agent.last_name);
+                                $('#sponsor_name_transaction1').text(res.agent.first_name + ' '+ res.agent.last_name);
+                            } else if(res.sponsor_type === 'Delegate') {
+                                $('#sponsor_name_transaction').text(res.delegate.first_name + ' '+ res.delegate.last_name);
+                                $('#sponsor_name_transaction1').text(res.delegate.first_name + ' '+ res.delegate.last_name);
+                            } else {
+                                $('#sponsor_name_transaction').text(res.sponsor_name);
+                                $('#sponsor_name_transaction1').text(res.sponsor_name);
+                            }
                             $('#cell_number_transaction').text(res.cell_number);
                             $('#email_transaction').text(res.email);
                             $('#address_transaction').text(res.address);
