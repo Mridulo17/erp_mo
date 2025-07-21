@@ -496,11 +496,16 @@
                         $('#delegateOfficeDiv').show();
                         $('#agentDiv').hide();
                         $('#openingBalanceDiv').hide();
-                    } else {
+                    } else if (selectedText === 'Prime Sponsor') {
                         $('#agentDiv').hide();
                         $('#delegateDiv').hide();
                         $('#delegateOfficeDiv').hide();
                         $('#openingBalanceDiv').show();
+                    } else {
+                        $('#agentDiv').hide();
+                        $('#delegateDiv').hide();
+                        $('#delegateOfficeDiv').hide();
+                        $('#openingBalanceDiv').hide();
                     }
                 });
 
