@@ -55,6 +55,7 @@
 
         @include('supper_admin.components.sponsor.sponsor_modal')
         @include('supper_admin.components.sponsor.make_transaction_modal')
+        @include('supper_admin.components.sponsor.transaction_details_modal')
 
         <div class="box-body">
             <div class="table-responsive">
@@ -680,7 +681,19 @@
                         url: url,
                         type: 'GET',
                         success: function (res) {
-                            $('#sponsor_name').text(res.sponsor_name);
+                            $('#sponsor_name_transaction').text(res.sponsor_name);
+                            $('#sponsor_name_transaction1').text(res.sponsor_name);
+                            $('#cell_number_transaction').text(res.cell_number);
+                            $('#email_transaction').text(res.email);
+                            $('#address_transaction').text(res.address);
+                            if (res.sponsor_photo) {
+                                $('#previewTransaction').attr('src', storageBaseUrl + res.sponsor_photo);
+                                $('#previewTransaction').show();
+                            } else {
+                                console.log('No image path found');  // Log if no image is found
+                                $('#previewTransaction').attr('src', '');
+                                $('#previewTransaction').hide();
+                            }
                             let leaveDatesHtml = '';
 
                             res.sponsor_transactions.forEach(function (transaction) {
@@ -690,6 +703,7 @@
                                 let given = transaction.transaction_type === 'Give Payment' ? transaction.bdt_amount : '0.00';
 
                                 leaveDatesHtml += `<tr>
+            <td>${transaction.id}</td>
             <td>${formattedDate}</td>
             <td>${res.sponsor_name}</td>
             <td>0.00</td>

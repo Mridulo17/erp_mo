@@ -11,7 +11,7 @@
             <div class="col-sm-12">
                 <div class="row">
                     <div class="col-sm-4">
-                        <img id="preview1" src="" style="" class="image-responsve">
+                        <img id="preview1" src="" style="" class="image-responsive">
                     </div>
                     <div class="col-sm-8">
                         <table class="table table-sm candidate_details_table">
