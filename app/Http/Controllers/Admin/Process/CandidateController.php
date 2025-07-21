@@ -60,7 +60,7 @@ class CandidateController extends Controller
                             <a href="#" class="dropdown-item candidate-type-transfer-btn" data-toggle="modal" data-target="#candidateTypeTransferModal" data-id="'.$row->id.'" data-current-type-id="'.$row->candidate_type_id.'" data-current-type="'.($row->candidateType?->name ?? '').'">Type Transfer</a>
                             <a class="dropdown-item" href="#">Print Dynamic Form</a>
                             <a class="dropdown-item" href="#">Applications Logs</a>
-                            <a href="#" class="dropdown-item text-success comments-btn" data-toggle="modal" data-target="#candidateCommentsModal" data-id="'.$row->id.'">Comments</a>
+                            <a href="#" class="dropdown-item text-success candidate-comments-btn" data-toggle="modal" data-target="#candidateCommentsModal" data-id="'.$row->id.'">Comments</a>
                         </div>
                     </div>';
                 })
@@ -432,6 +432,27 @@ class CandidateController extends Controller
         $candidate->candidate_type_id = $request->candidate_type_id;
         $candidate->save();
 
+        return response()->json(['status' => 'success']);
+    }
+
+    public function getCandidateComment($id)
+    {
+        $candidate = Candidate::findOrFail($id);
+        if (!$candidate) {
+            return response()->json(['error' => 'Candidate not found.'], 404);
+        }
+        return response()->json(['comment' => $candidate->comments]);
+    }
+
+    public function saveCandidateComment(Request $request)
+    {
+        $request->validate([
+            'candidate_id' => 'required|exists:candidates,id',
+            'comments' => 'nullable|string|max:2000',
+        ]);
+        $candidate = Candidate::findOrFail($request->candidate_id);
+        $candidate->comments = $request->comments;
+        $candidate->save();
         return response()->json(['status' => 'success']);
     }
 }

@@ -196,6 +196,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('candidates', CandidateController::class);
     Route::post('candidates/update-candidate-photo', [CandidateController::class, 'updateCandidatePhoto'])->name('candidates.updateCandidatePhoto');
     Route::post('candidates/type-transfer', [CandidateController::class, 'typeTransfer'])->name('candidates.typeTransfer');
+    Route::get('candidates/comment/{id}', [CandidateController::class, 'getCandidateComment'])->name('candidates.getComment');
+    Route::post('candidates/comment', [CandidateController::class, 'saveCandidateComment'])->name('candidates.saveComment');
     Route::resource('enquiry/phone-calls', PhoneCallController::class);
     Route::resource('enquiry/visitor-books', VisitorBookController::class);
     Route::resource('enquiry/phone-call-followups', PhoneCallFollowupController::class);

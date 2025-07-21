@@ -105,6 +105,7 @@
 </div>
 @include('backend.pages.process.candidates.partials.candidate_profile_modal')
 @include('backend.pages.process.candidates.partials.candidate_type_transfer_modal', ['candidateTypes' => $candidateTypes])
+@include('backend.pages.process.candidates.partials.candidate_comments_modal')
 @endsection
 
 @section('script')
@@ -290,6 +291,72 @@
                         icon: 'error',
                         title: 'Failed',
                         text: 'Failed to transfer candidate type.',
+                        customClass: {
+                            popup: 'swal2-popup',
+                            title: 'swal2-title',
+                            confirmButton: 'swal2-btn'
+                        }
+                    });
+                }
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    position: "center",
+                    icon: 'error',
+                    title: 'Error',
+                    text: (xhr.responseJSON?.message || 'Unknown error'),
+                    customClass: {
+                        popup: 'swal2-popup',
+                        title: 'swal2-title',
+                        confirmButton: 'swal2-btn'
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+<script>
+    $(document).on('click', '.candidate-comments-btn', function(e) {
+        e.preventDefault();
+        var candidateId = $(this).data('id');
+        $('#comments_candidate_id').val(candidateId);
+        $('#new_comment').val('');
+        $('#candidateCommentsModal').modal('show');
+
+        $.get(`/admin/candidates/comment/${candidateId}`, function(response) {
+            $('#new_comment').val(response.comment || '');
+        });
+    });
+
+    $(document).on('submit', '#candidateCommentsForm', function(e) {
+        e.preventDefault();
+        var formData = $(this).serialize();
+
+        $.ajax({
+            url: '/admin/candidates/comment',
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                if(response.status === 'success') {
+                    $('#candidateCommentsModal').modal('hide');
+                    Swal.fire({
+                        position: "center",
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Comments saved successfully!',
+                        customClass: {
+                            popup: 'swal2-popup',
+                            title: 'swal2-title',
+                            confirmButton: 'swal2-btn'
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        position: "center",
+                        icon: 'error',
+                        title: 'Failed',
+                        text: 'Failed to saved comments.',
                         customClass: {
                             popup: 'swal2-popup',
                             title: 'swal2-title',
