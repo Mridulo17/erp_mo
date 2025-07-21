@@ -54,6 +54,7 @@
         </div>
 
         @include('supper_admin.components.sponsor.sponsor_modal')
+        @include('supper_admin.components.sponsor.view_profile_modal')
         @include('supper_admin.components.sponsor.make_transaction_modal')
         @include('supper_admin.components.sponsor.transaction_details_modal')
 
@@ -85,13 +86,17 @@
                                         <i class="fa fa-bars"></i> Action
                                     </button>
                                     <div class="dropdown-menu">
+                                        <a href="#" class="dropdown-item viewProfileButton" data-toggle="modal"
+                                           data-target="#view_profile" data-id="{{ $bonus->id }}">
+                                            <i class="mdi mdi-account-star"></i> View Profile
+                                        </a>
                                         <a href="#" class="dropdown-item viewTransactionButton" data-toggle="modal"
                                            data-target="#transaction-details" data-id="{{ $bonus->id }}">
-                                            <i class="fa fa-bars"></i> View Transaction
+                                            <i class="ti-list"></i> View Transaction
                                         </a>
                                         <a href="#" class="dropdown-item transactionButton" data-toggle="modal"
                                            data-target="#make-transaction" data-id="{{ $bonus->id }}">
-                                            <i class="fa fa-bars"></i> Make Transaction
+                                            <i class="ti-list"></i> Make Transaction
                                         </a>
 
                                         <!-- Edit Button inside Dropdown -->
@@ -679,6 +684,36 @@
                         },
                         error: function () {
                             Swal.fire('Error', 'Could not load sponsor data.', 'error');
+                        }
+                    });
+                });
+
+                $(document).on('click', '.viewProfileButton', function () {
+                    const id = $(this).data('id');
+                    const url = '{{ route("supper_admin.sponsors.edit", ":id") }}'.replace(':id', id);
+
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        success: function (res) {
+                            $('#profile_sponsor').text(res.sponsor_name);
+                            $('#profile_sponsor1').text(res.sponsor_name);
+                            $('#profile_phone').text(res.cell_number);
+                            $('#profile_email').text(res.email);
+                            $('#profile_address').text(res.address);
+                            if (res.sponsor_photo) {
+                                $('#profile_preview').attr('src', storageBaseUrl + res.sponsor_photo);
+                                $('#profile_preview').show();
+                            } else {
+                                console.log('No image path found');  // Log if no image is found
+                                $('#profile_preview').attr('src', '');
+                                $('#profile_preview').hide();
+                            }
+                            $('#modalTitle').text('View Profile');
+                            $('#view_profile').modal('show');
+                        },
+                        error: function () {
+                            Swal.fire('Error', 'Could not load sponsor profile data.', 'error');
                         }
                     });
                 });
