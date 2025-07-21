@@ -59,10 +59,8 @@ class CandidateController extends Controller
                             <a class="dropdown-item" href="#">Make Transaction</a>
                             <a href="#" class="dropdown-item candidate-type-transfer-btn" data-toggle="modal" data-target="#candidateTypeTransferModal" data-id="'.$row->id.'" data-current-type-id="'.$row->candidate_type_id.'" data-current-type="'.($row->candidateType?->name ?? '').'">Type Transfer</a>
                             <a class="dropdown-item" href="#">Print Dynamic Form</a>
-                            <a class="dropdown-item text-danger" href="#">Delete</a>
                             <a class="dropdown-item" href="#">Applications Logs</a>
-                            <a class="dropdown-item" href="#">Candidate Photo</a>
-                            <a class="dropdown-item text-success" href="#">Comments</a>
+                            <a href="#" class="dropdown-item text-success comments-btn" data-toggle="modal" data-target="#candidateCommentsModal" data-id="'.$row->id.'">Comments</a>
                         </div>
                     </div>';
                 })

@@ -18,6 +18,8 @@ return new class extends Migration
             $table->foreignId('interested_country_id')->nullable()->constrained('countries')->onDelete('set null');
             $table->foreignId('interested_profession_id')->nullable()->constrained('professions')->onDelete('set null');
             $table->string('nationality')->nullable();
+            $table->longText('note')->nullable();
+            $table->longText('comments')->nullable();
             $table->timestamps();
         });
     }
