@@ -9,7 +9,7 @@
             word-break: break-word !important;
         }
     </style>
-    @endsection
+@endsection
 
 @section('content')
 
@@ -51,6 +51,21 @@
         </div>
 
         <div class="box-body">
+            <div class="col-sm-12">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Choose department</label>
+                            <select name="department_id" id="departmentSelect" class="form-control" required>
+                                <option value="" disabled selected>Choose Department</option>
+                                @foreach($departments as $department)
+                                    <option value="{{ $department->id }}">{{ $department->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="table-responsive">
                 <table id="customDataTable" style="table-layout: fixed; width: 100%;"
                        class="table table-bordered table-hover display nowrap margin-top-10 w-p100">
@@ -74,41 +89,49 @@
                             <td>
                                 <div class="form-check">
                                     <input class="form-check-input"
-                                           onclick="hold_and_allowance_config('{{ $employee->id }}', 'hold_salary')"
-                                           id="hold_salary_{{ $employee->id }}"
+                                           onclick="hold_and_allowance_config('{{ $employee->id }}')"
+                                           id="is_hold_salary_{{ $employee->id }}"
+                                           name="is_hold_salary"
+                                           {{ $employee->is_hold_salary == '1' ? 'checked' : '' }}
                                            type="checkbox">
-                                    <label for="hold_salary_{{ $employee->id }}"></label>
+                                    <label for="is_hold_salary_{{ $employee->id }}"></label>
                                 </div>
                             </td>
                             <td>
                                 <div class="form-check">
                                     <input class="form-check-input"
-                                           onclick="hold_and_allowance_config('{{ $employee->id }}', 'mobile_allowance')"
-                                           id="mobile_allowance_{{ $employee->id }}"
+                                           onclick="hold_and_allowance_config('{{ $employee->id }}')"
+                                           id="is_mobile_bill_{{ $employee->id }}"
+                                           name="is_mobile_bill"
+                                           {{ $employee->is_mobile_bill == '1' ? 'checked' : '' }}
                                            type="checkbox">
-                                    <label for="mobile_allowance_{{ $employee->id }}"></label>
+                                    <label for="is_mobile_bill_{{ $employee->id }}"></label>
                                 </div>
                             </td>
                             <td>
                                 <div class="form-check">
                                     <input class="form-check-input"
-                                           onclick="hold_and_allowance_config('{{ $employee->id }}', 'accommodation')"
-                                           id="accommodation{{ $employee->id }}"
+                                           onclick="hold_and_allowance_config('{{ $employee->id }}')"
+                                           id="is_accommodation_{{ $employee->id }}"
+                                           name="is_accommodation"
+                                           {{ $employee->is_accommodation == '1' ? 'checked' : '' }}
                                            type="checkbox">
-                                    <label for="accommodation{{ $employee->id }}"></label>
+                                    <label for="is_accommodation_{{ $employee->id }}"></label>
                                 </div>
                             </td>
                             <td>
                                 <div class="form-check">
                                     <input class="form-check-input"
-                                           onclick="hold_and_allowance_config('{{ $employee->id }}', 'white_list')"
+                                           onclick="hold_and_allowance_config('{{ $employee->id }}')"
                                            id="white_list_{{ $employee->id }}"
+                                           name="white_list"
+                                           {{ $employee->white_list == '1' ? 'checked' : '' }}
                                            type="checkbox">
                                     <label for="white_list_{{ $employee->id }}"></label>
                                 </div>
                             </td>
                         </tr>
-                        @endforeach
+                    @endforeach
                     </tbody>
                 </table>
 
@@ -118,19 +141,14 @@
 
     @section('script')
         <script>
-            function fetchSetupWeekend(departmentId = null) {
+            function fetchHoldOrAllowance(departmentId = null) {
                 $.ajax({
-                    url: '{{ route("supper_admin.weekends.index") }}',
+                    url: '{{ route("supper_admin.hold-or-allowances.index") }}',
                     type: 'GET',
                     data: {department_id: departmentId}, // Pass department_id to filter employees
                     success: function (data) {
-                        let newBody = $(data).find('#customDataTable tbody').html();
+                       let newBody = $(data).find('#customDataTable tbody').html();
                         $('#customDataTable tbody').html(newBody);
-                        // Explicitly set selected department in dropdown after update
-                        if (departmentId) {
-                            $('#departmentSelect').val(departmentId);
-
-                        }
                     },
                     error: function () {
                         console.error('Failed to refresh assign roasting table.');
@@ -147,48 +165,32 @@
                 $('.wrapper').attr('aria-hidden', 'true');
             });
 
-            function hold_and_allowance_config(employeeId, type) {
-                console.log(`Employee ID: ${employeeId}, Type: ${type}`);
+            function hold_and_allowance_config(employeeId) {
+                const is_hold_salary = $(`#is_hold_salary_${employeeId}`).is(':checked') ? '1' : '0';
+                const is_mobile_bill = $(`#is_mobile_bill_${employeeId}`).is(':checked') ? '1' : '0';
+                const is_accommodation = $(`#is_accommodation_${employeeId}`).is(':checked') ? '1' : '0';
+                const white_list = $(`#white_list_${employeeId}`).is(':checked') ? '1' : '0';
 
-                // Example: send update via AJAX
                 $.ajax({
-                    url: `/supper_admin/hold-or-allowances/store`,
+                    url: `/supper_admin/hold-or-allowances/${employeeId}`,
                     method: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}',
-                        employee_id: employeeId,
-                        config_type: type
-                    },
-                    success: function (response) {
-                        Swal.fire('Updated!', response.message || 'Configuration updated.', 'success');
-                    },
-                    error: function () {
-                        Swal.fire('Error', 'Failed to update configuration.', 'error');
-                    }
-                });
-            }
-
-
-            function update_employee_weekend(employeeId, selectElement) {
-                const selectedWeekendId = selectElement.value;
-
-                $.ajax({
-                    url: `/supper_admin/weekends/${employeeId}`, // adjust route
-                    type: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        weekend_day: selectedWeekendId
+                        is_hold_salary,
+                        is_mobile_bill,
+                        is_accommodation,
+                        white_list
                     },
                     success: function (response) {
                         if (response.status === 'success') {
                             Swal.fire('Success!', response.message, 'success');
-                            fetchSetupWeekend();
+                            fetchHoldOrAllowance(); // Optional: update UI
                         } else {
                             Swal.fire('Error!', response.message, 'error');
                         }
                     },
                     error: function () {
-                        Swal.fire('Error!', 'Failed to setup weekend.', 'error');
+                        Swal.fire('Error!', 'Failed to update allowance info.', 'error');
                     }
                 });
             }
@@ -199,7 +201,7 @@
                 $('#departmentSelect').on('change', function () {
                     const departmentId = $(this).val();
                     if (departmentId) {
-                        fetchSetupWeekend(departmentId);
+                        fetchHoldOrAllowance(departmentId);
                     }
                 });
             });

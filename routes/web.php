@@ -140,7 +140,8 @@ Route::middleware(['auth', 'verified'])->prefix('supper_admin')->name('supper_ad
     Route::resource('inc-and-deces', IncAndDecController::class);
     Route::resource('advance-salaries', AdvanceSalaryController::class);
     Route::resource('traveling-and-darenesses', TravellingAndDearnessController::class);
-    Route::resource('hold-or-allowances', HoldOrAllowanceController::class);
+    Route::get('/hold-or-allowances', [HoldOrAllowanceController::class, 'index'])->name('hold-or-allowances.index');
+    Route::post('/hold-or-allowances/{employeeId}', [HoldOrAllowanceController::class, 'update'])->name('hold-or-allowances.update');
     Route::resource('mobile-allowances', MobileAllowanceController::class);
     Route::resource('festival-bonuses', FestivalBonusController::class);
 

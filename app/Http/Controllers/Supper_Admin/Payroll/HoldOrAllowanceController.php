@@ -74,8 +74,8 @@ class HoldOrAllowanceController extends Controller
     {
         try {
             $employee = Employee::findOrFail($id);
-            $employee->update(['weekend_day'=>$request->weekend_day]);
-            return response()->json(['status' => 'success', 'message' => 'Weekend update successfully']);
+            $employee->update(['is_hold_salary'=>$request->is_hold_salary, 'is_mobile_bill'=>$request->is_mobile_bill, 'is_accommodation'=>$request->is_accommodation, 'white_list'=>$request->white_list]);
+            return response()->json(['status' => 'success', 'message' => 'Update successfully']);
         } catch (\Exception $e) {
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
         }
