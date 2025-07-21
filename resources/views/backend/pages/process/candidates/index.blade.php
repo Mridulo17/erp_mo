@@ -92,6 +92,7 @@
     </div>
 </div>
 @include('backend.pages.process.candidates.partials.candidate_profile_modal')
+@include('backend.pages.process.candidates.partials.candidate_type_transfer_modal', ['candidateTypes' => $candidateTypes])
 @endsection
 
 @section('script')
@@ -226,6 +227,41 @@
                     msg = Object.values(xhr.responseJSON.errors).join('\n');
                 }
                 alert(msg);
+            }
+        });
+    });
+</script>
+
+<script>
+    // Open modal and set candidate ID
+    $(document).on('click', '.candidate-type-transfer-btn', function(e) {
+        e.preventDefault();
+        var candidateId = $(this).data('id');
+        var currentType = $(this).data('current-type') || '';
+        $('#transfer_candidate_id').val(candidateId);
+        $('#current_candidate_type').val(currentType);
+        $('#candidateTypeTransferModal').modal('show');
+    });
+
+    // Handle form submit
+    $(document).on('submit', '#candidateTypeTransferForm', function(e) {
+        e.preventDefault();
+        var formData = $(this).serialize();
+        $.ajax({
+            url: '/admin/candidates/type-transfer',
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                if(response.status === 'success') {
+                    $('#candidateTypeTransferModal').modal('hide');
+                    alert('Candidate type transferred!');
+                    // Optionally reload the table or update the row
+                } else {
+                    alert('Failed to transfer candidate type.');
+                }
+            },
+            error: function(xhr) {
+                alert('Error: ' + (xhr.responseJSON?.message || 'Unknown error'));
             }
         });
     });

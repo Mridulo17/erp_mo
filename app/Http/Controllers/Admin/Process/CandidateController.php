@@ -57,7 +57,7 @@ class CandidateController extends Controller
                             <a href="#" class="dropdown-item view-profile-btn" data-toggle="modal" data-target="#candidateProfileModal" data-id="'.$row->id.'">View Profile</a>
                             <a class="dropdown-item" href="#">View Transactions</a>
                             <a class="dropdown-item" href="#">Make Transaction</a>
-                            <a class="dropdown-item" href="#">Type Transfer</a>
+                            <a href="#" class="dropdown-item candidate-type-transfer-btn" data-toggle="modal" data-target="#candidateTypeTransferModal" data-id="'.$row->id.'" data-current-type-id="'.$row->candidate_type_id.'" data-current-type="'.($row->candidateType?->name ?? '').'">Type Transfer</a>
                             <a class="dropdown-item" href="#">Print Dynamic Form</a>
                             <a class="dropdown-item text-danger" href="#">Delete</a>
                             <a class="dropdown-item" href="#">Applications Logs</a>
@@ -151,7 +151,8 @@ class CandidateController extends Controller
                 ->make(true);
         }
 
-        return view('backend.pages.process.candidates.index');
+        $candidateTypes = CandidateType::where('status', 1)->pluck('name', 'id')->toArray();
+        return view('backend.pages.process.candidates.index', compact('candidateTypes'));
     }
 
     public function create(Request $request, $step = 1)
@@ -420,5 +421,19 @@ class CandidateController extends Controller
             'status' => 'success',
             'photo_url' => asset($candidateFile->candidate_photo),
         ]);
+    }
+
+    public function typeTransfer(Request $request)
+    {
+        $request->validate([
+            'candidate_id' => 'required|exists:candidates,id',
+            'candidate_type_id' => 'required|exists:candidate_types,id',
+        ]);
+
+        $candidate = Candidate::findOrFail($request->candidate_id);
+        $candidate->candidate_type_id = $request->candidate_type_id;
+        $candidate->save();
+
+        return response()->json(['status' => 'success']);
     }
 }
