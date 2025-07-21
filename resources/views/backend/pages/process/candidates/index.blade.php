@@ -131,7 +131,7 @@
     ]
 
     $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
-    $('#candidateDataTable').DataTable({
+    var dtTable = $('#candidateDataTable').DataTable({
         processing: true,
         serverSide: true,
         pageLength: 25,
@@ -277,7 +277,13 @@
                             confirmButton: 'swal2-btn'
                         }
                     });
-                   
+
+                    // Reload the page
+                    setTimeout(function() {
+                        // location.reload();
+                        $('#candidate_type_id').val('').trigger('change'); // reset select2 if used
+                        dtTable.ajax.reload(null, false); // reload yajra datatable
+                    }, 1000);
                 } else {
                     Swal.fire({
                         position: "center",
