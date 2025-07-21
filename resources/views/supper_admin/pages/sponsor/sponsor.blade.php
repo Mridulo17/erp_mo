@@ -121,7 +121,8 @@
                             @elseif($bonus->sponsor_type == 'Delegate')
                                 <td class="wrap-text">{{$bonus->delegate ? $bonus->delegate->first_name : '' }} {{$bonus->delegate ? $bonus->delegate->last_name : '' }}</td>
                             @endif
-                            <td class="wrap-text">{{ $bonus->sponsor_name  }}</td>
+                            <td class="wrap-text"> <a href="#" class="viewProfileButton" data-toggle="modal"
+                                                      data-target="#view_profile" data-id="{{ $bonus->id }}">{{ $bonus->sponsor_name  }}</a></td>
                             <td class="wrap-text">{{ $bonus->nid  }}</td>
                             <td class="wrap-text">{{ $bonus->cell_number  }}</td>
                             <td class="wrap-text">{{ $bonus->balance  }}</td>
