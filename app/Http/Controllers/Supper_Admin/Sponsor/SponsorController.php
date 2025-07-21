@@ -180,7 +180,8 @@ class SponsorController extends Controller
             if ($request->hasFile('attachment')) {
                 $attachmentPath = $request->file('attachment')->store('sponsor-transactions', 'public');
             }
-
+            $sponsor = Sponsor::where('id', $request->input('sponsor_id'))->first();
+            $sponsor->update(['balance' => $sponsor->balance + $request->input('bdt_amount')]);
             SponsorTransaction::create([
                 'sponsor_id'      => $request->input('sponsor_id'),
                 'transaction_type'      => $request->input('transaction_type'),
