@@ -40,4 +40,9 @@ class Sponsor extends Model
     {
         return $this->belongsTo(DelegateOffice::class);
     }
+
+    public function sponsorTransactions()
+    {
+        return $this->hasMany(SponsorTransaction::class);
+    }
 }

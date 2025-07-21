@@ -145,6 +145,7 @@ Route::middleware(['auth', 'verified'])->prefix('supper_admin')->name('supper_ad
     Route::resource('festival-bonuses', FestivalBonusController::class);
 
     //Resource routes for sponsor under super_admin
+    Route::post('sponsor/make-transaction', [SponsorController::class, 'makeTransaction'])->name('sponsor.make-transaction');
     Route::resource('sponsors', SponsorController::class);
     Route::resource('visas', VisaController::class);
     Route::resource('marketing-visas', MarketingVisaController::class);
@@ -180,6 +181,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('/jobCategory/active', [JobCategoryController::class, 'Activeindex'])->name('jobCategory.active');
     Route::get('/jobLists/active', [JobListController::class, 'Activeindex'])->name('jobLists.active');
     Route::get('/processOffices/active', [ProcessOfficeController::class, 'Activeindex'])->name('processOffices.active');
+    Route::get('/candidate/active', [CandidateController::class, 'activeIndex'])->name('candidate.active');
 
     Route::get('investors/transactions', [InvestorTransactionController::class, 'index'])->name('investors.transactions');
     Route::post('investors/transactions', [InvestorTransactionController::class, 'store'])->name('investors.transactions');

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Supper_Admin\Sponsor;
 
 use App\Http\Controllers\Controller;
+use App\Models\Supper_Admin\Payroll\Expense\Expense;
 use App\Models\Supper_Admin\Payroll\Expense\ExpenseCategory;
 use App\Models\Supper_Admin\Sponsor\Sponsor;
+use App\Models\Supper_Admin\Sponsor\SponsorTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -83,7 +85,7 @@ class SponsorController extends Controller
      */
     public function edit(string $id)
     {
-        $sponsor = Sponsor::findOrFail($id);
+        $sponsor = Sponsor::with(['sponsorTransactions'])->findOrFail($id);
         return response()->json($sponsor);
     }
 
@@ -151,6 +153,45 @@ class SponsorController extends Controller
             $sponsor = Sponsor::findOrFail($id);
             $sponsor->delete();
             return response()->json(['status' => 'success', 'message' => 'Sponsor deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function makeTransaction(Request $request)
+    {
+        try {
+            $request->validate([
+                'sponsor_id'      => 'required|integer',
+                'transaction_type'    => 'required|in:Received Payment,Give Payment',
+                'payment_method'    => 'required|in:Bank Account,Cash in Hand,Mobile Banking,Office Assets',
+                'currency_id'      => 'required|integer',
+                'amount'      => 'required',
+                'bdt_amount'      => 'required',
+                'attachment' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240' // 10MB max
+            ]);
+
+            $attachmentPath = null;
+
+            if ($request->hasFile('attachment')) {
+                $attachmentPath = $request->file('attachment')->store('sponsor-transactions', 'public');
+            }
+
+            SponsorTransaction::create([
+                'sponsor_id'      => $request->input('sponsor_id'),
+                'transaction_type'      => $request->input('transaction_type'),
+                'payment_method'      => $request->input('payment_method'),
+                'currency_id'      => $request->input('currency_id'),
+                'amount'      => $request->input('amount'),
+                'candidate_id'      => $request->input('candidate_id'),
+                'bdt_amount'      => $request->input('bdt_amount'),
+                'attachment'         => $attachmentPath,
+                'transaction_note'  => $request->input('transaction_note'),
+                'note'  => $request->input('note'),
+            ]);
+            return response()->json(['status' => 'success', 'message' => 'Make transaction Successfully']);
+        } catch (ValidationException $e) {
+            return response()->json(['status' => 'fail', 'message' => $e->validator->errors()]);
         } catch (\Exception $e) {
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
         }
