@@ -106,6 +106,7 @@
 @include('backend.pages.process.candidates.partials.candidate_profile_modal')
 @include('backend.pages.process.candidates.partials.candidate_type_transfer_modal', ['candidateTypes' => $candidateTypes])
 @include('backend.pages.process.candidates.partials.candidate_comments_modal')
+@include('backend.pages.process.candidates.partials.candidate_transaction_modal', ['transactionPurposes' => $transactionPurposes])
 @endsection
 
 @section('script')
@@ -379,6 +380,42 @@
                 });
             }
         });
+    });
+</script>
+
+<script>
+    $(document).on('click', '.make-transaction-btn', function(e) {
+        e.preventDefault();
+        var candidateId = $(this).data('id');
+        $('#transaction_candidate_id').val(candidateId);
+        $('#candidateTransactionForm')[0].reset();
+        $('#candidateTransactionModal').modal('show');
+    });
+
+    const currencyRates = {
+        'BDT': 1,
+        'USD': 121.48
+    };
+
+    function updateCurrencyInfoAndAmount() {
+        let amount = parseFloat($('#amount').val()) || 0;
+        let currency = $('#currency_select').val();
+        let rate = currencyRates[currency] || 1;
+
+        // Update currency rate display
+        $('#currency_rate_info').text(`(1 ${currency} = ${rate} BDT)`);
+
+        // Calculate BDT amount
+        let bdt = (amount * rate).toFixed(2);
+        $('#amount_bdt').val(bdt);
+    }
+
+    // Initialize once on page load
+    updateCurrencyInfoAndAmount();
+
+    // When currency or amount changes
+    $('#amount, #currency_select').on('input change', function () {
+        updateCurrencyInfoAndAmount();
     });
 </script>
 @endsection

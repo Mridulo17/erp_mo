@@ -63,4 +63,9 @@ class Candidate extends Model
     public function files() {
         return $this->hasOne(CandidateFile::class);
     }
+
+    public function transactions()
+    {
+        return $this->hasMany(CandidateTransaction::class);
+    }
 }

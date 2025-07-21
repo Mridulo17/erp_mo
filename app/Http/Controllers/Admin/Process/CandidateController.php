@@ -56,7 +56,7 @@ class CandidateController extends Controller
                         <div class="dropdown-menu">
                             <a href="#" class="dropdown-item view-profile-btn" data-toggle="modal" data-target="#candidateProfileModal" data-id="'.$row->id.'">View Profile</a>
                             <a class="dropdown-item" href="#">View Transactions</a>
-                            <a class="dropdown-item" href="#">Make Transaction</a>
+                            <a href="#" class="dropdown-item make-transaction-btn" data-toggle="modal" data-target="#candidateTransactionModal" data-id="'.$row->id.'">Make Transaction</a>
                             <a href="#" class="dropdown-item candidate-type-transfer-btn" data-toggle="modal" data-target="#candidateTypeTransferModal" data-id="'.$row->id.'" data-current-type-id="'.$row->candidate_type_id.'" data-current-type="'.($row->candidateType?->name ?? '').'">Type Transfer</a>
                             <a class="dropdown-item" href="#">Print Dynamic Form</a>
                             <a class="dropdown-item" href="#">Applications Logs</a>
@@ -150,7 +150,8 @@ class CandidateController extends Controller
         }
 
         $candidateTypes = CandidateType::where('status', 1)->pluck('name', 'id')->toArray();
-        return view('backend.pages.process.candidates.index', compact('candidateTypes'));
+        $transactionPurposes = \App\Models\Admin\Process\CandidateTransaction::$transactionPurposes;
+        return view('backend.pages.process.candidates.index', compact('candidateTypes', 'transactionPurposes'));
     }
 
     public function create(Request $request, $step = 1)
