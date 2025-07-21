@@ -54,6 +54,18 @@
         .profile-image-wrapper:hover .overlay {
             opacity: 1;
         }
+        .swal2-popup {
+            padding: 1.2em 1.2em !important;
+            font-size: 0.95rem !important;
+            width: 20em !important;
+        }
+        .swal2-title {
+            font-size: 1.1rem !important;
+        }
+        .swal2-btn {
+            font-size: 0.9rem !important;
+            padding: 0.3em 1.2em !important;
+        }
     </style>
 @endsection
 
@@ -254,14 +266,44 @@
             success: function(response) {
                 if(response.status === 'success') {
                     $('#candidateTypeTransferModal').modal('hide');
-                    alert('Candidate type transferred!');
-                    // Optionally reload the table or update the row
+                    Swal.fire({
+                        position: "center",
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Candidate type transferred!',
+                        customClass: {
+                            popup: 'swal2-popup',
+                            title: 'swal2-title',
+                            confirmButton: 'swal2-btn'
+                        }
+                    });
+                   
                 } else {
-                    alert('Failed to transfer candidate type.');
+                    Swal.fire({
+                        position: "center",
+                        icon: 'error',
+                        title: 'Failed',
+                        text: 'Failed to transfer candidate type.',
+                        customClass: {
+                            popup: 'swal2-popup',
+                            title: 'swal2-title',
+                            confirmButton: 'swal2-btn'
+                        }
+                    });
                 }
             },
             error: function(xhr) {
-                alert('Error: ' + (xhr.responseJSON?.message || 'Unknown error'));
+                Swal.fire({
+                    position: "center",
+                    icon: 'error',
+                    title: 'Error',
+                    text: (xhr.responseJSON?.message || 'Unknown error'),
+                    customClass: {
+                        popup: 'swal2-popup',
+                        title: 'swal2-title',
+                        confirmButton: 'swal2-btn'
+                    }
+                });
             }
         });
     });
