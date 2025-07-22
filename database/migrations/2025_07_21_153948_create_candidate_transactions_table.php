@@ -17,9 +17,9 @@ return new class extends Migration
             // Candidate relation
             $table->foreignId('candidate_id')->constrained('candidates')->onDelete('cascade');
 
-            $table->enum('transaction_type', ['income', 'expense']);
+            $table->enum('transaction_type', ['Recieved Payment', 'Give Payment', 'Income', 'Expense']);
             $table->string('payment_method');
-            $table->string('currency')->default('EUR');
+            $table->string('currency')->default('BDT');
             $table->decimal('amount', 10, 2);
             $table->decimal('amount_bdt', 12, 2);
             $table->string('transaction_purpose')->nullable();

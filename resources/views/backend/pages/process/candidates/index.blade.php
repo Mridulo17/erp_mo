@@ -417,5 +417,93 @@
     $('#amount, #currency_select').on('input change', function () {
         updateCurrencyInfoAndAmount();
     });
+
+    $(document).on('submit', '#candidateTransactionForm', function(e) {
+        e.preventDefault();
+
+        var form = $(this);
+        var formData = new FormData(this);
+
+        // Clear previous errors
+        form.find('.invalid-feedback').text('');
+        form.find('.is-invalid').removeClass('is-invalid');
+
+        var $btn = form.find('button[type="submit"]');
+        $btn.prop('disabled', true).text('Saving...');
+
+        $.ajax({
+            url: '/admin/candidates/transaction',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                $btn.prop('disabled', false).text('Save Transaction');
+                if (response.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Transaction saved successfully!',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    $('#candidateTransactionModal').modal('hide');
+                    form[0].reset();
+                } else {
+                    // Handle other server-side errors (not validation)
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.message || 'Failed to save transaction.'
+                    });
+                }
+            },
+            error: function(xhr) {
+                $btn.prop('disabled', false).text('Save Transaction');
+                if (xhr.status === 422) {
+                    // Validation error
+                    let errors = xhr.responseJSON.errors;
+                    for (let field in errors) {
+                        let input = $('[name="' + field + '"]');
+
+                        if (input.length) {
+                            input.addClass('is-invalid');
+
+                            // If it's a select2, place error after the select2 container
+                            if (input.hasClass('select2-hidden-accessible')) {
+                                let select2Container = input.next('.select2');
+                                if (select2Container.length) {
+                                    select2Container.after('<div class="invalid-feedback d-block">' + errors[field][0] + '</div>');
+                                } else {
+                                    // fallback
+                                    input.after('<div class="invalid-feedback d-block">' + errors[field][0] + '</div>');
+                                }
+                            }
+                            // If inside an input-group (e.g., for datepicker/icons)
+                            else if (input.closest('.input-group').length) {
+                                input.closest('.input-group').after('<div class="invalid-feedback d-block">' + errors[field][0] + '</div>');
+                            } else {
+                                input.after('<div class="invalid-feedback d-block">' + errors[field][0] + '</div>');
+                            }
+                        }
+                    }
+                } else {
+                    // Other errors
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: xhr.responseJSON?.message || 'Failed to save transaction.'
+                    });
+                }
+            }
+        });
+    });
+
+    $(document).on('input change', 'input, select, textarea', function () {
+        $(this).removeClass('is-invalid');
+        $(this).siblings('.invalid-feedback').remove(); // if siblings
+        $(this).closest('.input-group').next('.invalid-feedback').remove(); // if input group
+        $(this).next('.select2').next('.invalid-feedback').remove(); // if select2
+    });
 </script>
 @endsection

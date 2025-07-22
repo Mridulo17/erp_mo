@@ -18,14 +18,16 @@
                 <option value="">--Select one--</option>
                 <option value="Recieved Payment">Recieved Payment</option>
                 <option value="Give Payment">Give Payment</option>
+                <option value="Income">Income</option>
+                <option value="Expense">Expense</option>
               </select>
             </div>
             <div class="form-group  col-md-6">
               <label>Transaction Purpose</label>
-              <select name="transaction_purpose_id" class="form-control select2">
+              <select name="transaction_purpose" class="form-control select2">
                 <option value="">--Select one--</option>
                 @foreach($transactionPurposes as $key => $value)
-                  <option value="{{ $key }}">{{ $value }}</option>
+                  <option value="{{ $value }}">{{ $value }}</option>
                 @endforeach
               </select>
             </div>
@@ -59,7 +61,7 @@
             </div>
             <div class="form-group  col-md-6">
               <label>BDT Amount</label>
-              <input type="number" value="0.00" step="0.01" name="bdt_amount" class="form-control" id="amount_bdt" readonly>
+              <input type="number" value="0.00" step="0.01" name="amount_bdt" class="form-control" id="amount_bdt" readonly>
             </div>
           </div>
           <div class="form-group">

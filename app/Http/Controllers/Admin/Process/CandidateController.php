@@ -456,4 +456,27 @@ class CandidateController extends Controller
         $candidate->save();
         return response()->json(['status' => 'success']);
     }
+
+    public function storeCandidateTransaction(Request $request)
+    {
+        $validated = $request->validate([
+            'candidate_id' => 'required|exists:candidates,id',
+            'transaction_type' => 'required|string',
+            'payment_method' => 'required|string',
+            'currency' => 'required|string',
+            'transaction_purpose' => 'required|string',
+            'amount' => 'required|numeric',
+            'amount_bdt' => 'required|numeric',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240',
+            'transaction_note' => 'nullable|string',
+            'note' => 'nullable|string',
+        ]);
+        $data = $validated;
+        $data['investor_id'] = null;
+        if ($request->hasFile('attachment')) {
+            $data['attachment'] = $request->file('attachment')->store('candidate_transactions', 'public');
+        }
+        $transaction = \App\Models\Admin\Process\CandidateTransaction::create($data);
+        return response()->json(['status' => 'success', 'transaction' => $transaction]);
+    }
 }
