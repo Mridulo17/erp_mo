@@ -408,29 +408,47 @@
         $('#candidateTransactionModal').modal('show');
     });
 
-    const currencyRates = {
-        'BDT': 1,
-        'USD': 121.48
+    // fetch currency rates
+    let currentRate = null; // Global variable
+    function fetchCurrencyRates() {
+        let dataExchangeApiKey = "{{ config('services.exchange.key') }}";        
+        let currency = $('#currency_select').val();
+        $.ajax({
+            url: `https://v6.exchangerate-api.com/v6/${dataExchangeApiKey}/latest/${currency}`,
+            method: 'GET',
+            success: function(data) {                
+                let rate = data.conversion_rates['BDT'];
+                currentRate = rate; // save globally
+
+                // Update currency rate display
+                $('#currency_rate_info').text(`(1 ${currency} = ${rate} BDT)`);
+
+                updateCurrencyInfoAndAmount();
+            },
+            error: function() {
+                console.warn("Failed to fetch currency rates.");
+            }
+        });
     };
 
     function updateCurrencyInfoAndAmount() {
         let amount = parseFloat($('#amount').val()) || 0;
-        let currency = $('#currency_select').val();
-        let rate = currencyRates[currency] || 1;
-
-        // Update currency rate display
-        $('#currency_rate_info').text(`(1 ${currency} = ${rate} BDT)`);
+    
+        if (currentRate === null) {
+            $('#amount_bdt').val('');
+            return;
+        }
 
         // Calculate BDT amount
-        let bdt = (amount * rate).toFixed(2);
+        let bdt = (amount * currentRate).toFixed(2);
         $('#amount_bdt').val(bdt);
     }
 
-    // Initialize once on page load
-    updateCurrencyInfoAndAmount();
+    $('#currency_select').on('input change', function () {
+        fetchCurrencyRates();
+    });
 
-    // When currency or amount changes
-    $('#amount, #currency_select').on('input change', function () {
+    $('#amount').on('input change', function () {
         updateCurrencyInfoAndAmount();
     });
 
