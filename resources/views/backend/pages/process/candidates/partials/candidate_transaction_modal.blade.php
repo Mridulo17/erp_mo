@@ -46,7 +46,7 @@
             <div class="form-group  col-md-6">
               <label>
                 Currency
-                <span id="currency_rate_info" class="text-danger small font-weight-bold">(1 BDT = 1 BDT)</span>
+                <span id="currency_rate_info" class="text-danger small font-weight-bold"></span>
               </label>
               <select name="currency" class="form-control select2" id="currency_select">
                 <option value="">--Select one--</option>
