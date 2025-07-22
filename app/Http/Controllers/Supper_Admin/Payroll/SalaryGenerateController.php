@@ -93,10 +93,11 @@ class SalaryGenerateController extends Controller
                 'attachment' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240', // 10MB max
 
             ]);
+
             $attachmentPath = null;
 
             if ($request->hasFile('attachment')) {
-                $attachmentPath = $request->file('attachment')->store('visas', 'public');
+                $attachmentPath = $request->file('attachment')->store('salary-distribution', 'public');
             }
             $employeeSalary = SalaryGenerateEmployee::where('employee_id', $request->employee_id)->where('month_year', $request->month_year)->first();
             $employeeSalary->is_paid = 'Received';
@@ -106,7 +107,7 @@ class SalaryGenerateController extends Controller
             $employeeSalary->note = $request->note;
             $employeeSalary->save();
 
-            return response()->json(['status' => 'success', 'message' => 'Salary Generated Successfully']);
+            return response()->json(['status' => 'success', 'message' => 'Salary Distributed Successfully']);
         } catch (ValidationException $e) {
             return response()->json(['status' => 'fail', 'message' => $e->validator->errors()]);
         } catch (\Exception $e) {

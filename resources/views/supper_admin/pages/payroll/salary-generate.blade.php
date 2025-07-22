@@ -342,7 +342,7 @@
                 $('#net_salary').text(amount);
                 $('#new_salary').val(amount);
                 $('#salary_distribution_month').val(formattedMonthYear);
-                $('#month_year_neww').text(rawMonth);
+                $('#month_year_new').val(rawMonth);
                 const bangla = numberToBanglaWords(amount);
                 const english = numberToEnglishWords(amount);
 
@@ -419,6 +419,8 @@
                                     if (response.status === 'success') {
                                         $('#modal-distribution').modal('hide');
                                         Swal.fire('Success!', response.message, 'success');
+                                        $('#infoDiv').hide();
+                                        $('#amount_translate').hide();
                                         $('#distributionForm')[0].reset();
                                         fetchSalaryGenerates();
                                     } else {

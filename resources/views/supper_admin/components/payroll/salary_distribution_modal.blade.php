@@ -9,7 +9,7 @@
             <!-- The Form -->
             <form id="distributionForm">
                 @csrf
-                <input type="hidden" id="month_year_neww" name="month_year" value="">
+                <input type="hidden" id="month_year_new" name="month_year" value="">
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="employee_id" class="font-weight-bold text-dark" style="font-size: 14px;">Choose Employee </label>
