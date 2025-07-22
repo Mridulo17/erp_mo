@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('salary_generates', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnUpdate();
+            $table->string('month_year');
+            $table->integer('total_employee');
+            $table->decimal('total_employee_salary', 25, 2);
+            $table->string('note', 2000)->nullable();
+
             $table->timestamps();
         });
     }
