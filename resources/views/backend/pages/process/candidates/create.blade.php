@@ -131,6 +131,13 @@
         });
     });
 
+    $(document).on('input change', 'input, select, textarea', function () {
+        $(this).removeClass('is-invalid');
+        $(this).siblings('.invalid-feedback').remove(); // if siblings
+        $(this).closest('.input-group').next('.invalid-feedback').remove(); // if input group
+        $(this).next('.select2').next('.invalid-feedback').remove(); // if select2
+    });
+
     // Handle previous button click
     $(document).on('click', '#prevBtn', function () {
         if (currentStep > 1) {
