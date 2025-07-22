@@ -106,6 +106,7 @@ Route::middleware(['auth', 'verified'])->prefix('supper_admin')->name('supper_ad
     Route::get('/expense-categories/enabled', [ExpenseCategoryController::class, 'enabledIndex'])->name('expense-category.enabled');
     Route::get('/expense-items/enabled', [ExpenseItemController::class, 'enabledIndex'])->name('expense-item.enabled');
     Route::get('/sponsor/enabled', [SponsorController::class, 'enabledIndex'])->name('sponsor.enabled');
+    Route::get('/unpaid/employees', [SalaryGenerateController::class, 'unpaidSalaryEmployees'])->name('unpaid.employees');
 
 
 

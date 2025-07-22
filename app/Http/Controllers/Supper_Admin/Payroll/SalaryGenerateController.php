@@ -22,6 +22,11 @@ class SalaryGenerateController extends Controller
         return view('supper_admin.pages.payroll.salary-generate', compact('salaries'));
     }
 
+    public function unpaidSalaryEmployees()
+    {
+        $employees = SalaryGenerateEmployee::with(['employee'])->where('is_paid', 'Not Yet')->get();
+        return response()->json($employees);}
+
     /**
      * Show the form for creating a new resource.
      */

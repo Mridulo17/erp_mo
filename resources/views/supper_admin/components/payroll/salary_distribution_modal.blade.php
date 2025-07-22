@@ -19,9 +19,27 @@
                             <option value="" disabled selected>Choose Employee</option>
                         </select>
                     </div>
+                    <div class="employee_history_info" id="infoDiv" style="display: none">
+                        <table class="table table-sm table-hover table-strip table-bordered">
+                            <thead>
+                            <tr> <th>#</th> <th>Info</th> </tr>
+                            </thead>
+                            <tbody>
+                            <tr> <td>Absent </td><td>8 Days </td></tr>
+                            <tr> <td>Present </td><td>22 Days </td></tr>
+                            <tr> <td>Advance </td><td>0.00 </td></tr>
+                            <tr> <td>Net Salary </td><td id="net_salary"></td></tr>
+
+                            </tbody></table>
+                    </div>
                     <div class="form-group">
-                        <label for="amount" class="font-weight-bold text-dark" style="font-size: 14px;">Amount<small id="amount_currency"></small></label>
-                        <input type="number" step="any" min="0" id="amount" name="amount" class="form-control" placeholder="Amount" required>
+                        <label for="new_salary" class="font-weight-bold text-dark" style="font-size: 14px;">Salary Amount</label>
+                        <input type="number" id="new_salary" name="employee_salary" class="form-control" required readonly>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12" id="amount_translate">
+
+                        </div>
                     </div>
                     <div class="form-group">
                         <label class="font-weight-700 font-size-16" for="payment_method">Payment Method</label>
