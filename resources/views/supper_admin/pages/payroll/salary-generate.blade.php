@@ -55,6 +55,7 @@
 
         @include('supper_admin.components.payroll.salary_generate_modal')
         @include('supper_admin.components.payroll.salary_distribution_modal')
+        @include('supper_admin.components.payroll.view_salary_list_modal')
 
         <div class="box-body">
             <div class="table-responsive">
@@ -83,9 +84,14 @@
                                     </button>
                                     <div class="dropdown-menu">
                                         <!-- Edit Button inside Dropdown -->
+                                        <a href="#" class="dropdown-item viewSalaryListButton" data-toggle="modal"
+                                           data-target="#view-salary-list-modal" data-id="{{ $bonus->id }}">
+                                            <i class="ti-list"></i>View Salary List
+                                        </a>
+
                                         <a href="#" class="dropdown-item editBlogButton" data-toggle="modal"
                                            data-target="#modal-distribution" data-id="{{ $bonus->id }}">
-                                            <i class="fa fa-edit"></i> Salary Distribution
+                                            <i class="ti-list"></i> Salary Distribution
                                         </a>
 
                                         <!-- Delete Form inside Dropdown -->
@@ -441,11 +447,19 @@
                     $('#modal-center').modal('show');
 
                 });
+
+                $(document).on('click', '.viewSalaryListButton', function () {
+                    $('#salaryGenerateForm')[0].reset();
+                    $('#modalTitle').text('Add Festival Bonus');
+                    $('#view-salary-list-modal').modal('show');
+
+                });
+
                 $(document).on('click', '.editBlogButton', function () {
                     $('#distributionForm')[0].reset();
                     $('#modalTitle').text('Salary Distribution');
 
-                    const salaryGenerateId = $(this).data('id'); // Fixed this line ✅
+                    const salaryGenerateId = $(this).data('id');
 
                     if (salaryGenerateId) {
                         fetchEmployees(salaryGenerateId); // Custom function to populate employee data
