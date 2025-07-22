@@ -21,4 +21,9 @@ class SalaryGenerate extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function salaryGenerateEmployees()
+    {
+        return $this->hasMany(SalaryGenerateEmployee::class);
+    }
 }

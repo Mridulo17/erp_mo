@@ -67,12 +67,13 @@
                         <th style="">Year</th>
                         <th style="">Month</th>
                         <th style="">Total Employee</th>
+                        <th style="">Total Amount</th>
                         <th style="">Generate By</th>
                         <th style="">Generate Date</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($festivalBonuses as $key =>$bonus)
+                    @foreach($salaries as $key =>$bonus)
                         <tr>
                             <td>
                                 <div class="btn-group">
@@ -98,10 +99,12 @@
                             </td>
 
                             <td>{{ $key + 1 }}</td>
-                            <td class="wrap-text">{{ $bonus->month  }}</td>
-                            <td class="wrap-text">{{ $bonus->amount_type  }}</td>
-                            <td class="wrap-text">{{ $bonus->amount  }}</td>
-                            <td class="wrap-text">{{ $bonus->created_at->format('F d, Y') }}</td>
+                            <td class="wrap-text">  {{ \Carbon\Carbon::parse($bonus->month_year)->format('Y') }}</td>
+                            <td class="wrap-text">  {{ \Carbon\Carbon::parse($bonus->month_year)->format('m') }}</td>
+                            <td class="wrap-text">{{ $bonus->total_employee  }}</td>
+                            <td class="wrap-text">{{ $bonus->total_employee_salary  }}</td>
+                            <td class="wrap-text">{{ $bonus->user ? $bonus->user->name : ''  }}</td>
+                            <td class="wrap-text">{{ $bonus->created_at->format('Y-m-d') }}</td>
 
                         </tr>
                     @endforeach
@@ -115,16 +118,16 @@
     @section('script')
         <script>
 
-            function fetchFestivalBonuses() {
+            function fetchSalaryGenerates() {
                 $.ajax({
-                    url: '{{ route("supper_admin.festival-bonuses.index") }}',
+                    url: '{{ route("supper_admin.salary-generate.index") }}',
                     type: 'GET',
                     success: function (data) {
-                        let newBody = $(data).find('table tbody').html();
+                        let newBody = $(data).find('#customDataTable tbody').html();
                         $('#customDataTable tbody').html(newBody);
                     },
                     error: function () {
-                        console.error('Failed to refresh festival bonus table.');
+                        console.error('Failed to refresh salary generate table.');
                     }
                 });
             }
@@ -140,15 +143,15 @@
 
             $(document).ready(function () {
 
-                $('#festivalBonusForm').on('submit', function (e) {
+                $('#salaryGenerateForm').on('submit', function (e) {
                     e.preventDefault();
                     let isEdit = $('#festival_bonus_id').val() !== '';
                     let formData = new FormData(this);
                     let id = $('#festival_bonus_id').val();
-                    const baseUpdateUrl = "{{ url('supper_admin/festival-bonuses') }}";
+                    const baseUpdateUrl = "{{ url('supper_admin/salary-generate') }}";
                     let url = isEdit
                         ? `${baseUpdateUrl}/${id}`
-                        : `{{ route('supper_admin.festival-bonuses.store') }}`;
+                        : `{{ route('supper_admin.salary-generate.store') }}`;
 
                     let method = isEdit ? 'POST' : 'POST';
                     if (isEdit) {
@@ -156,7 +159,7 @@
                     }
 
                     Swal.fire({
-                        title: isEdit ? "Update Festival Bonus?" : "Add Festival Bonus?",
+                        title: isEdit ? "Update Festival Bonus?" : "Salary Generate?",
                         icon: "question",
                         showCancelButton: true,
                         confirmButtonText: "Yes, proceed"
@@ -172,9 +175,9 @@
                                     if (response.status === 'success') {
                                         $('#modal-center').modal('hide');
                                         Swal.fire('Success!', response.message, 'success');
-                                        $('#festivalBonusForm')[0].reset();
+                                        $('#salaryGenerateForm')[0].reset();
                                         $('#festival_bonus_id').val('');
-                                        fetchFestivalBonuses();
+                                        fetchSalaryGenerates();
                                     } else {
                                         Swal.fire('Error!', response.message, 'error');
                                     }
@@ -188,7 +191,7 @@
                 });
 
                 $(document).on('click', '.addBlogButton', function () {
-                    $('#festivalBonusForm')[0].reset();
+                    $('#salaryGenerateForm')[0].reset();
                     $('#festival_bonus_id').val('');
                     $('#modalTitle').text('Add Festival Bonus');
                     $('#modal-center').modal('show');
@@ -204,10 +207,10 @@
 
                 $(document).on('click', '.deleteBonusBtn', function () {
                     const id = $(this).data('id');
-                    const url = '{{ route("supper_admin.festival-bonuses.destroy", ":id") }}'.replace(':id', id);
+                    const url = '{{ route("supper_admin.salary-generate.destroy", ":id") }}'.replace(':id', id);
 
                     Swal.fire({
-                        title: 'Delete Festival Bonus?',
+                        title: 'Are You Sure?',
                         text: "This action cannot be undone.",
                         icon: 'warning',
                         showCancelButton: true,
@@ -224,13 +227,13 @@
                                 success: function (response) {
                                     if (response.status === 'success') {
                                         Swal.fire('Deleted!', response.message, 'success');
-                                        fetchFestivalBonuses();
+                                        fetchSalaryGenerates();
                                     } else {
                                         Swal.fire('Error!', response.message, 'error');
                                     }
                                 },
                                 error: function () {
-                                    Swal.fire('Error!', 'Failed to delete the festival bonus.', 'error');
+                                    Swal.fire('Error!', 'Failed to delete the salary generate.', 'error');
                                 }
                             });
                         }

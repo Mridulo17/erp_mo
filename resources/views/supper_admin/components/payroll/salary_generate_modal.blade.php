@@ -9,13 +9,13 @@
             </div>
 
             <!-- The Form -->
-            <form id="festivalBonusForm">
+            <form id="salaryGenerateForm">
                 @csrf
                 <input type="hidden" id="festival_bonus_id" name="festival_bonus_id" value="">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="month" class="font-weight-bold text-dark" style="font-size: 14px;">Choose Month</label>
-                        <input type="month" id="month" name="month" class="form-control" placeholder="Month">
+                        <label for="month_year" class="font-weight-bold text-dark" style="font-size: 14px;">Choose Month</label>
+                        <input type="month" id="month_year" name="month_year" class="form-control" placeholder="Month">
                     </div>
 
                     <div class="form-group">

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('month_year');
             $table->decimal('employee_salary', 25, 2);
             $table->enum('is_paid', ['Not Yet', 'Received'])->default('Not Yet')->nullable();
-            $table->enum('payment_method', ['Bank Account', 'Cash in Hand', 'Mobile Banking', 'Office Assets']);
+            $table->enum('payment_method', ['Bank Account', 'Cash in Hand', 'Mobile Banking', 'Office Assets'])->nullable();
             $table->string('attachment')->nullable();
             $table->string('transaction_note', 2000)->nullable();
             $table->string('note', 2000)->nullable();
