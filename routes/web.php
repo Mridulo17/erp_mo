@@ -107,7 +107,7 @@ Route::middleware(['auth', 'verified'])->prefix('supper_admin')->name('supper_ad
     Route::get('/expense-items/enabled', [ExpenseItemController::class, 'enabledIndex'])->name('expense-item.enabled');
     Route::get('/sponsor/enabled', [SponsorController::class, 'enabledIndex'])->name('sponsor.enabled');
     Route::get('/unpaid/employees', [SalaryGenerateController::class, 'unpaidSalaryEmployees'])->name('unpaid.employees');
-
+    Route::post('/employee/salary-distribution', [SalaryGenerateController::class, 'salaryDistribution'])->name('employee.salary-distribution');
 
 
     Route::get('/connect-router/{id}', [MikrotikServiceController::class, 'connectToRouter'])->name('mikrotik.connect');
@@ -136,6 +136,7 @@ Route::middleware(['auth', 'verified'])->prefix('supper_admin')->name('supper_ad
     Route::resource('expense-categories', ExpenseCategoryController::class);
     Route::resource('expense-items', ExpenseItemController::class);
     Route::resource('expenses', ExpenseController::class);
+    Route::post('/employee/salary-distribution', [SalaryGenerateController::class, 'salaryDistribution'])->name('employee.salary-distribution');
     Route::resource('salary-generate', SalaryGenerateController::class);
     Route::resource('performance-bonuses', PerformanceBonusController::class);
     Route::resource('inc-and-deces', IncAndDecController::class);

@@ -22,9 +22,18 @@ class SalaryGenerateController extends Controller
         return view('supper_admin.pages.payroll.salary-generate', compact('salaries'));
     }
 
-    public function unpaidSalaryEmployees()
+    public function unpaidSalaryEmployees(Request $request)
     {
-        $employees = SalaryGenerateEmployee::with(['employee'])->where('is_paid', 'Not Yet')->get();
+        if ($request->has('salary_generate_id') && $request->salary_generate_id) {
+            $salaryGenerateId = $request->get('salary_generate_id');
+            $employees = SalaryGenerateEmployee::with(['employee'])->where('is_paid', 'Not Yet')
+                ->where('salary_generate_id', $salaryGenerateId)
+                ->get();
+        } else {
+            $employees = SalaryGenerateEmployee::with(['employee'])->where('is_paid', 'Not Yet')->get();
+
+        }
+
         return response()->json($employees);}
 
     /**
@@ -66,6 +75,37 @@ class SalaryGenerateController extends Controller
                     'employee_salary'      => $employee->basic_salary_monthly
                 ]);
             }
+            return response()->json(['status' => 'success', 'message' => 'Salary Generated Successfully']);
+        } catch (ValidationException $e) {
+            return response()->json(['status' => 'fail', 'message' => $e->validator->errors()]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function salaryDistribution(Request $request)
+    {
+        try {
+            $request->validate([
+                'month_year'      => 'required|string',
+                'employee_id'      => 'required|integer',
+                'payment_method'    => 'required|in:Bank Account,Cash in Hand,Mobile Banking,Office Assets',
+                'attachment' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240', // 10MB max
+
+            ]);
+            $attachmentPath = null;
+
+            if ($request->hasFile('attachment')) {
+                $attachmentPath = $request->file('attachment')->store('visas', 'public');
+            }
+            $employeeSalary = SalaryGenerateEmployee::where('employee_id', $request->employee_id)->where('month_year', $request->month_year)->first();
+            $employeeSalary->is_paid = 'Received';
+            $employeeSalary->payment_method = $request->payment_method;
+            $employeeSalary->transaction_note = $request->transaction_note;
+            $employeeSalary->attachment = $attachmentPath;
+            $employeeSalary->note = $request->note;
+            $employeeSalary->save();
+
             return response()->json(['status' => 'success', 'message' => 'Salary Generated Successfully']);
         } catch (ValidationException $e) {
             return response()->json(['status' => 'fail', 'message' => $e->validator->errors()]);

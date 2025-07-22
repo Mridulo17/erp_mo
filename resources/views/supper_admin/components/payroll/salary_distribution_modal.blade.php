@@ -2,16 +2,14 @@
     <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalTitle">Generate Salary</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <h5 class="modal-title salary_distibution_modal_title">Salary Distribution: <b class="text-danger" id="salary_distribution_month">September 2024</b></h5>
+                <button type="button" class="close text-danger" data-dismiss="modal"> <span aria-hidden="true">×</span> </button>
             </div>
 
             <!-- The Form -->
             <form id="distributionForm">
                 @csrf
-                <input type="hidden" id="festival_bonus_id" name="festival_bonus_id" value="">
+                <input type="hidden" id="month_year_neww" name="month_year" value="">
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="employee_id" class="font-weight-bold text-dark" style="font-size: 14px;">Choose Employee </label>
@@ -34,7 +32,7 @@
                     </div>
                     <div class="form-group">
                         <label for="new_salary" class="font-weight-bold text-dark" style="font-size: 14px;">Salary Amount</label>
-                        <input type="number" id="new_salary" name="employee_salary" class="form-control" required readonly>
+                        <input type="number" id="new_salary" class="form-control" readonly>
                     </div>
                     <div class="row">
                         <div class="col-sm-12" id="amount_translate">

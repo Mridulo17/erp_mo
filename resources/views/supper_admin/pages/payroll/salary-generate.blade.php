@@ -293,34 +293,56 @@
 
             fetchEmployees();
 
-            function fetchEmployees() {
+            function fetchEmployees(salaryGenerateId) {
+                let select = $('#employeeSelect');
+                select.html('<option disabled selected>Loading...</option>');
+
                 $.ajax({
                     url: "{{ route('supper_admin.unpaid.employees') }}",
                     method: "GET",
+                    data: { salary_generate_id: salaryGenerateId },
                     success: function (data) {
-                        let select = $('#employeeSelect');
                         select.empty();
                         select.append('<option value="" disabled selected>Choose Employee</option>');
 
+                        if (data.length === 0) {
+                            select.append('<option disabled>No unpaid employees found</option>');
+                            return;
+                        }
+
                         data.forEach(function (employee) {
                             select.append(
-                                '<option data-employee_salary="' + employee.employee_salary + '" value="' + employee.employee_id + '">' +
-                                employee.employee.first_name + ' ' + employee.employee.last_name +
+                                '<option data-employee_salary="' + employee.employee_salary +
+                                '" data-month_year="' + employee.month_year +
+                                '" value="' + employee.employee_id + '">' +
+                                escapeHtml(employee.employee.first_name) + ' ' + escapeHtml(employee.employee.last_name) +
                                 '</option>'
                             );
                         });
                     },
                     error: function (xhr) {
                         console.error("Failed to fetch employees:", xhr);
+                        select.html('<option disabled selected>Error loading employees</option>');
                     }
                 });
+
+                function escapeHtml(text) {
+                    return $('<div>').text(text).html();
+                }
             }
+
 
             $('#employeeSelect').on('change', function () {
                 const selectedOption = $(this).find('option:selected');
                 const amount = selectedOption.data('employee_salary');
+                const rawMonth = selectedOption.data('month_year'); // e.g., "2025-07"
+                const date = new Date(rawMonth + '-01'); // Add day to make valid date
+                const options = { year: 'numeric', month: 'long' };
+                const formattedMonthYear = date.toLocaleDateString('en-US', options);
                 $('#net_salary').text(amount);
                 $('#new_salary').val(amount);
+                $('#salary_distribution_month').val(formattedMonthYear);
+                $('#month_year_neww').text(rawMonth);
                 const bangla = numberToBanglaWords(amount);
                 const english = numberToEnglishWords(amount);
 
@@ -337,21 +359,13 @@
 
                 $('#salaryGenerateForm').on('submit', function (e) {
                     e.preventDefault();
-                    let isEdit = $('#festival_bonus_id').val() !== '';
                     let formData = new FormData(this);
-                    let id = $('#festival_bonus_id').val();
-                    const baseUpdateUrl = "{{ url('supper_admin/salary-generate') }}";
-                    let url = isEdit
-                        ? `${baseUpdateUrl}/${id}`
-                        : `{{ route('supper_admin.salary-generate.store') }}`;
+                    let url = `{{ route('supper_admin.salary-generate.store') }}`;
 
-                    let method = isEdit ? 'POST' : 'POST';
-                    if (isEdit) {
-                        formData.append('_method', 'PUT');
-                    }
+                    let method = 'POST';
 
                     Swal.fire({
-                        title: isEdit ? "Update Festival Bonus?" : "Salary Generate?",
+                        title: "Salary Generate?",
                         icon: "question",
                         showCancelButton: true,
                         confirmButtonText: "Yes, proceed"
@@ -368,14 +382,51 @@
                                         $('#modal-center').modal('hide');
                                         Swal.fire('Success!', response.message, 'success');
                                         $('#salaryGenerateForm')[0].reset();
-                                        $('#festival_bonus_id').val('');
                                         fetchSalaryGenerates();
                                     } else {
                                         Swal.fire('Error!', response.message, 'error');
                                     }
                                 },
                                 error: function () {
-                                    Swal.fire('Error!', 'Failed to save festival bonus.', 'error');
+                                    Swal.fire('Error!', 'Failed to generate salary.', 'error');
+                                }
+                            });
+                        }
+                    });
+                });
+
+                $('#distributionForm').on('submit', function (e) {
+                    e.preventDefault();
+                    let formData = new FormData(this);
+                    let url = `{{ route('supper_admin.employee.salary-distribution') }}`;
+
+                    let method = 'POST';
+
+                    Swal.fire({
+                        title: "Distribute Salary?",
+                        icon: "question",
+                        showCancelButton: true,
+                        confirmButtonText: "Yes, proceed"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: url,
+                                type: method,
+                                data: formData,
+                                contentType: false,
+                                processData: false,
+                                success: function (response) {
+                                    if (response.status === 'success') {
+                                        $('#modal-distribution').modal('hide');
+                                        Swal.fire('Success!', response.message, 'success');
+                                        $('#distributionForm')[0].reset();
+                                        fetchSalaryGenerates();
+                                    } else {
+                                        Swal.fire('Error!', response.message, 'error');
+                                    }
+                                },
+                                error: function () {
+                                    Swal.fire('Error!', 'Failed to distribute salary.', 'error');
                                 }
                             });
                         }
@@ -384,17 +435,23 @@
 
                 $(document).on('click', '.addBlogButton', function () {
                     $('#salaryGenerateForm')[0].reset();
-                    $('#festival_bonus_id').val('');
                     $('#modalTitle').text('Add Festival Bonus');
                     $('#modal-center').modal('show');
 
                 });
                 $(document).on('click', '.editBlogButton', function () {
                     $('#distributionForm')[0].reset();
-                    $('#festival_bonus_id').val('');
                     $('#modalTitle').text('Salary Distribution');
-                    $('#modal-distribution').modal('show');
 
+                    const salaryGenerateId = $(this).data('id'); // Fixed this line ✅
+
+                    if (salaryGenerateId) {
+                        fetchEmployees(salaryGenerateId); // Custom function to populate employee data
+                    } else {
+                        $('#employeeSelect').empty().append('<option value="" disabled selected>Choose Employee</option>');
+                    }
+
+                    $('#modal-distribution').modal('show');
                 });
 
                 $(document).on('click', '.deleteBonusBtn', function () {
