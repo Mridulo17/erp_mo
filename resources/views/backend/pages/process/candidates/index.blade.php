@@ -3,6 +3,7 @@
 
 @section('style')
     <style>
+        /* Start::datatable */
         .dataTables_wrapper .form-control {
             margin: 0 0;
             padding: 5px 5px 5px 5px;
@@ -29,6 +30,9 @@
             color: #000;
             border-radius: 4px;
         }
+        /* End::datatable */
+
+        /* Start::candidate profile view */
         .profile-image-wrapper {
             position: relative;
             display: inline-block;
@@ -54,6 +58,9 @@
         .profile-image-wrapper:hover .overlay {
             opacity: 1;
         }
+        /* End::candidate profile view */
+
+        /* Start::sweetalert2 */
         .swal2-popup {
             padding: 1.2em 1.2em !important;
             font-size: 0.95rem !important;
@@ -66,6 +73,7 @@
             font-size: 0.9rem !important;
             padding: 0.3em 1.2em !important;
         }
+        /* End::sweetalert2 */
     </style>
 @endsection
 
@@ -106,10 +114,12 @@
 @include('backend.pages.process.candidates.partials.candidate_profile_modal')
 @include('backend.pages.process.candidates.partials.candidate_type_transfer_modal', ['candidateTypes' => $candidateTypes])
 @include('backend.pages.process.candidates.partials.candidate_comments_modal')
+@include('backend.pages.process.candidates.partials.candidate_transaction_list_modal')
 @include('backend.pages.process.candidates.partials.candidate_transaction_modal', ['transactionPurposes' => $transactionPurposes])
 @endsection
 
 @section('script')
+{{-- Start::candidate datatable --}}
 <script type="text/javascript">
     let datatable_columns = [
         { data: 'DT_RowIndex',name:"DT_RowIndex", orderable: false, searchable: false },
@@ -186,7 +196,9 @@
 
     });
 </script>
+{{-- End::candidate datatable --}}
 
+{{-- Start::candidate profile view modal --}}
 <script>
     $(document).on('click', '.view-profile-btn', function(e) {
         e.preventDefault();
@@ -209,9 +221,7 @@
             }
         });
     });
-</script>
 
-<script>
     $(document).on('change', '#candidate_photo_update', function() {
         const [file] = this.files;
         if (file) {
@@ -245,7 +255,9 @@
         });
     });
 </script>
+{{-- End::candidate profile view modal --}}
 
+{{-- Start::candidate type transfer --}}
 <script>
     // Open modal and set candidate ID
     $(document).on('click', '.candidate-type-transfer-btn', function(e) {
@@ -316,7 +328,9 @@
         });
     });
 </script>
+{{-- End::candidate type transfer --}}
 
+{{-- Start::candidate comments --}}
 <script>
     $(document).on('click', '.candidate-comments-btn', function(e) {
         e.preventDefault();
@@ -382,7 +396,9 @@
         });
     });
 </script>
+{{-- End::candidate comments --}}
 
+{{-- Start::candidate transaction create --}}
 <script>
     $(document).on('click', '.make-transaction-btn', function(e) {
         e.preventDefault();
@@ -506,4 +522,34 @@
         $(this).next('.select2').next('.invalid-feedback').remove(); // if select2
     });
 </script>
+{{-- End::candidate transaction create --}}
+
+{{-- Start::candidate transaction list --}}
+<script>
+    $(document).on('click', '.view-transaction-btn', function(e) {
+        e.preventDefault();
+        var candidateId = $(this).data('id');
+        $('#candidateTransactionListModal').modal('show');
+    });
+
+    $(document).ready(function() {
+        $('#candidateTransactionListModal').on('shown.bs.modal', function () {
+            if ($.fn.DataTable.isDataTable('#candidateTransactionTable')) {
+                $('#candidateTransactionTable').DataTable().destroy();
+            }
+
+            $('#candidateTransactionTable').DataTable({
+                responsive: true,
+                ordering: true,
+                pageLength: 10,
+                lengthMenu: [10, 25, 50, 100],
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Search transactions..."
+                }
+            });
+        });
+    });
+</script>
+{{-- End::candidate transaction list --}}
 @endsection
