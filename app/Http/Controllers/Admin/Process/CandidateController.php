@@ -472,9 +472,8 @@ class CandidateController extends Controller
             'note' => 'nullable|string',
         ]);
         $data = $validated;
-        $data['investor_id'] = null;
         if ($request->hasFile('attachment')) {
-            $data['attachment'] = $request->file('attachment')->store('candidate_transactions', 'public');
+            $data['attachment'] = $this->uploadFile('candidate', $request->file('attachment'), 'candidate/transaction');
         }
         $transaction = \App\Models\Admin\Process\CandidateTransaction::create($data);
         return response()->json(['status' => 'success', 'transaction' => $transaction]);
