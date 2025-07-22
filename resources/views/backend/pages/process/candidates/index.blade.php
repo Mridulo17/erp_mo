@@ -526,28 +526,63 @@
 
 {{-- Start::candidate transaction list --}}
 <script>
-    $(document).on('click', '.view-transaction-btn', function(e) {
-        e.preventDefault();
+    $(document).on('click', '.view-transaction-btn', function() {
         var candidateId = $(this).data('id');
+        var candidateName = $(this).data('name') || '';
+
+        // Set the modal title
+        $('#candidateTransactionListModalLabel').text('Related transaction about - ' + candidateName);
+
         $('#candidateTransactionListModal').modal('show');
-    });
 
-    $(document).ready(function() {
-        $('#candidateTransactionListModal').on('shown.bs.modal', function () {
-            if ($.fn.DataTable.isDataTable('#candidateTransactionTable')) {
-                $('#candidateTransactionTable').DataTable().destroy();
-            }
+        // Destroy previous DataTable if exists
+        if ($.fn.DataTable.isDataTable('#candidateTransactionTable')) {
+            $('#candidateTransactionTable').DataTable().destroy();
+        }
 
-            $('#candidateTransactionTable').DataTable({
-                responsive: true,
-                ordering: true,
-                pageLength: 10,
-                lengthMenu: [10, 25, 50, 100],
-                language: {
-                    search: "_INPUT_",
-                    searchPlaceholder: "Search transactions..."
+        // Clear table body before loading
+        $('#candidateTransactionTable tbody').html('<tr><td colspan=\"8\">Loading...</td></tr>');
+
+        // Fetch data via AJAX and initialize DataTable
+        $.ajax({
+            url: '/admin/candidates/' + candidateId + '/transactions',
+            type: 'GET',
+            success: function(response) {
+                console.log(response);
+                
+                var rows = '';
+                if (response.data.length > 0) {
+                    $.each(response.data, function(i, t) {
+                        rows += '<tr>' +
+                            '<td>' + t.id + '</td>' +
+                            '<td>' + t.transaction_type + '</td>' +
+                            '<td>' + t.transaction_purpose + '</td>' +
+                            '<td>' + t.payment_method + '</td>' +
+                            '<td>' + t.amount_bdt + '</td>' +
+                            '<td>' + t.transaction_note + '</td>' +
+                            '<td>' + t.date + '</td>' +
+                            '</tr>';
+                    });
+                } else {
+                    rows = '<tr><td colspan=\"8\">No transactions found.</td></tr>';
                 }
-            });
+                $('#candidateTransactionTable tbody').html(rows);
+
+                // Initialize DataTable
+                $('#candidateTransactionTable').DataTable({
+                    responsive: true,
+                    ordering: true,
+                    pageLength: 5,
+                    lengthMenu: [5, 10, 25, 50],
+                    language: {
+                        search: "_INPUT_",
+                        searchPlaceholder: "Search transactions..."
+                    }
+                });
+            },
+            error: function() {
+                $('#candidateTransactionTable tbody').html('<tr><td colspan=\"8\">Failed to load data.</td></tr>');
+            }
         });
     });
 </script>

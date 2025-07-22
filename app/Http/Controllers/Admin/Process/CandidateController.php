@@ -55,7 +55,7 @@ class CandidateController extends Controller
 
                         <div class="dropdown-menu">
                             <a href="#" class="dropdown-item view-profile-btn" data-toggle="modal" data-target="#candidateProfileModal" data-id="'.$row->id.'">View Profile</a>
-                            <a href="#" class="dropdown-item view-transaction-btn" data-toggle="modal" data-target="#candidateTransactionListModal" data-id="'.$row->id.'">View Transactions</a>
+                            <a href="#" class="dropdown-item view-transaction-btn" data-toggle="modal" data-target="#candidateTransactionListModal" data-id="'.$row->id.'" data-name="'.$name.'">View Transactions</a>
                             <a href="#" class="dropdown-item make-transaction-btn" data-toggle="modal" data-target="#candidateTransactionModal" data-id="'.$row->id.'">Make Transaction</a>
                             <a href="#" class="dropdown-item candidate-type-transfer-btn" data-toggle="modal" data-target="#candidateTypeTransferModal" data-id="'.$row->id.'" data-current-type-id="'.$row->candidate_type_id.'" data-current-type="'.($row->candidateType?->name ?? '').'">Type Transfer</a>
                             <a class="dropdown-item" href="#">Print Dynamic Form</a>
@@ -477,5 +477,30 @@ class CandidateController extends Controller
         }
         $transaction = \App\Models\Admin\Process\CandidateTransaction::create($data);
         return response()->json(['status' => 'success', 'transaction' => $transaction]);
+    }
+
+    public function getCandidateTransactions(Request $request, $candidate_id)
+    {
+        $transactions = \App\Models\Admin\Process\CandidateTransaction::where('candidate_id', $candidate_id)
+            ->orderByDesc('id')
+            ->get();
+
+        // Map to required columns
+        $data = $transactions->map(function($t) {
+            return [
+                'id' => $t->id,
+                'transaction_type' => ucfirst($t->transaction_type),
+                'transaction_purpose' => $t->transaction_purpose,
+                'payment_method' => $t->payment_method,
+                'currency' => $t->currency,
+                'amount' => $t->amount,
+                'amount_bdt' => $t->amount_bdt,
+                'transaction_note' => $t->transaction_note ?? '',
+                'note' => $t->note ?? '',
+                'date' => $t->created_at ? $t->created_at->format('Y-m-d') : '',
+            ];
+        });
+
+        return response()->json(['data' => $data]);
     }
 }
