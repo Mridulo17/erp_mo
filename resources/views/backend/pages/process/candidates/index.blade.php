@@ -403,6 +403,11 @@
     $(document).on('click', '.make-transaction-btn', function(e) {
         e.preventDefault();
         var candidateId = $(this).data('id');
+        var candidateName = $(this).data('name') || '';
+
+        // Set the modal title
+        $('#candidateTransactionModalLabel').text('Make New Transaction with - ' + candidateName);
+
         $('#transaction_candidate_id').val(candidateId);
         $('#candidateTransactionForm')[0].reset();
         $('#candidateTransactionModal').modal('show');
