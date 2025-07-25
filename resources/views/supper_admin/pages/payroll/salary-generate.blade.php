@@ -68,7 +68,8 @@
                         <th style="">Year</th>
                         <th style="">Month</th>
                         <th style="">Total Employee</th>
-                        <th style="">Total Amount</th>
+                        <th style="">Total Salary</th>
+                        <th style="">Total Grand Salary</th>
                         <th style="">Generate By</th>
                         <th style="">Generate Date</th>
                     </tr>
@@ -108,7 +109,8 @@
                             <td class="wrap-text">  {{ \Carbon\Carbon::parse($bonus->month_year)->format('Y') }}</td>
                             <td class="wrap-text">  {{ \Carbon\Carbon::parse($bonus->month_year)->format('m') }}</td>
                             <td class="wrap-text">{{ $bonus->total_employee  }}</td>
-                            <td class="wrap-text">{{ $bonus->total_employee_salary  }}</td>
+                            <td class="wrap-text">{{ $bonus->total_employee_basic_salary  }}</td>
+                            <td class="wrap-text">{{ $bonus->total_employee_grand_total_salary  }}</td>
                             <td class="wrap-text">{{ $bonus->user ? $bonus->user->name : ''  }}</td>
                             <td class="wrap-text">{{ $bonus->created_at->format('Y-m-d') }}</td>
 
