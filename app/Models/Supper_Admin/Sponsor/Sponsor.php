@@ -6,12 +6,14 @@ use App\Models\Admin\HRM\Employee;
 use App\Models\Admin\People\Agent;
 use App\Models\Admin\People\Delegate;
 use App\Models\Admin\People\DelegateOffice;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Sponsor extends Model
 {
     protected $fillable =
         [
+            'user_id',
             'sponsor_type',
             'agent_id',
             'delegate_id',
@@ -27,6 +29,10 @@ class Sponsor extends Model
             'note'
         ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
     public function agent()
     {
         return $this->belongsTo(Agent::class);

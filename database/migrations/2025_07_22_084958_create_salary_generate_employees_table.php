@@ -18,7 +18,13 @@ return new class extends Migration
             $table->unsignedBigInteger('employee_id');
             $table->foreign('employee_id')->references('id')->on('employees')->cascadeOnUpdate()->restrictOnDelete();
             $table->string('month_year');
-            $table->decimal('employee_salary', 25, 2);
+            $table->decimal('mobile_allowance', 25, 2);
+            $table->decimal('performance_bonus', 25, 2);
+            $table->decimal('inc_dec', 25, 2);
+            $table->decimal('advance_salary', 25, 2);
+            $table->decimal('festival_bonus', 25, 2);
+            $table->decimal('employee_basic_salary', 25, 2);
+            $table->decimal('employee_grand_total_salary', 25, 2);
             $table->enum('is_paid', ['Not Yet', 'Received'])->default('Not Yet')->nullable();
             $table->enum('payment_method', ['Bank Account', 'Cash in Hand', 'Mobile Banking', 'Office Assets'])->nullable();
             $table->string('attachment')->nullable();

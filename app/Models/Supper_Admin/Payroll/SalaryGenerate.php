@@ -13,7 +13,8 @@ class SalaryGenerate extends Model
             'user_id',
             'total_employee',
             'month_year',
-            'total_employee_salary',
+            'total_employee_basic_salary',
+            'total_employee_grand_total_salary',
             'note'
         ];
 

@@ -9,6 +9,7 @@ use App\Models\Supper_Admin\Payroll\SalaryGenerate;
 use App\Models\Supper_Admin\Payroll\SalaryGenerateEmployee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class SalaryGenerateController extends Controller
@@ -51,30 +52,114 @@ class SalaryGenerateController extends Controller
     {
         try {
             $request->validate([
-                'month_year'      => 'required|string'
+                'month_year' => 'required|string'
             ]);
-            $employees = Employee::where('is_hold_salary', 0)
-                ->where('status', 1)
-                ->get();
-            if (SalaryGenerate::where('month_year', $request->input('month_year'))->exists()) {
-                return response()->json(['status' => 'error', 'message' => 'Salary already generated for this month.']);
+
+            $monthYear = $request->month_year;
+
+// Check if salary already generated for this month
+            if (SalaryGenerate::where('month_year', $monthYear)->exists()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Salary already generated for this month.'
+                ]);
             }
+
+// Get global festival bonus amount for the month
+            $festivalBonusAmount = optional(
+                FestivalBonus::where('month', $monthYear)->first()
+            )->amount ?? 0;
+
+// Fetch employees with salary components
+            $employees = Employee::select(
+                'employees.*',
+                DB::raw("CASE WHEN employees.is_mobile_bill = 1 THEN COALESCE(employees.mobile_allowance, 0) ELSE 0 END AS mobileAllowance"),
+                DB::raw('COALESCE(inc.increment, 0) AS totalIncrement'),
+                DB::raw('COALESCE(decmt.decrement, 0) AS totalDecrement'),
+                DB::raw('COALESCE(advanceS.advanceSalary, 0) AS totalAdvanceSalary'),
+                DB::raw('COALESCE(performanceB.performanceBonus, 0) AS totalPerformanceBonus')
+            )
+                ->leftJoin(DB::raw("
+    (SELECT employee_id, SUM(amount) AS performanceBonus
+     FROM performance_bonuses
+     WHERE month = ?
+     GROUP BY employee_id
+) AS performanceB"), 'employees.id', '=', 'performanceB.employee_id')
+
+                ->leftJoin(DB::raw("
+    (SELECT employee_id, SUM(amount) AS increment
+     FROM inc_and_decs
+     WHERE impression_type = 'Increment' AND start_month <= ?
+     GROUP BY employee_id
+) AS inc"), 'employees.id', '=', 'inc.employee_id')
+
+                ->leftJoin(DB::raw("
+    (SELECT employee_id, SUM(amount) AS decrement
+     FROM inc_and_decs
+     WHERE impression_type = 'Decrement' AND start_month <= ?
+     GROUP BY employee_id
+) AS decmt"), 'employees.id', '=', 'decmt.employee_id')
+
+                ->leftJoin(DB::raw("
+    (SELECT employee_id, SUM(bdt_amount) AS advanceSalary
+     FROM advance_salaries
+     WHERE month = ?
+     GROUP BY employee_id
+) AS advanceS"), 'employees.id', '=', 'advanceS.employee_id')
+
+                ->addBinding([$monthYear, $monthYear, $monthYear, $monthYear], 'select')
+                ->where('employees.is_hold_salary', 0)
+                ->where('employees.status', 1)
+                ->get();
+
+// Create salary generate record
+            $totalBaseSalary = 0;
+            $totalGrandTotalSalary = 0;
+
             $salary = SalaryGenerate::create([
-                'month_year'      => $request->input('month_year'),
-                'total_employee'      => $employees->count(),
-                'total_employee_salary'      => $employees->sum('basic_salary_monthly'),
-                'user_id'      => Auth::user()->id,
-                'note'  => $request->input('note')
+                'month_year'            => $monthYear,
+                'total_employee'        => $employees->count(),
+                'total_employee_basic_salary' => 0, // we'll update later
+                'total_employee_grand_total_salary' => 0, // we'll update later
+                'user_id'               => Auth::id(),
+                'note'                  => $request->input('note')
             ]);
 
             foreach ($employees as $employee) {
+                $base = $employee->basic_salary_monthly ?? 0;
+                $mobile = $employee->mobileAllowance;
+                $increment = $employee->totalIncrement;
+                $decrement = $employee->totalDecrement;
+                $advance = $employee->totalAdvanceSalary;
+                $performance = $employee->totalPerformanceBonus;
+
+                $finalSalary = $base + $mobile + $increment - $decrement - $advance + $performance + $festivalBonusAmount;
+
+                $incDecValue = $increment != 0 ? $increment : ($decrement != 0 ? $decrement : 0);
+
                 SalaryGenerateEmployee::create([
-                    'salary_generate_id'      => $salary->id,
-                    'employee_id'      => $employee->id,
-                    'month_year'      => $salary->month_year,
-                    'employee_salary'      => $employee->basic_salary_monthly
+                    'salary_generate_id'  => $salary->id,
+                    'employee_id'         => $employee->id,
+                    'month_year'          => $monthYear,
+                    'mobile_allowance'    => $mobile,
+                    'performance_bonus'   => $performance,
+                    'inc_dec'             => $incDecValue,
+                    'advance_salary'      => $advance,
+                    'festival_bonus'      => $festivalBonusAmount,
+                    'employee_basic_salary'     => $base,
+                    'employee_grand_total_salary'     => $finalSalary
                 ]);
+
+                $totalBaseSalary += $base;
+                $totalGrandTotalSalary += $finalSalary;
             }
+
+            // Update total salary after loop
+            $salary->update([
+                'total_employee_basic_salary' => $totalBaseSalary,  'total_employee_grand_total_salary' => $totalGrandTotalSalary
+            ]);
+
+
             return response()->json(['status' => 'success', 'message' => 'Salary Generated Successfully']);
         } catch (ValidationException $e) {
             return response()->json(['status' => 'fail', 'message' => $e->validator->errors()]);

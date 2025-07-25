@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('sponsors', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnUpdate();
             $table->enum('sponsor_type', ['Agent', 'Delegate', 'Prime Sponsor']);
             $table->unsignedBigInteger('agent_id')->nullable();
             $table->foreign('agent_id')->references('id')->on('agents')->cascadeOnUpdate()->restrictOnDelete();

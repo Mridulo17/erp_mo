@@ -8,6 +8,7 @@ use App\Models\Supper_Admin\Payroll\Expense\ExpenseCategory;
 use App\Models\Supper_Admin\Sponsor\Sponsor;
 use App\Models\Supper_Admin\Sponsor\SponsorTransaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -52,6 +53,7 @@ class SponsorController extends Controller
             }
 
             Sponsor::create([
+                'user_id'               => Auth::user()->id,
                 'sponsor_type'      => $request->input('sponsor_type'),
                 'agent_id'  => $request->input('agent_id'),
                 'delegate_id'  => $request->input('delegate_id'),
@@ -107,6 +109,7 @@ class SponsorController extends Controller
             ]);
 
             $sponsor = Sponsor::findOrFail($id);
+            $sponsor->user_id = Auth::user()->id;
             $sponsor->sponsor_type = $request->sponsor_type;
             $sponsor->agent_id = $request->agent_id;
             $sponsor->delegate_id = $request->delegate_id;
