@@ -25,6 +25,9 @@ return new class extends Migration
             $table->decimal('festival_bonus', 25, 2);
             $table->decimal('employee_basic_salary', 25, 2);
             $table->decimal('employee_grand_total_salary', 25, 2);
+            $table->string('employee_present')->default(0)->nullable();
+            $table->string('employee_half_day')->default(0)->nullable();
+            $table->string('employee_full_day')->default(0)->nullable();
             $table->enum('is_paid', ['Not Yet', 'Received'])->default('Not Yet')->nullable();
             $table->enum('payment_method', ['Bank Account', 'Cash in Hand', 'Mobile Banking', 'Office Assets'])->nullable();
             $table->string('attachment')->nullable();

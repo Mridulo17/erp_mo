@@ -77,7 +77,10 @@ class SalaryGenerateController extends Controller
                 DB::raw('COALESCE(inc.increment, 0) AS totalIncrement'),
                 DB::raw('COALESCE(decmt.decrement, 0) AS totalDecrement'),
                 DB::raw('COALESCE(advanceS.advanceSalary, 0) AS totalAdvanceSalary'),
-                DB::raw('COALESCE(performanceB.performanceBonus, 0) AS totalPerformanceBonus')
+                DB::raw('COALESCE(performanceB.performanceBonus, 0) AS totalPerformanceBonus'),
+                DB::raw('COALESCE(a.attendance, 0) AS totalAttendance'),
+                DB::raw('COALESCE(hdl.halfDay, 0) AS totalHalfDay'),
+                DB::raw('COALESCE(fdl.fullDay, 0) AS totalFullDay'),
             )
                 ->leftJoin(DB::raw("
     (SELECT employee_id, SUM(amount) AS performanceBonus
@@ -106,8 +109,26 @@ class SalaryGenerateController extends Controller
      WHERE month = ?
      GROUP BY employee_id
 ) AS advanceS"), 'employees.id', '=', 'advanceS.employee_id')
+                ->leftJoin(DB::raw("
+    (SELECT employee_id, count(id) AS attendance
+     FROM attendances
+     WHERE DATE_FORMAT(date, '%Y-%m') = ?
+     GROUP BY employee_id
+) AS a"), 'employees.id', '=', 'a.employee_id')
+                ->leftJoin(DB::raw("
+    (SELECT employee_id, leave_id, sum(no_of_days) AS fullDay
+     FROM leaves, leave_dates
+     WHERE leave_type = 'Full Day Leave' AND leave_dates.leave_id = leaves.id AND DATE_FORMAT(leave_date, '%Y-%m') = ?
+     GROUP BY employee_id, leave_id
+) AS fdl"), 'employees.id', '=', 'fdl.employee_id')
+                ->leftJoin(DB::raw("
+    (SELECT employee_id, leave_id, sum(no_of_days) AS halfDay
+     FROM leaves, leave_dates
+     WHERE leave_type = 'Half Day Leave' AND leave_dates.leave_id = leaves.id AND DATE_FORMAT(leave_date, '%Y-%m') = ?
+     GROUP BY employee_id, leave_id
+) AS hdl"), 'employees.id', '=', 'hdl.employee_id')
 
-                ->addBinding([$monthYear, $monthYear, $monthYear, $monthYear], 'select')
+                ->addBinding([$monthYear, $monthYear, $monthYear, $monthYear, $monthYear, $monthYear, $monthYear], 'select')
                 ->where('employees.is_hold_salary', 0)
                 ->where('employees.status', 1)
                 ->get();
@@ -119,8 +140,8 @@ class SalaryGenerateController extends Controller
             $salary = SalaryGenerate::create([
                 'month_year'            => $monthYear,
                 'total_employee'        => $employees->count(),
-                'total_employee_basic_salary' => 0, // we'll update later
-                'total_employee_grand_total_salary' => 0, // we'll update later
+                'total_employee_basic_salary' => 0,
+                'total_employee_grand_total_salary' => 0,
                 'user_id'               => Auth::id(),
                 'note'                  => $request->input('note')
             ]);
@@ -132,6 +153,9 @@ class SalaryGenerateController extends Controller
                 $decrement = $employee->totalDecrement;
                 $advance = $employee->totalAdvanceSalary;
                 $performance = $employee->totalPerformanceBonus;
+                $present = $employee->totalAttendance;
+                $halfDay = $employee->totalHalfDay;
+                $fullDay = $employee->totalFullDay;
 
                 $finalSalary = $base + $mobile + $increment - $decrement - $advance + $performance + $festivalBonusAmount;
 
@@ -141,6 +165,9 @@ class SalaryGenerateController extends Controller
                     'salary_generate_id'  => $salary->id,
                     'employee_id'         => $employee->id,
                     'month_year'          => $monthYear,
+                    'employee_present'          => $present,
+                    'employee_half_day'          => $halfDay,
+                    'employee_full_day'          => $fullDay,
                     'mobile_allowance'    => $mobile,
                     'performance_bonus'   => $performance,
                     'inc_dec'             => $incDecValue,
