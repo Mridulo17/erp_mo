@@ -86,9 +86,9 @@
                                     </button>
                                     <div class="dropdown-menu">
                                         <!-- Edit Button inside Dropdown -->
-                                        <a href="#" class="dropdown-item editBlogButton" data-toggle="modal"
+                                        <a href="#" class="dropdown-item viewSalaryListButton" data-toggle="modal"
                                            data-target="#expense-transaction-modal" data-id="{{ $expense->id }}">
-                                            <i class="fa fa-bars"></i> View Transactions
+                                            <i class="ti-list"></i>View Transactions
                                         </a>
 
                                         <!-- Delete Form inside Dropdown -->
@@ -130,7 +130,7 @@
                     url: '{{ route("supper_admin.expenses.index") }}',
                     type: 'GET',
                     success: function (data) {
-                        let newBody = $(data).find('table tbody').html();
+                        let newBody = $(data).find('#customDataTable tbody').html();
                         $('#customDataTable tbody').html(newBody);
                     },
                     error: function () {
@@ -477,50 +477,35 @@
 
                 });
 
-                $(document).on('click', '.editBlogButton', function () {
-                    const id = $(this).data('id');
-                    const url = '{{ route("supper_admin.expenses.edit", ":id") }}'.replace(':id', id);
 
-                    $.ajax({
-                        url: url,
-                        type: 'GET',
-                        success: function (res) {
-                            $('#expense_id').val(id);
-                            $('#name').val(res.name);
-                            $('#code').val(res.code);
-                            $('#salary').val(res.salary);
-                            $('#expire_date').val(res.expire_date);
-                            // Show existing file
-                            // if (res.attachment) {
-                            //     const filePath = res.attachment; // example: expense_categories/filename.pdf
-                            //     const ext = filePath.split('.').pop().toLowerCase();
-                            //
-                            //     // Prepend Laravel's public storage path
-                            //     const fileUrl = `/storage/${filePath}`;
-                            //
-                            //     let previewHtml = '';
-                            //
-                            //     if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
-                            //         previewHtml = `<img src="${fileUrl}" alt="Uploaded File" class="img-thumbnail" style="max-height: 200px;">`;
-                            //     } else {
-                            //         previewHtml = `<a href="${fileUrl}" target="_blank" class="btn btn-outline-primary btn-sm">View File</a>`;
-                            //     }
-                            //
-                            //     $('#existing-file-preview').html(previewHtml);
-                            //     $('#remove-file-section').removeClass('d-none');
-                            // } else {
-                            //     $('#existing-file-preview').empty();
-                            //     $('#remove-file-section').addClass('d-none');
-                            //     $('#remove_file').prop('checked', false);
-                            // }
-                            $('#modalTitle').text('Related transaction about Entertainment Cost - Mohakhali office Lunch bill');
-                            $('#expense-transaction-modal').modal('show');
-                        },
-                        error: function () {
-                            Swal.fire('Error', 'Could not load expense transaction data data.', 'error');
-                        }
-                    });
+            $(document).on('click', '.viewSalaryListButton', function () {
+                const id = $(this).data('id');
+                const url = '{{ route("supper_admin.expenses.edit", ":id") }}'.replace(':id', id);
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function (res) {
+                        $('#expense_category_item_name').text(res.expense_category.expense_category_name + '-' + res.expense_item.expense_item_name);
+                        const formattedDate = new Date(res.created_at).toISOString().split('T')[0];
+                        let leaveDatesHtml = '';
+
+                            leaveDatesHtml += `<tr>
+<td>${res.id}</td>
+ <td>${formattedDate}</td>
+            <td>${res.expense_category.expense_category_name} - ${res.expense_item.expense_item_name}</td>
+             <td>${res.bdt_amount}</td>
+            <td>${res.note}</td>
+       </tr>`;
+
+                        $('#view_salary_list').html(leaveDatesHtml);
+                        $('#expense-transaction-modal').modal('show');
+                    },
+                    error: function () {
+                        Swal.fire('Error', 'Could not load salary list data.', 'error');
+                    }
                 });
+
+            });
 
                 $(document).on('click', '.deleteWorkPermitBtn', function () {
                     const id = $(this).data('id');
