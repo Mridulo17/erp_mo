@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Supper_Admin\Payroll;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin\HRM\Employee;
 use App\Models\Supper_Admin\Payroll\IncAndDec;
 use App\Models\Supper_Admin\Payroll\MobileAllowance;
 use Illuminate\Http\Request;
@@ -42,6 +43,8 @@ class MobileAllowanceController extends Controller
                 'amount'      => $request->input('amount'),
                 'note'  => $request->input('note')
             ]);
+            $employee = Employee::find($request->input('employee_id'));
+            $employee->update(['mobile_allowance' => $request->input('amount')]);
             return response()->json(['status' => 'success', 'message' => 'Mobile Allowance added Successfully']);
         } catch (ValidationException $e) {
             return response()->json(['status' => 'fail', 'message' => $e->validator->errors()]);
