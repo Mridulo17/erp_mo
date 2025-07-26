@@ -121,7 +121,7 @@
                             <td class="wrap-text">{{ $bonus->issue_date  }}</td>
                             <td class="wrap-text">{{ $bonus->visa_number  }}</td>
                             <td>0.00</td>
-                            <td>0.00</td>
+                            <td>{{ $bonus->visa_qty  }}</td>
                             <td class="wrap-text">{{ $bonus->salaryCurrency ? $bonus->salaryCurrency->name : '' }}</td>
                             <td class="wrap-text">{{ $bonus->monthly_salary  }}</td>
                             <td class="wrap-text">{{ $bonus->purchase_amount  }}</td>
