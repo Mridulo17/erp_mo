@@ -320,8 +320,12 @@
 
                         data.forEach(function (employee) {
                             select.append(
-                                '<option data-employee_salary="' + employee.employee_salary +
+                                '<option data-employee_grand_total_salary="' + employee.employee_grand_total_salary +
+                                '" data-employee_present="' + employee.employee_present +
+                                '" data-advance_salary="' + employee.advance_salary +
                                 '" data-month_year="' + employee.month_year +
+                                '" data-employee_half_day="' + employee.employee_half_day +
+                                '" data-employee_full_day="' + employee.employee_full_day +
                                 '" value="' + employee.employee_id + '">' +
                                 escapeHtml(employee.employee.first_name) + ' ' + escapeHtml(employee.employee.last_name) +
                                 '</option>'
@@ -342,11 +346,19 @@
 
             $('#employeeSelect').on('change', function () {
                 const selectedOption = $(this).find('option:selected');
-                const amount = selectedOption.data('employee_salary');
+                const amount = selectedOption.data('employee_grand_total_salary');
+                const advance = selectedOption.data('advance_salary');
+                const present = selectedOption.data('employee_present');
+                const half = selectedOption.data('employee_half_day');
+                const full = selectedOption.data('employee_full_day');
+                const totalLeave = half + full;
                 const rawMonth = selectedOption.data('month_year'); // e.g., "2025-07"
                 const date = new Date(rawMonth + '-01'); // Add day to make valid date
                 const options = { year: 'numeric', month: 'long' };
                 const formattedMonthYear = date.toLocaleDateString('en-US', options);
+                $('#employee_absent').html(totalLeave + ' Days');
+                $('#employee_present').html(present + ' Days');
+                $('#employee_advance').text(advance);
                 $('#net_salary').text(amount);
                 $('#new_salary').val(amount);
                 $('#salary_distribution_month').val(formattedMonthYear);

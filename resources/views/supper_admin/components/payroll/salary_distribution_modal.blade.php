@@ -23,9 +23,9 @@
                             <tr> <th>#</th> <th>Info</th> </tr>
                             </thead>
                             <tbody>
-                            <tr> <td>Absent </td><td>8 Days </td></tr>
-                            <tr> <td>Present </td><td>22 Days </td></tr>
-                            <tr> <td>Advance </td><td>0.00 </td></tr>
+                            <tr> <td>Absent </td><td id="employee_absent"></td></tr>
+                            <tr> <td>Present </td><td id="employee_present"></td></tr>
+                            <tr> <td>Advance </td><td id="employee_advance"></td></tr>
                             <tr> <td>Net Salary </td><td id="net_salary"></td></tr>
 
                             </tbody></table>
