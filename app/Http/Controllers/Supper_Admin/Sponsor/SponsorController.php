@@ -89,7 +89,7 @@ class SponsorController extends Controller
      */
     public function edit(string $id)
     {
-        $sponsor = Sponsor::with(['sponsorTransactions', 'agent', 'delegate'])->findOrFail($id);
+        $sponsor = Sponsor::with(['sponsorTransactions', 'agent', 'delegate', 'user'])->findOrFail($id);
         return response()->json($sponsor);
     }
 

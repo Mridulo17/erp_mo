@@ -697,6 +697,15 @@
                         url: url,
                         type: 'GET',
                         success: function (res) {
+                            $('#profile_user_name').text(res.user.name);
+                            const date = new Date(res.created_at);
+                            const formattedDate = date.toISOString().split('T')[0]; // YYYY-MM-DD
+
+                            const formattedRegistrationDay = date
+                                    .toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+                                    .replace(/(\d+)(?=,)/, (_, d) => d + (["th","st","nd","rd"][(d%10>3||Math.floor(d%100/10)==1)?0:d%10]) + ' of')
+                                + ` (${formattedDate})`;
+                            $('#sponsor_registration_date').text(formattedRegistrationDay);
                             $('#profile_sponsor').text(res.sponsor_name);
                             $('#profile_sponsor1').text(res.sponsor_name);
                             $('#profile_phone').text(res.cell_number);

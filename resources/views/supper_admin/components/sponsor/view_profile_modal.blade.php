@@ -11,11 +11,11 @@
                                 <div class="logo-lg p-0">
                                     <span class="light-logo" style="font-size: 20px; font-weight: 500;"><i class="fa fa-plane" style="font-size: x-large;"></i><i><span style="color: #f00;">M</span>ahfuza<span style="color: #f00;">O</span>verseas</i></span>
                                 </div>
-                                Registration by: <b>Md. Ibrahim Khalil</b> |
-                                Employee id: <b>00002</b><br>
-                                Department: <b>Top Management</b> |
-                                Designation: <b>Manager</b><br>
-                                Date: <b>Tuesday, 22nd of July 2025 (2025-07-22)</b>
+                                Registration by: <b id="profile_user_name"></b> |
+                                Employee id: <b></b><br>
+                                Department: <b></b> |
+                                Designation: <b></b><br>
+                                Date: <b id="sponsor_registration_date"></b>
                             </div>
                         </div>
                     </div>
