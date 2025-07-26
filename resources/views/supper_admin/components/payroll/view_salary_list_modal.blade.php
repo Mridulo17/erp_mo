@@ -1,4 +1,14 @@
-<div class="modal modal-right fade preview_salary_generate_modal show" id="view-salary-list-modal" style="padding-right: 7px;" aria-modal="true"><div class="modal-dialog" style="min-width: 100%;"><div class="modal-content"><div class="modal-header"><h5 class="modal-title preview_salary_generate_title">Salary List: <b class="text-danger">September 2024</b> &amp; Total Amount: <b class="text-success">55066.67</b></h5><button type="button" class="close text-danger" data-dismiss="modal"> <span aria-hidden="true">×</span> </button></div><div class="modal-body preview_salary_generate_body" style="overflow-x: hidden;"><div class="row">
+<div class="modal modal-right fade preview_salary_generate_modal show" id="view-salary-list-modal" style="padding-right: 7px;" aria-modal="true">
+    <div class="modal-dialog" style="min-width: 100%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title preview_salary_generate_title">Salary List: <b class="text-danger" id="salary_month_year"></b> &amp; Total Amount: <b class="text-success" id="total_salary"></b></h5>
+                <button type="button" class="close text-danger" data-dismiss="modal">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body preview_salary_generate_body" style="overflow-x: hidden;">
+                <div class="row">
                     <div class="col-sm-12">
                         <div class="table-responsive">
                             <div id="data-table-view-salary-list_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4 no-footer">
@@ -24,9 +34,8 @@
                                                <th>Employee</th>
                                                <th>Department</th>
                                                <th>JD</th>
-                                               <th>NOD</th>
+                                               <th>TP</th>
                                                <th>BMS</th>
-                                               <th>MS</th>
                                                <th>PD</th>
                                                <th>FDL</th>
                                                <th>HDL</th>
@@ -40,7 +49,7 @@
                                                <th>Received</th>
                                            </tr>
                                             </thead>
-                                            <tbody id="data_list">
+                                            <tbody id="view_salary_list">
 
                                             </tbody>
                                         </table>

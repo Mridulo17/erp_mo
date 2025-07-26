@@ -238,9 +238,10 @@ class SalaryGenerateController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(SalaryGenerate $salaryGenerate)
+    public function edit(string $id)
     {
-        //
+        $salaryGenerate = SalaryGenerate::with(['salaryGenerateEmployees', 'salaryGenerateEmployees.employee', 'salaryGenerateEmployees.employee.department', 'salaryGenerateEmployees.employee.designation'])->findOrFail($id);
+        return response()->json($salaryGenerate);
     }
 
     /**

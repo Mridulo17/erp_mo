@@ -451,9 +451,49 @@
                 });
 
                 $(document).on('click', '.viewSalaryListButton', function () {
-                    $('#salaryGenerateForm')[0].reset();
-                    $('#modalTitle').text('Add Festival Bonus');
-                    $('#view-salary-list-modal').modal('show');
+                    const id = $(this).data('id');
+                    const url = '{{ route("supper_admin.salary-generate.edit", ":id") }}'.replace(':id', id);
+
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        success: function (res) {
+                            const formatted = new Date(res.month_year).toLocaleString('default', { month: 'long', year: 'numeric' });
+                            $('#salary_month_year').text(formatted);
+                            $('#total_salary').text(res.total_employee_grand_total_salary);
+                            $('#address_transaction').text(res.address);
+                            let leaveDatesHtml = '';
+
+                            res.salary_generate_employees.forEach(function (salary) {
+
+                                leaveDatesHtml += `<tr>
+            <td>${salary.employee.employee_code} - ${salary.employee.first_name} ${salary.employee.last_name}</td>
+            <td>${salary.employee.department.name} - ${salary.employee.designation.name}</td>
+            <td>${salary.employee.date_of_joining}</td>
+            <td>${salary.employee_present}</td>
+            <td>${salary.employee_basic_salary}</td>
+            <td>${salary.employee.basic_salary_daily}</td>
+            <td>${salary.employee_full_day}</td>
+            <td>${salary.employee_half_day}</td>
+            <td>${salary.inc_dec}</td>
+            <td>${salary.performance_bonus}</td>
+            <td>${salary.mobile_allowance}</td>
+            <td>${salary.festival_bonus}</td>
+            <td>${salary.advance_salary}</td>
+            <td>${salary.employee_grand_total_salary}</td>
+            <td>${salary.employee.salary_pay_method}</td>
+           <td>${salary.is_paid === 'Received' ? '<span class="badge badge-success">Received</span>' : '<span class="badge badge-danger">Not Yet!</span>'}</td>
+
+        </tr>`;
+                            });
+
+                            $('#view_salary_list').html(leaveDatesHtml);
+                            $('#view-salary-list-modal').modal('show');
+                        },
+                        error: function () {
+                            Swal.fire('Error', 'Could not load salary list data.', 'error');
+                        }
+                    });
 
                 });
 
