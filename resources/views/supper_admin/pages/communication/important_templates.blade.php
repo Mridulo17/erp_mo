@@ -203,6 +203,7 @@
                     $('#importantTemplateForm')[0].reset();
                     $('#important_templates_id').val('');
                     $('#modalTitle').text('Add Template');
+                    $('#attachmentPreview').html('');
                     $('#modal-center').modal('show');
                 });
 
@@ -218,9 +219,29 @@
                             $('#message_template').val(res.message_template);
                             $('#status').prop('checked', res.status === 'Active');
                             $('#modalTitle').text('Edit template');
-                            $('#modal-center').modal('show');
+                            // $('#modal-center').modal('show');
                             $('#daySelect').val(res.important_days_id).trigger('change');
-                            
+
+                             if (res.attachment) {
+                                let baseUrl = window.location.origin;
+                                let fileUrl = baseUrl + '/storage/' + res.attachment;
+
+                                let ext = res.attachment.split('.').pop().toLowerCase();
+                                let previewHtml = '';
+
+                                if (['jpg', 'jpeg', 'png', 'gif'].includes(ext)) {
+                                    previewHtml = `<img src="${fileUrl}" alt="Attachment" class="img-fluid rounded border" style="max-height:200px;">`;
+                                } else {
+                                    previewHtml = `<a href="${fileUrl}" target="_blank" class="btn btn-sm btn-info mt-2">
+                                                    <i class="fa fa-download"></i> View Attachment
+                                                </a>`;
+                                }
+                                $('#attachmentPreview').html(previewHtml);
+                            } else {
+                                $('#attachmentPreview').html('');
+                            }
+
+                            $('#modal-center').modal('show');
                         },
                         error: function () {
                             Swal.fire('Error', 'Could not load country data.', 'error');

@@ -48,7 +48,7 @@ class ImportantTemplateController extends Controller
 
             if ($request->hasFile('attachment')) {
                 $file = $request->file('attachment');
-                $filePath = $file->store('attachments', 'public');
+                $filePath = $file->store('important_template/attachments', 'public');
                 $data['attachment'] = $filePath;
             }
 

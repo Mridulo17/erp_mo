@@ -25,6 +25,14 @@
                         <textarea id="message_template" name="message_template" class="form-control" placeholder="Message Body" rows="3" required></textarea>
                     </div>
 
+                     <div class="form-group">
+                        <label for="attachment" class="font-weight-bold text-dark" style="font-size: 14px;">Attachment</label>
+                        <input type="file" id="attachment" name="attachment" class="form-control-file" accept=".jpg,.jpeg,.png,.pdf,.docx">
+                        <small class="text-muted">Allowed: JPG, PNG, PDF, DOCX</small>
+                        
+                        <div id="attachmentPreview" class="mt-2"></div>
+                    </div>
+
                     <div class="form-group form-check">
                         <input type="checkbox" id="status" name="status" class="form-check-input" value="Active" checked>
                         <label class="form-check-label" for="status">Active</label>
