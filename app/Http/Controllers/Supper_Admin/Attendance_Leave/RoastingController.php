@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Supper_Admin\Attendance_Leave;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin\HRM\Employee;
+use App\Models\Admin\MyOffice\Roster;
+use App\Models\Supper_Admin\Attendance_Leave\Leave;
 use App\Models\Supper_Admin\Attendance_Leave\Roasting;
 use Illuminate\Http\Request;
 
@@ -11,9 +14,26 @@ class RoastingController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if ($request->has('department_id') && $request->department_id) {
+            $departmentId = $request->get('department_id');
+            $employees = Employee::with('branch')
+//                ->where('company_id', $user->company_id)
+                ->where('status', 1)
+                ->where('department_id', $departmentId)
+                ->get();
+        } else {
+            $employees = Employee::with('branch')
+//                ->where('company_id', $user->company_id)
+                ->where('status', 1)->get();
+
+        }
+        $rosters = Roster::
+//        where('company_id', $user->company_id)->
+        where('status', 1)->get();
+        return view('supper_admin.pages.attendanceAndLeave.assign-roasting', compact('employees', 'rosters'));
+
     }
 
     /**
@@ -51,9 +71,15 @@ class RoastingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Roasting $roasting)
+    public function update(Request $request, string $id)
     {
-        //
+        try {
+            $employee = Employee::findOrFail($id);
+            $employee->update(['roster_id'=>$request->roster_id]);
+            return response()->json(['status' => 'success', 'message' => 'Roaster update successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
+        }
     }
 
     /**

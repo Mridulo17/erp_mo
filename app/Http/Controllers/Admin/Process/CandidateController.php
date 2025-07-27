@@ -38,7 +38,7 @@ use App\Models\Admin\Process\CandidatePersonalInfo;
 class CandidateController extends Controller
 {
     use FileUpload;
-    
+
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -97,6 +97,23 @@ class CandidateController extends Controller
         }
 
         return view('backend.pages.process.candidates.index');
+    }
+
+    public function activeIndex()
+    {
+        $candidates = Candidate::whereHas('candidateType', function ($query) {
+            $query->select('id', 'name')->where('status', 1);
+        })->with([
+            'candidateType' => function ($query) {
+                $query->select('id', 'name');
+            },
+            'personalInfo' => function ($query) {
+                $query->select('candidate_id', 'first_name', 'last_name');
+            }
+        ])->get();
+
+        return response()->json($candidates);
+
     }
 
     public function create(Request $request, $step = 1)

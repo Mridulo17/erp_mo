@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('sponsors', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnUpdate();
             $table->enum('sponsor_type', ['Agent', 'Delegate', 'Prime Sponsor']);
             $table->unsignedBigInteger('agent_id')->nullable();
             $table->foreign('agent_id')->references('id')->on('agents')->cascadeOnUpdate()->restrictOnDelete();
@@ -25,7 +27,7 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->decimal('opening_balance', 25, 2)->default(0)->nullable();
             $table->decimal('balance', 25, 2)->default(0)->nullable();
-            $table->string('nid')->nullable();
+            $table->string('nid');
             $table->string('sponsor_photo')->nullable();
             $table->string('address', 2000)->nullable();
             $table->string('note', 2000)->nullable();
