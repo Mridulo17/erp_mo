@@ -1,5 +1,5 @@
 @extends('supper_admin.layouts.app')
-@section('title', config('app.name') . ' - Manage Visa')
+@section('title', config('app.name') . ' - Marketing Visa')
 
 @section('style')
     <style>
@@ -45,15 +45,15 @@
         <!-- Header Section -->
         <div class="box-header with-border d-flex justify-content-between align-items-center">
             <div>
-                <h3 class="box-title">Manage Visa</h3>
-                <h6 class="box-subtitle">This is all Manage Visa List</h6>
+                <h3 class="box-title">Marketing Visa</h3>
+                <h6 class="box-subtitle">This is all Marketing Visa List</h6>
             </div>
             <button type="button" class="btn btn-warning addBlogButton" data-toggle="modal" data-target="#modal-center">
                 <i class="fa-solid fa-plus"></i> Add Data
             </button>
         </div>
 
-        @include('supper_admin.components.sponsor.visa_modal')
+        @include('supper_admin.components.sponsor.marketing_visa_modal')
 
         <div class="box-body">
             <div class="table-responsive">
@@ -63,21 +63,13 @@
                     <tr>
                         <th style="">Action</th>
                         <th style="">DB:ID</th>
-                        <th style="">Sponsor Name</th>
-                        <th style="">Delegate Name</th>
                         <th style="">Country</th>
-                        <th style="">Job</th>
+                        <th style="">Occupation</th>
                         <th style="">Gender</th>
-                        <th style="">Age</th>
-                        <th style="">Issue Date</th>
-                        <th style="">Visa Number</th>
-                        <th style="">p:Qty</th>
-                        <th style="">A:Qty</th>
-                        <th style="">Currency</th>
-                        <th style="">Monthly Salary</th>
-                        <th style="">Purchase Price</th>
-                        <th style="">Due Amount</th>
-                        <th style="">Payment</th>
+                        <th style="">Cost</th>
+                        <th style="">Salary</th>
+                        <th style="">Quantity</th>
+                        <th style="">Date</th>
                         <th style="">Status</th>
                     </tr>
                     </thead>
@@ -107,30 +99,13 @@
                             </td>
 
                             <td>{{ $key + 1 }}</td>
-                            <td class="wrap-text">{{ $bonus->sponsor ? $bonus->sponsor->sponsor_name : '' }}</td>
-                            <td class="wrap-text">{{ $bonus->sponsor_type  }}</td>
-                        @if(isset($bonus->sponsor) && $bonus->sponsor->sponsor_type == 'Prime Sponsor')
-                                <td class="wrap-text">{{$bonus->sponsor ? $bonus->sponsor->sponsor_type : '' }} | {{$bonus->sponsor ? $bonus->sponsor->sponsor_name : ''}}</td>
-                            @elseif(isset($bonus->sponsor) && $bonus->sponsor->sponsor_type == 'Delegate')
-                                <td class="wrap-text">{{$bonus->sponsor ? $bonus->sponsor->sponsor_type : '' }} | {{$bonus->sponsor->delegate ? $bonus->sponsor->delegate->first_name : '' }} {{$bonus->sponsor->delegate ? $bonus->sponsor->delegate->last_name : '' }}</td>
-                            @endif
-                            <td class="wrap-text">{{ $bonus->country ? $bonus->country->name : '' }}</td>
+                           <td class="wrap-text">{{ $bonus->country ? $bonus->country->name : '' }}</td>
                             <td class="wrap-text">{{ $bonus->jobList ? $bonus->jobList->name : '' }}</td>
                             <td class="wrap-text">{{ $bonus->gender  }}</td>
-                            <td class="wrap-text">{{ $bonus->age_from  }} - {{ $bonus->age_to  }}</td>
-                            <td class="wrap-text">{{ $bonus->issue_date  }}</td>
-                            <td class="wrap-text">{{ $bonus->visa_number  }}</td>
-                            <td>0.00</td>
-                            <td>{{ $bonus->visa_qty  }}</td>
-                            <td class="wrap-text">{{ $bonus->salaryCurrency ? $bonus->salaryCurrency->name : '' }}</td>
-                            <td class="wrap-text">{{ $bonus->monthly_salary  }}</td>
-                            <td class="wrap-text">{{ $bonus->purchase_amount  }}</td>
-                            <td class="wrap-text">0.00</td>
-                            <td>
-                            <span class="badge {{ $bonus->payment_type == 'Paid' ? 'badge-success' : 'badge-danger' }}">
-                                {{ $bonus->payment_type == 'Paid' ? 'Paid' : 'Due' }}
-                            </span>
-                            </td>
+                            <td class="wrap-text">{{ $bonus->cost  }} {{ $bonus->costCurrency ? $bonus->costCurrency->name : '' }}</td>
+                            <td class="wrap-text">{{ $bonus->monthly_salary  }} {{ $bonus->salaryCurrency ? $bonus->salaryCurrency->name : '' }}</td>
+                            <td class="wrap-text">{{ $bonus->available_qty  }}</td>
+                            <td class="wrap-text">{{ $bonus->created_at  }}</td>
                             <td>
                             <span class="badge {{ $bonus->status == 'Enabled' ? 'badge-success' : 'badge-danger' }}">
                                 {{ $bonus->status == 'Enabled' ? 'Enabled' : 'Disabled' }}
@@ -150,14 +125,14 @@
         <script>
             function fetchVisas() {
                 $.ajax({
-                    url: '{{ route("supper_admin.visas.index") }}',
+                    url: '{{ route("supper_admin.marketing-visas.index") }}',
                     type: 'GET',
                     success: function (data) {
                         let newBody = $(data).find('table tbody').html();
                         $('#customDataTable tbody').html(newBody);
                     },
                     error: function () {
-                        console.error('Failed to refresh sponsor table.');
+                        console.error('Failed to refresh marketing visa table.');
                     }
                 });
             }
@@ -172,31 +147,6 @@
             });
 
             $(document).ready(function () {
-
-                fetchSponsors();
-
-                function fetchSponsors() {
-                    $.ajax({
-                        url: "{{ route('supper_admin.sponsor.enabled') }}",
-                        method: "GET",
-                        success: function (data) {
-                            let select = $('#sponsorSelect');
-                            select.empty();
-                            select.append('<option value="" disabled selected>Choose Sponsor</option>');
-
-                            data.forEach(function (sponsor) {
-                                select.append(
-                                    '<option value="' + sponsor.id + '">' +
-                                    sponsor.sponsor_name +
-                                '</option>'
-                                );
-                            });
-                        },
-                        error: function (xhr) {
-                            console.error("Failed to fetch sponsors:", xhr);
-                        }
-                    });
-                }
 
                 fetchJobLists();
 
@@ -223,8 +173,8 @@
                     });
                 }
 
-                fetchcountriess();
-                function fetchcountriess() {
+                fetchCountries();
+                function fetchCountries() {
                     $.ajax({
                         url: "{{ route('supper_admin.country.active') }}",
                         method: "GET",
@@ -242,30 +192,6 @@
                     });
                 }
 
-                fetchCurrencies();
-
-                function fetchCurrencies() {
-                    $.ajax({
-                        url: "{{ route('supper_admin.currency.active') }}",
-                        method: "GET",
-                        success: function (data) {
-                            let select = $('#currencySelect');
-                            select.empty();
-                            select.append('<option value="" disabled selected>Choose Currency</option>');
-                            data.forEach(function (currency) {
-                                select.append(
-                                    '<option data-bdt_amount="' + currency.bdt_amount + '" data-name="' + currency.name + '" value="' + currency.id + '">' +
-                                    currency.name + '</option>'
-                                );
-                            });
-
-                        },
-                        error: function (xhr) {
-                            console.error("Failed to fetch currencies:", xhr);
-                        }
-                    });
-                }
-
                 fetchSalaryCurrencies();
 
                 function fetchSalaryCurrencies() {
@@ -278,7 +204,7 @@
                             select.append('<option value="" disabled selected>Choose Currency</option>');
                             data.forEach(function (currency) {
                                 select.append(
-                                    '<option data-bdt_amount="' + currency.bdt_amount + '" data-name="' + currency.name + '" value="' + currency.id + '">' +
+                                    '<option value="' + currency.id + '">' +
                                     currency.name + '</option>'
                                 );
                             });
@@ -290,19 +216,19 @@
                     });
                 }
 
-                fetchPurchaseCurrencies();
+                fetchCostCurrencies();
 
-                function fetchPurchaseCurrencies() {
+                function fetchCostCurrencies() {
                     $.ajax({
                         url: "{{ route('supper_admin.currency.active') }}",
                         method: "GET",
                         success: function (data) {
-                            let select = $('#purchaseCurrencySelect');
+                            let select = $('#costCurrencySelect');
                             select.empty();
                             select.append('<option value="" disabled selected>Choose Currency</option>');
                             data.forEach(function (currency) {
                                 select.append(
-                                    '<option data-bdt_amount="' + currency.bdt_amount + '" data-name="' + currency.name + '" value="' + currency.id + '">' +
+                                    '<option value="' + currency.id + '">' +
                                     currency.name + '</option>'
                                 );
                             });
@@ -314,42 +240,18 @@
                     });
                 }
 
-                $('#currencySelect').on('change', function () {
-                    const selectedOption = $(this).find('option:selected');
-                    const bdt_amount = selectedOption.data('bdt_amount');
-                    const name = selectedOption.data('name');
-                    $('#currency_details').text("(1 " + name + " = " + bdt_amount + " BDT)");
-                    $('#bdt_price').val(bdt_amount);
-                });
-
-                $('#salaryCurrencySelect').on('change', function () {
-                    const selectedOption = $(this).find('option:selected');
-                    const bdt_amount = selectedOption.data('bdt_amount');
-                    const name = selectedOption.data('name');
-                    $('#salary_currency_details').text("(1 " + name + " = " + bdt_amount + " BDT)");
-                    $('#salary_bdt_amount').val(bdt_amount);
-                });
-
-                $('#purchaseCurrencySelect').on('change', function () {
-                    const selectedOption = $(this).find('option:selected');
-                    const bdt_amount = selectedOption.data('bdt_amount');
-                    const name = selectedOption.data('name');
-                    $('#purchase_currency_details').text("(1 " + name + " = " + bdt_amount + " BDT)");
-                    $('#purchase_bdt_amount').val(bdt_amount);
-                });
 
                 $('#visaForm').on('submit', function (e) {
                     e.preventDefault();
-                    let isEdit = $('#visa_id').val() !== '';
+                    let isEdit = $('#marketing_visa_id').val() !== '';
                     let formData = new FormData(this);
-                    let id = $('#visa_id').val();
-                    formData.set('provide_food', $('#provide_food').is(':checked') ? '1' : '0');
-                    formData.set('provide_accommodation', $('#provide_accommodation').is(':checked') ? '1' : '0');
+                    let id = $('#marketing_visa_id').val();
+                    formData.set('send_sms_to_agent', $('#send_sms_to_agent').is(':checked') ? '1' : '0');
                     formData.set('status', $('#status').is(':checked') ? 'Enabled' : 'Disabled');
-                    const baseUpdateUrl = "{{ url('supper_admin/visas') }}";
+                    const baseUpdateUrl = "{{ url('supper_admin/marketing-visas') }}";
                     let url = isEdit
                         ? `${baseUpdateUrl}/${id}`
-                        : `{{ route('supper_admin.visas.store') }}`;
+                        : `{{ route('supper_admin.marketing-visas.store') }}`;
 
                     let method = isEdit ? 'POST' : 'POST';
                     if (isEdit) {
@@ -357,7 +259,7 @@
                     }
 
                     Swal.fire({
-                        title: isEdit ? "Update Visa?" : "Add Visa?",
+                        title: isEdit ? "Update Marketing Visa?" : "Add Marketing Visa?",
                         icon: "question",
                         showCancelButton: true,
                         confirmButtonText: "Yes, proceed"
@@ -374,14 +276,14 @@
                                         $('#modal-center').modal('hide');
                                         Swal.fire('Success!', response.message, 'success');
                                         $('#visaForm')[0].reset();
-                                        $('#visa_id').val('');
+                                        $('#marketing_visa_id').val('');
                                         fetchVisas();
                                     } else {
                                         Swal.fire('Error!', response.message, 'error');
                                     }
                                 },
                                 error: function () {
-                                    Swal.fire('Error!', 'Failed to save visa.', 'error');
+                                    Swal.fire('Error!', 'Failed to save marketin visa.', 'error');
                                 }
                             });
                         }
@@ -390,65 +292,37 @@
 
                 $(document).on('click', '.addBlogButton', function () {
                     $('#visaForm')[0].reset();
-                    $('#visa_id').val('');
-                    $('#currencySelect').val('').trigger('change');
-                    $('#purchaseCurrencySelect').val('').trigger('change');
+                    $('#marketing_visa_id').val('');
+                    $('#countrySelect').val('').trigger('change');
+                    $('#jobSelect').val('').trigger('change');
+                    $('#costCurrencySelect').val('').trigger('change');
                     $('#salaryCurrencySelect').val('').trigger('change');
-                    $('#modalTitle').text('Manage Visa');
+                    $('#modalTitle').text('Marketing Visa');
                     $('#modal-center').modal('show');
 
                 });
 
                 $(document).on('click', '.editBlogButton', function () {
                     const id = $(this).data('id');
-                    const url = '{{ route("supper_admin.visas.edit", ":id") }}'.replace(':id', id);
+                    const url = '{{ route("supper_admin.marketing-visas.edit", ":id") }}'.replace(':id', id);
 
                     $.ajax({
                         url: url,
                         type: 'GET',
                         success: function (res) {
-                            $('#visa_id').val(id);
-                            $('#sponsorSelect').val(res.sponsor_id).trigger('change');
+                            $('#marketing_visa_id').val(id);
                             $('#jobSelect').val(res.job_list_id).trigger('change');
                             $('#countrySelect').val(res.country_id).trigger('change');
                             $('#salaryCurrencySelect').val(res.salary_currency_id).trigger('change');
-                            $('#purchaseCurrencySelect').val(res.purchase_currency_id).trigger('change');
-                            $('#currencySelect').val(res.currency_id).trigger('change');
-                            $('#issue_date').val(res.issue_date);
-                            $('#age_from').val(res.age_from);
-                            $('#age_to').val(res.age_to);
-                            $('#visa_number').val(res.visa_number);
-                            $('#visa_qty').val(res.visa_qty);
+                            $('#costCurrencySelect').val(res.cost_currency_id).trigger('change');
                             $('#type').val(res.type);
                             $('#gender').val(res.gender);
                             $('#monthly_salary').val(res.monthly_salary);
-                            $('#purchase_amount').val(res.purchase_amount);
-                            $('#agent_price').val(res.agent_price);
-                            $('#candidate_price').val(res.candidate_price);
-                            $('#payment_type').val(res.payment_type);
-                            // Show existing file
-                            if (res.demand_latter) {
-                                const filePath = res.demand_latter; // example: expense_categories/filename.pdf
-                                const ext = filePath.split('.').pop().toLowerCase();
+                            $('#cost').val(res.cost);
+                            $('#available_qty').val(res.available_qty);
+                            $('#registration_fee').val(res.registration_fee);
+                            $('#note').val(res.note);
 
-                                // Prepend Laravel's public storage path
-                                const fileUrl = `/storage/${filePath}`;
-
-                                let previewHtml = '';
-
-                                if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
-                                    previewHtml = `<img src="${fileUrl}" alt="Uploaded File" class="img-thumbnail" style="max-height: 200px;">`;
-                                } else {
-                                    previewHtml = `<a href="${fileUrl}" target="_blank" class="btn btn-outline-primary btn-sm">View File</a>`;
-                                }
-
-                                $('#existing-file-preview1').html(previewHtml);
-                                $('#remove-file-section1').removeClass('d-none');
-                            } else {
-                                $('#existing-file-preview1').empty();
-                                $('#remove-file-section1').addClass('d-none');
-                                $('#remove_file1').prop('checked', false);
-                            }
                             // Show existing file
                             if (res.attachment) {
                                 const filePath = res.attachment; // example: expense_categories/filename.pdf
@@ -472,27 +346,25 @@
                                 $('#remove-file-section').addClass('d-none');
                                 $('#remove_file').prop('checked', false);
                             }
-                            $('#provide_food').prop('checked', res.provide_food == '1');
-                            $('#provide_accommodation').prop('checked', res.provide_accommodation == '1');
+                            $('#send_sms_to_agent').prop('checked', res.send_sms_to_agent == '1');
                             $('#status').prop('checked', res.status === 'Enabled');
-                            $('#modalTitle').text('Edit Visa');
+                            $('#modalTitle').text('Edit Marketing Visa');
                             $('#modal-center').modal('show');
                         },
                         error: function () {
-                            Swal.fire('Error', 'Could not load visa data.', 'error');
+                            Swal.fire('Error', 'Could not load marketing visa data.', 'error');
                         }
                     });
                 });
 
                 $(document).on('click', '.deleteBonusBtn', function () {
                     const id = $(this).data('id');
-                    const url = '{{ route("supper_admin.visas.destroy", ":id") }}'.replace(':id', id);
+                    const url = '{{ route("supper_admin.marketing-visas.destroy", ":id") }}'.replace(':id', id);
 
                     Swal.fire({
-                        title: 'Delete Visa?',
+                        title: 'Delete Marketing Visa?',
                         text: "This action cannot be undone.",
-                        icon: 'warning',
-                        showCancelButton: true,
+                        icon: 'warning',                        showCancelButton: true,
                         confirmButtonText: 'Delete'
                     }).then((result) => {
                         if (result.isConfirmed) {
@@ -512,7 +384,7 @@
                                     }
                                 },
                                 error: function () {
-                                    Swal.fire('Error!', 'Failed to delete the visa.', 'error');
+                                    Swal.fire('Error!', 'Failed to delete the marketing visa.', 'error');
                                 }
                             });
                         }

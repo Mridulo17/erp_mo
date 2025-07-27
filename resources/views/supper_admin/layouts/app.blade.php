@@ -119,6 +119,12 @@
 				ordering: true
 			});
 
+            $('#customModalDataTable').DataTable({
+                paging: true,
+                searching: true,
+                ordering: true
+            });
+
 			$('#summernote').summernote({
 				height: 200,
 				minHeight: null,

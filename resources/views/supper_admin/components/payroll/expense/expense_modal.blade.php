@@ -68,7 +68,7 @@
                     </div>
                     <div class="form-group" id="perDiv" style=display:none;>
                         <label for="expiry_date" class="font-weight-bold text-dark" style="font-size: 14px;">Expiry Date</label>
-                        <input type="date" id="expiry_date" name="expiry_date" class="form-control" placeholder="Expiry Date" required>
+                        <input type="date" id="expiry_date" name="expiry_date" class="form-control" placeholder="Expiry Date">
                     </div>
 
                     <div class="form-group">

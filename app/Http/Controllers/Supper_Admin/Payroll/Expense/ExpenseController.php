@@ -82,7 +82,7 @@ class ExpenseController extends Controller
      */
     public function edit(string $id)
     {
-        $expense = Expense::findOrFail($id);
+        $expense = Expense::with(['expenseCategory', 'expenseItem'])->findOrFail($id);
         return response()->json($expense);
     }
 
