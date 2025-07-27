@@ -30,6 +30,7 @@
 			branchActive: "{{ route('admin.branch.active') }}",
 			importantDaysActive: "{{ route('supper_admin.important-days.active') }}",
 			importantTemplateActive: "{{ route('supper_admin.important-template.active') }}",
+			socialMediaConfigurationActive: "{{ route('supper_admin.social-media-configuration.active') }}",
         };
     </script>
   </head>

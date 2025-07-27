@@ -63,6 +63,7 @@ use App\Http\Controllers\Admin\Enquiry\PhoneCallFollowupController;
 use App\Http\Controllers\Admin\People\InvestorTransactionController;
 use App\Http\Controllers\Supper_Admin\Communication\ImportantDaysController;
 use App\Http\Controllers\Supper_Admin\Communication\ImportantTemplateController;
+use App\Http\Controllers\Supper_Admin\Social_Media\SocialMediaConfigurationController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -108,6 +109,7 @@ Route::middleware(['auth', 'verified'])->prefix('supper_admin')->name('supper_ad
     Route::get('/important-template/active', [ImportantTemplateController::class, 'ActiveIndex'])->name('important-template.active');
     Route::get('/expense-items/enabled', [ExpenseItemController::class, 'enabledIndex'])->name('expense-item.enabled');
     Route::get('/sponsor/enabled', [SponsorController::class, 'enabledIndex'])->name('sponsor.enabled');
+    Route::get('/social-media-configuration/active', [SocialMediaConfigurationController::class, 'ActiveIndex'])->name('social-media-configuration.active');
 
 
 
@@ -134,6 +136,7 @@ Route::middleware(['auth', 'verified'])->prefix('supper_admin')->name('supper_ad
     Route::resource('mikrotik-devices', MikrotikDeviceController::class);
     Route::resource('important-days', ImportantDaysController::class);
     Route::resource('important-template', ImportantTemplateController::class);
+    Route::resource('social-media-configuration', SocialMediaConfigurationController::class);
 
     //Resource routes for payroll under super_admin
     Route::resource('expense-categories', ExpenseCategoryController::class);

@@ -98,9 +98,39 @@
 						<li><a href="{{ route('supper_admin.important-days.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Important Days</a></li>
 						<li><a href="{{ route('supper_admin.important-template.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Important Template</a></li>
 					</ul>
-					{{-- <ul class="treeview-menu">
-						
-					</ul> --}}
+				</li>
+
+				<li class="treeview">
+					<a href="#">
+						<i class="fa-solid fa-share-nodes"></i>
+						<span>Social Media</span>
+						<span class="pull-right-container">
+							<i class="fa fa-angle-right pull-right"></i>
+						</span>
+					</a>
+					<ul class="treeview-menu">
+						<li class="treeview">
+							<a href="#">
+								<i class="fa fa-gear"></i>
+								Configuration
+								<span class="pull-right-container">
+									<i class="fa fa-angle-right pull-right"></i>
+								</span>
+							</a>
+							<ul class="treeview-menu">
+								<li>
+									<a href="{{ route('supper_admin.social-media-configuration.index') }}">
+										<i class="fa-brands fa-facebook"></i> Facebook
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										<i class="fa-brands fa-whatsapp"></i> WhatsApp
+									</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
 				</li>
 				
                   @php
