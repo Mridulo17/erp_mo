@@ -29,7 +29,7 @@
 
                     </div>
                     <div class="row">
-                        <div class="col-sm-6 all_country_checkbox_container">
+                        <div class="col-sm-12 all_country_checkbox_container">
                             <div class="form-group">
                                 <label>Country</label>
                                 <select name="country_id" id="countrySelect" class="form-control">
@@ -37,10 +37,10 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-6" style="display:none;">
                             <div class="form-group">
                                 <label>Issue Date</label>
-                                <input type="date" name="issue_date" id="issue_date" autocomplete="off" placeholder="Choose Issue Date" class="form-control" required>
+                                <input type="date" name="issue_date" id="issue_date" autocomplete="off" placeholder="Choose Issue Date" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -57,13 +57,13 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-sm-6" style="display:none;">
                             <div class="form-group">
                                 <label>Visa Number</label>
-                                <input type="text" name="visa_number" id="visa_number" placeholder="Visa Number/Code" class="form-control" required>
+                                <input type="text" name="visa_number" id="visa_number" placeholder="Visa Number/Code" class="form-control">
                             </div>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-12">
                             <div class="form-group">
                                 <label>Visa Quantity</label>
                                 <input type="number" step="any" name="visa_qty" id="visa_qty" placeholder="Visa Quantity" class="form-control" required>
@@ -71,10 +71,10 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-sm-6" style="display:none;">
                             <div class="form-group">
                                 <label>Choose Type</label>
-                                <select name="type" id="type" class="form-control" required>
+                                <select name="type" id="type" class="form-control">
                                     <option value="" disabled selected>Choose Type</option>
                                     <option value="Air Ticket">Air Ticket</option>
                                     <option value="Business Visa">Business Visa</option>
@@ -87,7 +87,7 @@
                                 </select>
                                  </div>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-12">
                             <div class="form-group">
                                 <label>Choose Gender</label>
                                 <select name="gender" id="gender" class="form-control" required>
@@ -98,14 +98,14 @@
                                 </select> </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" style="display:none;">
                         <div class="col-sm-12" style="border: solid 2px #d9d9d9;padding-top: 10px;border-radius: 15px;">
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <div class="form-group">
                                             <label for="salary_currency_id" class="font-weight-bold text-dark" style="font-size: 14px;">Currency <small id="salary_currency_details" style="color: #ff0000"></small></label>
-                                            <select name="salary_currency_id" id="salaryCurrencySelect" class="form-control" required>
+                                            <select name="salary_currency_id" id="salaryCurrencySelect" class="form-control">
                                                 <option value="" disabled selected>Choose Currency</option>
                                             </select>
                                         </div>
@@ -115,7 +115,7 @@
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label>Monthly Salary</label>
-                                        <input type="number" step="any" name="monthly_salary" id="monthly_salary" placeholder="Monthly Salary" class="form-control" required="">
+                                        <input type="number" step="any" name="monthly_salary" id="monthly_salary" placeholder="Monthly Salary" class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -216,13 +216,13 @@
                         <label>Note</label>
                         <textarea name="note" class="form-control" placeholder="Note"></textarea>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display:none;">
                         <div class="checkbox checkbox-success">
                             <input name="provide_food" id="provide_food" type="checkbox">
                             <label for="provide_food"> Food will be provided </label>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display:none;">
                         <div class="checkbox checkbox-success">
                             <input name="provide_accommodation" id="provide_accommodation" type="checkbox">
                             <label for="provide_accommodation"> Accommodation will be provided </label>
