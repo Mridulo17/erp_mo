@@ -15,6 +15,8 @@ use App\Models\Admin\Process\Candidate;
 
 class Agent extends Model
 {
+    protected $appends = ['agent_photo_url'];
+
     protected $fillable =
     [
         'company_id',
@@ -88,5 +90,14 @@ class Agent extends Model
     public function getFullNameAttribute()
     {
         return "{$this->first_name} {$this->last_name}";
+    }
+
+    public function getAgentPhotoUrlAttribute()
+    {
+        if ($this->agent_photo) {
+            return asset('uploads/agents/' . $this->agent_photo);
+        }
+
+        return asset('backend/images/avatar/placeholder-avatar.jpg');
     }
 }

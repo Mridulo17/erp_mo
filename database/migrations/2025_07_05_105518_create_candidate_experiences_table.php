@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('departure_seal')->nullable();
             $table->string('arrival_seal')->nullable();
 
-            $table->foreignId('travelled_country_id')->nullable()->constrained('countries')->onDelete('set null');
+            $table->json('travelled_country_id')->nullable();
             $table->timestamps();
         });
     }

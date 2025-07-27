@@ -35,6 +35,14 @@
             color: #0d6efd;
             font-weight: 700;
         }
+        .align-label {
+            text-align: right;
+            white-space: nowrap;
+        }
+        .align-label::after {
+            content: ":";
+            padding-left: 5px;
+        }
     </style>
 @endsection
 
@@ -123,6 +131,13 @@
         });
     });
 
+    $(document).on('input change', 'input, select, textarea', function () {
+        $(this).removeClass('is-invalid');
+        $(this).siblings('.invalid-feedback').remove(); // if siblings
+        $(this).closest('.input-group').next('.invalid-feedback').remove(); // if input group
+        $(this).next('.select2').next('.invalid-feedback').remove(); // if select2
+    });
+
     // Handle previous button click
     $(document).on('click', '#prevBtn', function () {
         if (currentStep > 1) {
@@ -142,6 +157,13 @@
                         currentStep = res.step;
                         $('#content-wrapper').html(res.html);
                         initSelect2();
+                        // If step 1, trigger agent info display if agent is selected
+                        if (currentStep == 1) {
+                            var preSelectedAgentId = $('#referral_agent_id').val();
+                            if (preSelectedAgentId) {
+                                $('#referral_agent_id').trigger('change');
+                            }
+                        }
                     }
                 },
                 error: function (xhr) {
@@ -155,5 +177,83 @@
     function initSelect2() {
         $('.select2').select2({ width: '100%' });
     }
+
+    $(document).on('change', '#referral_agent_id', function() {
+        const agentId = $(this).val();
+
+        if (agentId) {
+            $.ajax({
+                url: `/admin/agents/${agentId}`,
+                method: 'GET',
+                success: function(data) {
+                    $('#agent_info').html(`
+                        <div class="card p-3 d-flex flex-row align-items-start" style="gap: 1.5rem;">
+                            <!-- Agent Image -->
+                            <div style="flex: 0 0 100px;">
+                                <img src="${data.agent_photo_url}" 
+                                    alt="Agent Image" 
+                                    class="img-thumbnail rounded-circle" 
+                                    style="width: 100px; height: 100px; object-fit: cover;">
+                            </div>
+
+                            <!-- Agent Info Table -->
+                            <div style="flex: 1;">
+                                <table class="table table-sm mb-0">
+                                    <tbody>
+                                        <tr>
+                                            <th class="align-label">Name</th>
+                                            <td>${data.first_name} ${data.last_name}</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="align-label">Email</th>
+                                            <td>${data.email}</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="align-label">Phone</th>
+                                            <td>${data.phone_number}</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="align-label">Country</th>
+                                            <td>${data.country.name}</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="align-label">Address</th>
+                                            <td>${data.current_address}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    `);
+                },
+
+                error: function() {
+                    $('#agent_info').html('<p class="text-danger">Unable to fetch agent info.</p>');
+                }
+            });
+        } else {
+            $('#agent_info').html('');
+        }
+    });
+
+    // Show agent info if agent is already selected on page load
+    $(function() {
+        var preSelectedAgentId = $('#referral_agent_id').val();
+        if (preSelectedAgentId) {
+            $('#referral_agent_id').trigger('change');
+        }
+    });
+
+    // Enable submit button only if confirmation checkbox is checked (on step 7)
+    $(document).on('change', '#confirmInfoCheckbox', function() {
+        $('#finalSubmitBtn').prop('disabled', !this.checked);
+    });
+
+    // When step 7 is loaded via AJAX, ensure the button is disabled until checked
+    $(document).on('change', '#step', function() {
+        if ($(this).val() == 7) {
+            $('#finalSubmitBtn').prop('disabled', !$('#confirmInfoCheckbox').is(':checked'));
+        }
+    });
 </script>
 @endsection

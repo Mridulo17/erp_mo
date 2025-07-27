@@ -87,4 +87,10 @@ class ThanaController extends Controller
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
         }
     }
+
+    public function getThanaByDistrict($district_id)
+    {
+        $thanas = \App\Models\Supper_Admin\Location\Thana::where('district_id', $district_id)->pluck('name', 'id');
+        return response()->json($thanas);
+    }
 }

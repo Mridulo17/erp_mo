@@ -205,6 +205,12 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('delegateOffice', DelegateOfficeController::class);
     Route::resource('candidateTypes', CandidateTypeController::class);
     Route::resource('candidates', CandidateController::class);
+    Route::post('candidates/update-candidate-photo', [CandidateController::class, 'updateCandidatePhoto'])->name('candidates.updateCandidatePhoto');
+    Route::post('candidates/transaction', [CandidateController::class, 'storeCandidateTransaction'])->name('candidates.storeTransaction');
+    Route::get('candidates/{candidate_id}/transactions', [CandidateController::class, 'getCandidateTransactions'])->name('candidates.transactions');
+    Route::post('candidates/type-transfer', [CandidateController::class, 'typeTransfer'])->name('candidates.typeTransfer');
+    Route::get('candidates/comment/{id}', [CandidateController::class, 'getCandidateComment'])->name('candidates.getComment');
+    Route::post('candidates/comment', [CandidateController::class, 'saveCandidateComment'])->name('candidates.saveComment');
     Route::resource('enquiry/phone-calls', PhoneCallController::class);
     Route::resource('enquiry/visitor-books', VisitorBookController::class);
     Route::resource('enquiry/phone-call-followups', PhoneCallFollowupController::class);
@@ -217,6 +223,13 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('airlineOffices', AirlineOfficeController::class);
     Route::resource('enquiry/interviewed-candidates', InterviewedCandidateController::class);
 });
+
+// Dependent dropdowns for candidate location
+Route::get('/admin/location/divisions/{country_id}', [App\Http\Controllers\Supper_Admin\Location\DivisionController::class, 'getDivisionByCountry']);
+Route::get('/admin/location/districts/{division_id}', [App\Http\Controllers\Supper_Admin\Location\DistrictController::class, 'getDistrictByDivision']);
+Route::get('/admin/location/thanas/{district_id}', [App\Http\Controllers\Supper_Admin\Location\ThanaController::class, 'getThanaByDistrict']);
+Route::get('/admin/location/postoffices/{district_id}', [App\Http\Controllers\Supper_Admin\Location\PostOfficeController::class, 'getPostOfficeByDistrict']);
+Route::get('/admin/location/states/{country_id}', [App\Http\Controllers\Supper_Admin\Location\StateController::class, 'getStateByCountry']);
 
 
 Route::middleware('auth')->group(function () {

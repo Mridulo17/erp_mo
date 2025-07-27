@@ -22,17 +22,32 @@ class CandidateFileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file_type' => 'required',
-            'file_path' => 'required|file',
+            'candidate_photo' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'police_verification' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'other_certification' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'optional_file' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'file_type.required' => 'File type is required.',
-            'file_path.required' => 'File is required.',
-            'file_path.file'     => 'Uploaded file must be a valid file.',
+            'candidate_photo.required' => 'Candidate photo is required.',
+            'candidate_photo.file' => 'Candidate photo must be a valid file.',
+            'candidate_photo.mimes' => 'Candidate photo must be a JPG, JPEG, PNG, or PDF file.',
+            'candidate_photo.max' => 'Candidate photo must not exceed 2MB.',
+
+            'police_verification.file' => 'Police verification must be a valid file.',
+            'police_verification.mimes' => 'Police verification must be a JPG, JPEG, PNG, or PDF file.',
+            'police_verification.max' => 'Police verification file must not exceed 2MB.',
+
+            'other_certification.file' => 'Other certification must be a valid file.',
+            'other_certification.mimes' => 'Other certification must be a JPG, JPEG, PNG, or PDF file.',
+            'other_certification.max' => 'Other certification file must not exceed 2MB.',
+
+            'optional_file.file' => 'Optional file must be a valid file.',
+            'optional_file.mimes' => 'Optional file must be a JPG, JPEG, PNG, or PDF file.',
+            'optional_file.max' => 'Optional file must not exceed 2MB.',
         ];
     }
 }

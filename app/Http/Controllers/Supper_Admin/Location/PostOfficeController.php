@@ -81,4 +81,10 @@ class PostOfficeController extends Controller
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
         }
     }
+
+    public function getPostOfficeByDistrict($district_id)
+    {
+        $postOffices = \App\Models\Supper_Admin\Location\PostOffice::where('district_id', $district_id)->pluck('name', 'id');
+        return response()->json($postOffices);
+    }
 }

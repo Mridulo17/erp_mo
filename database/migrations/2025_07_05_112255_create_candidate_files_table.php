@@ -17,8 +17,10 @@ return new class extends Migration
             // Candidate relation
             $table->foreignId('candidate_id')->constrained('candidates')->onDelete('cascade');
 
-            $table->string('file_type')->nullable();
-            $table->string('file_path')->nullable();
+            $table->string('candidate_photo')->nullable();
+            $table->string('police_verification')->nullable();
+            $table->string('other_certification')->nullable();
+            $table->string('optional_file')->nullable();
 
             $table->timestamps();
         });

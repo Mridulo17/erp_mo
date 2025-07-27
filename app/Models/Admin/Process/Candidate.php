@@ -47,7 +47,7 @@ class Candidate extends Model
 
     public function experiences()
     {
-        return $this->hasMany(CandidateExperience::class);
+        return $this->hasOne(CandidateExperience::class);
     }
 
     public function passport()
@@ -60,4 +60,12 @@ class Candidate extends Model
         return $this->hasOne(CandidateLocation::class);
     }
 
+    public function files() {
+        return $this->hasOne(CandidateFile::class);
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(CandidateTransaction::class);
+    }
 }
