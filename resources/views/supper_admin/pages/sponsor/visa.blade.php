@@ -69,12 +69,8 @@
                         <th style="">Job</th>
                         <th style="">Gender</th>
                         <th style="">Age</th>
-                        <th style="">Issue Date</th>
-                        <th style="">Visa Number</th>
                         <th style="">p:Qty</th>
                         <th style="">A:Qty</th>
-                        <th style="">Currency</th>
-                        <th style="">Monthly Salary</th>
                         <th style="">Purchase Price</th>
                         <th style="">Due Amount</th>
                         <th style="">Payment</th>
@@ -118,12 +114,8 @@
                             <td class="wrap-text">{{ $bonus->jobList ? $bonus->jobList->name : '' }}</td>
                             <td class="wrap-text">{{ $bonus->gender  }}</td>
                             <td class="wrap-text">{{ $bonus->age_from  }} - {{ $bonus->age_to  }}</td>
-                            <td class="wrap-text">{{ $bonus->issue_date  }}</td>
-                            <td class="wrap-text">{{ $bonus->visa_number  }}</td>
                             <td>0.00</td>
                             <td>{{ $bonus->visa_qty  }}</td>
-                            <td class="wrap-text">{{ $bonus->salaryCurrency ? $bonus->salaryCurrency->name : '' }}</td>
-                            <td class="wrap-text">{{ $bonus->monthly_salary  }}</td>
                             <td class="wrap-text">{{ $bonus->purchase_amount  }}</td>
                             <td class="wrap-text">0.00</td>
                             <td>
