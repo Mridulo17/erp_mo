@@ -37,6 +37,13 @@ class AttendanceController extends Controller
                 'check_in'      => 'required|string',
                 'check_out'      => 'required|string'
             ]);
+            // Check if attendance already exists for this date
+            if (Attendance::where('date', $request->input('date'))->where('employee_id', $request->input('employee_id'))->exists()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Employee attendance already exists for this date.'
+                ]);
+            }
             $dateDetails = Carbon::parse($request->input('date'))->format('l, jS \\of F Y');
             $checkHoliday = Holiday::where('date', $request->input('date'))->first();
             if (isset($checkHoliday)) {
@@ -100,6 +107,13 @@ class AttendanceController extends Controller
                 'check_in'      => 'required|string',
                 'check_out'      => 'required|string'
             ]);
+            // Check if attendance already exists for this date
+            if (Attendance::where('date', $request->input('date'))->where('employee_id', $request->input('employee_id'))->where('id', '!=', $id)->exists()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Employee attendance already exists for this date.'
+                ]);
+            }
             $dateDetails = Carbon::parse($request->input('date'))->format('l, jS \\of F Y');
             $checkHoliday = Holiday::where('date', $request->input('date'))->first();
             if (isset($checkHoliday)) {
