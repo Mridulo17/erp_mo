@@ -131,7 +131,7 @@
                         </div>
                     </div>
 
-                    <div class="row payment_type_container">
+                    <div class="row payment_type_container" id="purchase_div_prev">
                         <div class="col-sm-12" style="border: solid 2px #d9d9d9;padding-top: 10px;border-radius: 15px;margin-bottom: 10px;margin-top: 10px;">
                             <div class="row">
                                 <div class="col-sm-6">
@@ -168,7 +168,7 @@
                                         <input type="number" step="any" name="candidate_price" id="candidate_price" placeholder="Candidate Sell Amount" class="form-control" required>
                                     </div>
                                 </div>
-                                <div class="col-sm-6">
+                                <div class="col-sm-6" id="commission_div" style="display: none">
                                     <div class="form-group">
                                         <label>Commission Amount </label>
                                         <input type="number" step="any" name="commission_amount" id="commission_amount" placeholder="Commission Amount" class="form-control">

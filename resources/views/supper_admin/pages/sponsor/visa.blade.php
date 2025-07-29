@@ -205,7 +205,7 @@
 
                             data.forEach(function (job) {
                                 select.append(
-                                    '<option value="' + job.id + '">' +
+                                    '<option data-job_type="' + job.job_type + '" value="' + job.id + '">' +
                                     job.name +
                                     '</option>'
                                 );
@@ -260,52 +260,6 @@
                     });
                 }
 
-                fetchSalaryCurrencies();
-
-                function fetchSalaryCurrencies() {
-                    $.ajax({
-                        url: "{{ route('supper_admin.currency.active') }}",
-                        method: "GET",
-                        success: function (data) {
-                            let select = $('#salaryCurrencySelect');
-                            select.empty();
-                            select.append('<option value="" disabled selected>Choose Currency</option>');
-                            data.forEach(function (currency) {
-                                select.append(
-                                    '<option data-bdt_amount="' + currency.bdt_amount + '" data-name="' + currency.name + '" value="' + currency.id + '">' +
-                                    currency.name + '</option>'
-                                );
-                            });
-                        },
-                        error: function (xhr) {
-                            console.error("Failed to fetch currencies:", xhr);
-                        }
-                    });
-                }
-
-                fetchPurchaseCurrencies();
-
-                function fetchPurchaseCurrencies() {
-                    $.ajax({
-                        url: "{{ route('supper_admin.currency.active') }}",
-                        method: "GET",
-                        success: function (data) {
-                            let select = $('#purchaseCurrencySelect');
-                            select.empty();
-                            select.append('<option value="" disabled selected>Choose Currency</option>');
-                            data.forEach(function (currency) {
-                                select.append(
-                                    '<option data-bdt_amount="' + currency.bdt_amount + '" data-name="' + currency.name + '" value="' + currency.id + '">' +
-                                    currency.name + '</option>'
-                                );
-                            });
-
-                        },
-                        error: function (xhr) {
-                            console.error("Failed to fetch currencies:", xhr);
-                        }
-                    });
-                }
 
                 $('#currencySelect').on('change', function () {
                     const selectedOption = $(this).find('option:selected');
@@ -313,6 +267,20 @@
                     const name = selectedOption.data('name');
                     $('#currency_details').text("(1 " + name + " = " + bdt_amount + " BDT)");
                     $('#bdt_price').val(bdt_amount);
+                });
+
+                $('#jobSelect').on('change', function () {
+                    const selectedOption = $(this).find('option:selected');
+                    const job_type = selectedOption.data('job_type');
+                    if(job_type && job_type.toLowerCase() === "commission") {
+                        $('#visa_qty').val(0);
+                        $('#purchase_div_prev').hide();
+                        $('#commission_div').show();
+                    } else {
+                        $('#visa_qty').val('');
+                        $('#purchase_div_prev').show();
+                        $('#commission_div').hide();
+                    }
                 });
 
                 $('#visaForm').on('submit', function (e) {
