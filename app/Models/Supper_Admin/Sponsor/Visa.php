@@ -23,18 +23,18 @@ class Visa extends Model
             'visa_qty',
             'type',
             'gender',
-            'salary_currency_id',
+            'currency_id',
             'monthly_salary',
             'salary_bdt_amount',
-            'purchase_currency_id',
             'purchase_amount',
             'purchase_bdt_amount',
             'payment_type',
-            'currency_id',
             'agent_price',
             'agent_bdt_price',
             'candidate_price',
             'candidate_bdt_price',
+            'commission_amount',
+            'commission_bdt_amount',
             'demand_letter',
             'attachment',
             'note',
@@ -55,14 +55,6 @@ class Visa extends Model
     public function country()
     {
         return $this->belongsTo(Country::class);
-    }
-    public function salaryCurrency()
-    {
-        return $this->belongsTo(Currency::class, 'salary_currency_id', 'id');
-    }
-    public function purchaseCurrency()
-    {
-        return $this->belongsTo(Currency::class, 'purchase_currency_id', 'id');
     }
     public function currency()
     {

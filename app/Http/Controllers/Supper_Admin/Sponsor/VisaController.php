@@ -35,10 +35,8 @@ class VisaController extends Controller
                 'age_from'      => 'required',
                 'age_to'      => 'required',
                 'visa_qty'      => 'required',
-                'gender'    => 'required|in:Male,Female,Haji',
-                'agent_price'      => 'required',
                 'bdt_price'      => 'required',
-                'candidate_price'      => 'required',
+                'gender'    => 'required|in:Male,Female,Haji',
                 'demand_letter' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240', // 10MB max
                 'attachment' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240', // 10MB max
                 'status'    => 'required|in:Enabled,Disabled'
@@ -66,17 +64,17 @@ class VisaController extends Controller
                 'visa_qty'  => $request->input('visa_qty'),
                 'type'  => $request->input('type'),
                 'gender'  => $request->input('gender'),
-                'salary_currency_id'  => $request->input('salary_currency_id'),
-                'monthly_salary'  => $request->input('monthly_salary'),
-                'salary_bdt_amount'  => $request->input('salary_bdt_amount')*$request->input('monthly_salary'),
-                'purchase_currency_id'  => $request->input('purchase_currency_id'),
-                'purchase_amount'  => $request->input('purchase_amount'),
-                'purchase_bdt_amount'  => $request->input('purchase_bdt_amount')*$request->input('purchase_amount'),
                 'currency_id'  => $request->input('currency_id'),
+                'monthly_salary'  => $request->input('monthly_salary'),
+                'salary_bdt_amount'  => $request->input('bdt_price')*$request->input('monthly_salary'),
+                'purchase_amount'  => $request->input('purchase_amount'),
+                'purchase_bdt_amount'  => $request->input('bdt_price')*$request->input('purchase_amount'),
                 'agent_price'  => $request->input('agent_price'),
                 'agent_bdt_price'  => $request->input('bdt_price')*$request->input('agent_price'),
                 'candidate_price'  => $request->input('candidate_price'),
                 'candidate_bdt_price'  => $request->input('bdt_price')*$request->input('candidate_price'),
+                'commission_amount'  => $request->input('commission_amount'),
+                'commission_bdt_amount'  => $request->input('bdt_price')*$request->input('commission_amount'),
                 'demand_letter'         => $demandLetterPath,
                 'attachment'         => $attachmentPath,
                 'note'  => $request->input('note'),
@@ -122,11 +120,9 @@ class VisaController extends Controller
                 'currency_id'      => 'required|integer',
                 'age_from'      => 'required',
                 'age_to'      => 'required',
+                'bdt_price'      => 'required',
                 'visa_qty'      => 'required',
                'gender'    => 'required|in:Male,Female,Haji',
-                'agent_price'      => 'required',
-                'bdt_price'      => 'required',
-                'candidate_price'      => 'required',
                 'demand_letter' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240', // 10MB max
                 'attachment' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240', // 10MB max
                 'status'    => 'required|in:Enabled,Disabled'
@@ -143,18 +139,18 @@ class VisaController extends Controller
             $visa->visa_qty = $request->visa_qty;
             $visa->type = $request->type;
             $visa->gender = $request->gender;
-            $visa->salary_currency_id = $request->salary_currency_id;
-            $visa->monthly_salary = $request->monthly_salary;
-            $visa->salary_bdt_amount = $request->monthly_salary * $request->salary_bdt_amount;
-            $visa->purchase_currency_id = $request->purchase_currency_id;
-            $visa->purchase_amount = $request->purchase_amount;
-            $visa->purchase_bdt_amount = $request->purchase_amount * $request->purchase_bdt_amount;
-            $visa->payment_type = $request->payment_type;
             $visa->currency_id = $request->currency_id;
+            $visa->monthly_salary = $request->monthly_salary;
+            $visa->salary_bdt_amount = $request->monthly_salary * $request->bdt_price;
+            $visa->purchase_amount = $request->purchase_amount;
+            $visa->purchase_bdt_amount = $request->purchase_amount * $request->bdt_price;
+            $visa->payment_type = $request->payment_type;
             $visa->agent_price = $request->agent_price;
             $visa->agent_bdt_price = $request->agent_price * $request->bdt_price;
             $visa->candidate_price = $request->candidate_price;
             $visa->candidate_bdt_price = $request->candidate_price * $request->bdt_price;
+            $visa->commission_amount = $request->commission_amount;
+            $visa->commission_bdt_amount = $request->bdt_price * $request->commission_amount;
             // If user asked to remove file
             if ($request->has('remove_file1') && $request->remove_file1) {
                 if ($visa->demand_letter) {
