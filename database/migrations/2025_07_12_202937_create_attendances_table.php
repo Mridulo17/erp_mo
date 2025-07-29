@@ -22,6 +22,8 @@ return new class extends Migration
             $table->time('check_in');
             $table->time('check_out');
             $table->string('note', 2000)->nullable();
+            $table->integer('is_holiday')->default('0')->nullable();
+            $table->integer('is_weekend')->default('0')->nullable();
             $table->timestamps();
         });
     }

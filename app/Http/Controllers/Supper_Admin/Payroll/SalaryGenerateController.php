@@ -129,7 +129,6 @@ class SalaryGenerateController extends Controller
 ) AS hdl"), 'employees.id', '=', 'hdl.employee_id')
 
                 ->addBinding([$monthYear, $monthYear, $monthYear, $monthYear, $monthYear, $monthYear, $monthYear], 'select')
-                ->where('employees.is_hold_salary', 0)
                 ->where('employees.status', 1)
                 ->get();
 
