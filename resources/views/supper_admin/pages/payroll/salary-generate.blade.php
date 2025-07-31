@@ -479,12 +479,26 @@
             <td>${salary.employee.employee_code} - ${salary.employee.first_name} ${salary.employee.last_name}</td>
             <td>${salary.employee.department.name} - ${salary.employee.designation.name}</td>
             <td>${salary.employee.date_of_joining}</td>
-            <td>${salary.employee_present}</td>
+            <td>${salary.number_of_days}</td>
             <td>${salary.employee_basic_salary}</td>
-            <td>${salary.employee.basic_salary_daily}</td>
+            <td>${salary.inc_dec}</td>
+            <td>${salary.employee_monthly_salary}</td>
+            <td>${salary.employee_per_day_salary}</td>
             <td>${salary.employee_full_day}</td>
             <td>${salary.employee_half_day}</td>
-            <td>${salary.inc_dec}</td>
+            <td>${salary.employee_absent}</td>
+            <td>${salary.employee_present}</td>
+            <td>${salary.employee_total_present_amount}</td>
+            <td>${salary.weekend_days}</td>
+            <td>${salary.employee_weekend_days_amount}</td>
+            <td>${salary.employee_of_day_duty_bonus}</td>
+            <td>${salary.holidays}</td>
+            <td>${salary.employee_holidays_amount}</td>
+            <td>${salary.employee_holidays_duty_bonus}</td>
+            <td>${salary.employee_festival_day_bonus}</td>
+            <td>${salary.late_attendance_days}</td>
+            <td>${salary.employee_late_attendance_deduction}</td>
+            <td>${salary.employee_total_salary}</td>
             <td>${salary.performance_bonus}</td>
             <td>${salary.mobile_allowance}</td>
             <td>${salary.festival_bonus}</td>

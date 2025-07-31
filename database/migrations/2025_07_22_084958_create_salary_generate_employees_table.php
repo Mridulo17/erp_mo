@@ -34,6 +34,7 @@ return new class extends Migration
             $table->decimal('employee_late_attendance_deduction', 25, 2)->default(0)->nullable();
             $table->decimal('employee_basic_salary', 25, 2)->default(0)->nullable();
             $table->decimal('employee_monthly_salary', 25, 2)->default(0)->nullable();
+            $table->decimal('employee_total_salary', 25, 2)->default(0)->nullable();
             $table->decimal('employee_grand_total_salary', 25, 2)->default(0)->nullable();
             $table->string('employee_present')->default(0)->nullable();
             $table->string('employee_absent')->default(0)->nullable();

@@ -28,6 +28,7 @@ class SalaryGenerateEmployee extends Model
             'employee_net_salary',
             'employee_basic_salary',
             'employee_monthly_salary',
+            'employee_total_salary',
             'employee_grand_total_salary',
             'employee_present',
             'employee_absent',

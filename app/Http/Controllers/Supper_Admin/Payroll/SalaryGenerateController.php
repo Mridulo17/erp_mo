@@ -211,6 +211,7 @@ class SalaryGenerateController extends Controller
                     'employee_net_salary'     => $netSalary,
                     'employee_basic_salary'     => $base,
                     'employee_monthly_salary'     => $monthlySalary,
+                    'employee_total_salary'     => $netSalary,
                     'employee_grand_total_salary'     => $finalSalary
                 ]);
 
