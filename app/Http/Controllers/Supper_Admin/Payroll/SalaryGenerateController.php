@@ -122,17 +122,18 @@ class SalaryGenerateController extends Controller
                 ->leftJoin(DB::raw("
     (SELECT employee_id, count(id) AS holiday
      FROM attendances
-     WHERE DATE_FORMAT(date, '%Y-%m') = ? AND
-     WHERE is_holiday = 1
+     WHERE DATE_FORMAT(date, '%Y-%m') = ? AND is_holiday = 1
      GROUP BY employee_id
-) AS h"), 'employees.id', '=', 'h.employee_id')
+    ) AS h
+"), 'employees.id', '=', 'h.employee_id')
+
                 ->leftJoin(DB::raw("
     (SELECT employee_id, count(id) AS weekend
      FROM attendances
-     WHERE DATE_FORMAT(date, '%Y-%m') = ? AND
-     WHERE is_weekend = 1
+     WHERE DATE_FORMAT(date, '%Y-%m') = ? AND is_weekend = 1
      GROUP BY employee_id
-) AS w"), 'employees.id', '=', 'w.employee_id')
+    ) AS w
+"), 'employees.id', '=', 'w.employee_id')
                 ->leftJoin(DB::raw("
     (SELECT employee_id, leave_id, sum(no_of_days) AS fullDay
      FROM leaves, leave_dates
@@ -169,6 +170,7 @@ class SalaryGenerateController extends Controller
                 $mobile = $employee->mobileAllowance;
                 $increment = $employee->totalIncrement;
                 $decrement = $employee->totalDecrement;
+                $monthlySalary = $base + $increment - $decrement;
                 $advance = $employee->totalAdvanceSalary;
                 $performance = $employee->totalPerformanceBonus;
                 $present = $employee->totalAttendance;
@@ -182,7 +184,7 @@ class SalaryGenerateController extends Controller
                 $weekendAmount = $perDaySalary * $weekend;
 
                 $netSalary = $perDaySalary * $present;
-                $finalSalary = $base + $mobile + $increment - $decrement - $advance + $performance + $festivalBonusAmount;
+                $finalSalary = $netSalary + $mobile - $advance + $performance + $festivalBonusAmount;
 
                 $incDecValue = $increment != 0 ? $increment : ($decrement != 0 ? $decrement : 0);
 
@@ -208,6 +210,7 @@ class SalaryGenerateController extends Controller
                     'employee_total_present_amount'     => $netSalary - $weekendAmount -$holidayAmount,
                     'employee_net_salary'     => $netSalary,
                     'employee_basic_salary'     => $base,
+                    'employee_monthly_salary'     => $monthlySalary,
                     'employee_grand_total_salary'     => $finalSalary
                 ]);
 
