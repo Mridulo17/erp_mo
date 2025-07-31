@@ -320,12 +320,11 @@
 
                         data.forEach(function (employee) {
                             select.append(
-                                '<option data-employee_grand_total_salary="' + employee.employee_grand_total_salary +
+                                '<option data-employee_net_salary="' + employee.employee_net_salary +
                                 '" data-employee_present="' + employee.employee_present +
                                 '" data-advance_salary="' + employee.advance_salary +
                                 '" data-month_year="' + employee.month_year +
-                                '" data-employee_half_day="' + employee.employee_half_day +
-                                '" data-employee_full_day="' + employee.employee_full_day +
+                                '" data-employee_absent="' + employee.employee_absent +
                                 '" value="' + employee.employee_id + '">' +
                                 escapeHtml(employee.employee.first_name) + ' ' + escapeHtml(employee.employee.last_name) +
                                 '</option>'
@@ -346,17 +345,15 @@
 
             $('#employeeSelect').on('change', function () {
                 const selectedOption = $(this).find('option:selected');
-                const amount = selectedOption.data('employee_grand_total_salary');
+                const amount = selectedOption.data('employee_net_salary');
                 const advance = selectedOption.data('advance_salary');
                 const present = selectedOption.data('employee_present');
-                const half = selectedOption.data('employee_half_day');
-                const full = selectedOption.data('employee_full_day');
-                const totalLeave = half + full;
+                const absent = selectedOption.data('employee_absent');
                 const rawMonth = selectedOption.data('month_year'); // e.g., "2025-07"
                 const date = new Date(rawMonth + '-01'); // Add day to make valid date
                 const options = { year: 'numeric', month: 'long' };
                 const formattedMonthYear = date.toLocaleDateString('en-US', options);
-                $('#employee_absent').html(totalLeave + ' Days');
+                $('#employee_absent').html(absent + ' Days');
                 $('#employee_present').html(present + ' Days');
                 $('#employee_advance').text(advance);
                 $('#net_salary').text(amount);
