@@ -13,7 +13,8 @@ class TicketController extends Controller
      */
     public function index()
     {
-        //
+        $visas = Ticket::get();
+        return view('backend.pages.ticket.ticket', compact('visas'));
     }
 
     /**
