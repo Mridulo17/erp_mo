@@ -24,6 +24,8 @@ use App\Http\Controllers\Admin\Process\JobListController;
 use App\Http\Controllers\Admin\Process\ProcessCategoryController;
 use App\Http\Controllers\Admin\Process\ProcessOfficeController;
 use App\Http\Controllers\Admin\Process\ProcessStepController;
+use App\Http\Controllers\Admin\Ticket\AssignTicketController;
+use App\Http\Controllers\Admin\Ticket\TicketController;
 use App\Http\Controllers\Business\CompaniesController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Supper_Admin\Attendance_Leave\AttendanceController;
@@ -216,6 +218,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('asignjobtoOffice', AsignJobToOfficeController::class);
     Route::resource('airlineOffices', AirlineOfficeController::class);
     Route::resource('enquiry/interviewed-candidates', InterviewedCandidateController::class);
+    Route::resource('tickets', TicketController::class);
+    Route::resource('assign-tickets', AssignTicketController::class);
 });
 
 
