@@ -27,13 +27,13 @@ class EmployeeController extends Controller
         if ($request->has('department_id') && $request->department_id) {
             $departmentId = $request->get('department_id');
             $employees = Employee::with('branch')
-//                ->where('company_id', $user->company_id)
+                ->where('company_id', $user->company_id)
                 ->where('status', 1)
                 ->where('department_id', $departmentId)
                 ->get();
         } else {
             $employees = Employee::with('branch')
-//                ->where('company_id', $user->company_id)
+                ->where('company_id', $user->company_id)
                 ->where('status', 1)->get();
 
         }

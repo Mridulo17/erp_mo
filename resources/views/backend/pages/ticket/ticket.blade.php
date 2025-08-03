@@ -1,4 +1,4 @@
-@extends('supper_admin.layouts.app')
+@extends('backend.layouts.app')
 @section('title', config('app.name') . ' - Buy Ticket')
 
 @section('style')
@@ -142,7 +142,7 @@
 
     @section('script')
         <script>
-            function fetchVisas() {
+            function fetchTickets() {
                 $.ajax({
                     url: '{{ route("supper_admin.visas.index") }}',
                     type: 'GET',
@@ -167,55 +167,70 @@
 
             $(document).ready(function () {
 
-                fetchSponsors();
+                fetchCandidateTypes();
 
-                function fetchSponsors() {
+                function fetchCandidateTypes() {
                     $.ajax({
-                        url: "{{ route('supper_admin.sponsor.enabled') }}",
+                        url: "{{ route('admin.candidate-type.active') }}",
                         method: "GET",
                         success: function (data) {
-                            let select = $('#sponsorSelect');
+                            let select = $('#candidateType');
                             select.empty();
-                            select.append('<option value="" disabled selected>Choose Sponsor</option>');
+                            select.append('<option value="" disabled selected>Candidate Type</option>');
 
-                            data.forEach(function (sponsor) {
+                            data.forEach(function (candidate) {
                                 select.append(
-                                    '<option value="' + sponsor.id + '">' +
-                                    sponsor.sponsor_name +
+                                    '<option value="' + candidate.id + '">' +
+                                    candidate.name +
                                 '</option>'
                                 );
                             });
                         },
                         error: function (xhr) {
-                            console.error("Failed to fetch sponsors:", xhr);
+                            console.error("Failed to fetch candidate types:", xhr);
                         }
                     });
                 }
 
-                fetchJobLists();
+                fetchCandidates();
 
-                function fetchJobLists() {
+                function fetchCandidates(typeId, selectedCandidateId) {
                     $.ajax({
-                        url: "{{ route('admin.jobLists.active') }}",
+                        url: "{{ route('admin.candidate.active') }}",
                         method: "GET",
+                        data: {candidate_type_id: typeId}, // Pass candidate_type_id to filter employees
                         success: function (data) {
-                            let select = $('#jobSelect');
+                            let select = $('#selectCandidate');
                             select.empty();
-                            select.append('<option value="" disabled selected>Choose Job</option>');
+                            select.append('<option value="" disabled selected>Choose Candidate</option>');
 
-                            data.forEach(function (job) {
+                            data.forEach(function (candidate) {
+                                let selected = candidate.id === selectedCandidateId ? 'selected' : '';
                                 select.append(
-                                    '<option data-job_type="' + job.job_type + '" value="' + job.id + '">' +
-                                    job.name +
+                                    '<option value="' + candidate.id + '" ' + selected + '>' +
+                                    candidate.personal_info.first_name + ' ' +
+                                    candidate.personal_info.last_name +
                                     '</option>'
                                 );
                             });
+                            // Ensure the item dropdown value is updated after population
+                            select.val(selectedCandidateId).trigger('change');  // Set selected candidate
                         },
                         error: function (xhr) {
-                            console.error("Failed to fetch jobs:", xhr);
+                            console.error("Failed to fetch candidates:", xhr);
                         }
                     });
                 }
+
+                // Trigger the fetchEmployees function when a category is selected
+                $('#candidateType').on('change', function () {
+                    const typeId = $(this).val();
+                    if (typeId) {
+                        fetchCandidates(typeId);  // Fetch candidate based on the selected type
+                    } else {
+                        $('#selectCandidate').empty().append('<option value="" disabled selected>Choose Candidate</option>');
+                    }
+                });
 
                 fetchcountriess();
                 function fetchcountriess() {
@@ -320,7 +335,7 @@
                                         Swal.fire('Success!', response.message, 'success');
                                         $('#visaForm')[0].reset();
                                         $('#visa_id').val('');
-                                        fetchVisas();
+                                        fetchTickets();
                                     } else {
                                         Swal.fire('Error!', response.message, 'error');
                                     }
@@ -448,7 +463,7 @@
                                 success: function (response) {
                                     if (response.status === 'success') {
                                         Swal.fire('Deleted!', response.message, 'success');
-                                        fetchVisas();
+                                        fetchTickets();
                                     } else {
                                         Swal.fire('Error!', response.message, 'error');
                                     }

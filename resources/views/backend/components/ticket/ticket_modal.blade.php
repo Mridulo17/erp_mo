@@ -64,7 +64,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Candidate Type</label>
-                                <select name="candidate_type_id" class="form-control" required>
+                                <select id="candidateType" name="candidate_type_id" class="form-control" required>
                                     <option value="" disabled selected>Candidate Type</option>
                                 </select>
                             </div>
@@ -93,7 +93,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Choose Candidate</label>
-                                <select name="airline_office_id" class="form-control">
+                                <select id="selectCandidate" name="airline_office_id" class="form-control">
                                     <option value="" disabled selected>Choose Candidate</option>
                                 </select>
                             </div>
