@@ -188,6 +188,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('/processOffices/active', [ProcessOfficeController::class, 'Activeindex'])->name('processOffices.active');
     Route::get('/candidate/active', [CandidateController::class, 'activeIndex'])->name('candidate.active');
     Route::get('/candidate-type/active', [CandidateTypeController::class, 'Activeindex'])->name('candidate-type.active');
+    Route::get('/airline-office/active', [AirlineOfficeController::class, 'Activeindex'])->name('airline-office.active');
 
     Route::get('investors/transactions', [InvestorTransactionController::class, 'index'])->name('investors.transactions');
     Route::post('investors/transactions', [InvestorTransactionController::class, 'store'])->name('investors.transactions');

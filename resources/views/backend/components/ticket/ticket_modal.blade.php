@@ -74,7 +74,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Airlines Office</label>
-                                <select name="airline_office_id" class="form-control" required>
+                                <select id="selectOffice" name="airline_office_id" class="form-control" required>
                                     <option value="" disabled selected>Airlines Office</option>
                                 </select>
                              </div>

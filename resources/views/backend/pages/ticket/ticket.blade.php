@@ -63,19 +63,19 @@
                     <tr>
                         <th style="">Action</th>
                         <th style="">DB:ID</th>
-                        <th style="">Sponsor Name</th>
-                        <th style="">Delegate Name</th>
+                        <th style="">Issue Date</th>
+                        <th style="">Name</th>
+                        <th style="">Source</th>
                         <th style="">Country</th>
-                        <th style="">Job</th>
-                        <th style="">Gender</th>
-                        <th style="">Age</th>
-                        <th style="">p:Qty</th>
-                        <th style="">A:Qty</th>
-                        <th style="">Currency</th>
-                        <th style="">Purchase Price</th>
-                        <th style="">Due Amount</th>
+                        <th style="">Ticket Type</th>
+                        <th title="Candidate Number" style="">C:N</th>
+                        <th title="Passenger Name Record/Flight Number" style="">PNR/FN</th>
+                        <th style="">Flight Date and Time</th>
+                        <th style="">Assign</th>
+                        <th style="">Purchase Type</th>
+                        <th style="">Paid</th>
+                        <th style="">Due</th>
                         <th style="">Payment</th>
-                        <th style="">Status</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -251,20 +251,20 @@
                     });
                 }
 
-                fetchCurrencies();
+                fetchAirlineOffices();
 
-                function fetchCurrencies() {
+                function fetchAirlineOffices() {
                     $.ajax({
-                        url: "{{ route('supper_admin.currency.active') }}",
+                        url: "{{ route('admin.airline-office.active') }}",
                         method: "GET",
                         success: function (data) {
-                            let select = $('#currencySelect');
+                            let select = $('#selectOffice');
                             select.empty();
-                            select.append('<option value="" disabled selected>Choose Currency</option>');
-                            data.forEach(function (currency) {
+                            select.append('<option value="" disabled selected>Airlines Office</option>');
+                            data.forEach(function (office) {
                                 select.append(
-                                    '<option data-bdt_amount="' + currency.bdt_amount + '" data-name="' + currency.name + '" value="' + currency.id + '">' +
-                                    currency.name + '</option>'
+                                    '<option value="' + office.id + '">' +
+                                    office.name + '</option>'
                                 );
                             });
 
@@ -274,29 +274,6 @@
                         }
                     });
                 }
-
-
-                $('#currencySelect').on('change', function () {
-                    const selectedOption = $(this).find('option:selected');
-                    const bdt_amount = selectedOption.data('bdt_amount');
-                    const name = selectedOption.data('name');
-                    $('#currency_details').text("(1 " + name + " = " + bdt_amount + " BDT)");
-                    $('#bdt_price').val(bdt_amount);
-                });
-
-                $('#jobSelect').on('change', function () {
-                    const selectedOption = $(this).find('option:selected');
-                    const job_type = selectedOption.data('job_type');
-                    if(job_type && job_type.toLowerCase() === "commission") {
-                        $('#visa_qty').val(0);
-                        $('#purchase_div_prev').hide();
-                        $('#commission_div').show();
-                    } else {
-                        $('#visa_qty').val('');
-                        $('#purchase_div_prev').show();
-                        $('#commission_div').hide();
-                    }
-                });
 
                 $('#visaForm').on('submit', function (e) {
                     e.preventDefault();
@@ -352,7 +329,7 @@
                     $('#visaForm')[0].reset();
                     $('#visa_id').val('');
                     $('#currencySelect').val('').trigger('change');
-                    $('#modalTitle').text('Manage Visa');
+                    $('#modalTitle').text('Buy Ticket');
                     $('#modal-center').modal('show');
 
                 });
