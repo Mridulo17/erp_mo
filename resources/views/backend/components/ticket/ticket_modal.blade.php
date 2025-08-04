@@ -104,16 +104,15 @@
                         <div class="col-sm-6" id="single-div">
                             <div class="form-group">
                                 <label>Choose Candidate</label>
-                                <select id="selectCandidate" name="candidate_id[]" class="form-control">
-                                    <option value="" disabled selected>Choose Candidate</option>
+                                <select id="selectCandidate" name="candidate_id[]" class="form-control select2" multiple>
+
                                 </select>
                             </div>
                         </div>
-                        <div class="col-sm-6" id="multiple-div" style="display: none">
+                        <div class="col-sm-6" id="candidate-qty-div" style="display: none">
                             <div class="form-group">
-                                <label>Choose Candidate</label>
-                                <select id="multiSelectCandidate" name="candidate_id[]" class="form-control select2" multiple>
-                                </select>
+                                <label>Write Candidate Quantity</label>
+                                <input type="number" step="any"  name="pnr_number" placeholder="Candidate Quantity" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -240,8 +239,6 @@
                                     <label>Partial Amount</label>
                                     <input type="number" step="any" name="partial_sell_amount" max="" placeholder="Partial amount" class="form-control">
                                 </div>
-                            </div>
-                            <div class="col-sm-6">
                             </div>
                             <div class="col-sm-6" id="ticket_payment_method_container" style="display: none">
                                 <div class="form-group">

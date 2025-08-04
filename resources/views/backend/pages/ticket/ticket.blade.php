@@ -54,6 +54,7 @@
         </div>
 
         @include('backend.components.ticket.ticket_modal')
+        @include('backend.components.ticket.view_ticket_modal')
 
         <div class="box-body">
             <div class="table-responsive">
@@ -79,7 +80,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($visas as $key =>$bonus)
+                    @foreach($tickets as $key =>$bonus)
                         <tr>
                             <td>
                                 <div class="btn-group">
@@ -104,33 +105,29 @@
                             </td>
 
                             <td>{{ $key + 1 }}</td>
-                            <td class="wrap-text">{{ $bonus->sponsor ? $bonus->sponsor->sponsor_name : '' }}</td>
-                            <td class="wrap-text">{{ $bonus->sponsor_type  }}</td>
-                        @if(isset($bonus->sponsor) && $bonus->sponsor->sponsor_type == 'Prime Sponsor')
-                                <td class="wrap-text">{{$bonus->sponsor ? $bonus->sponsor->sponsor_type : '' }} | {{$bonus->sponsor ? $bonus->sponsor->sponsor_name : ''}}</td>
-                            @elseif(isset($bonus->sponsor) && $bonus->sponsor->sponsor_type == 'Delegate')
-                                <td class="wrap-text">{{$bonus->sponsor ? $bonus->sponsor->sponsor_type : '' }} | {{$bonus->sponsor->delegate ? $bonus->sponsor->delegate->first_name : '' }} {{$bonus->sponsor->delegate ? $bonus->sponsor->delegate->last_name : '' }}</td>
-                            @endif
+                            <td class="wrap-text">{{ $bonus->issue_date  }}</td>
+                            <td class="wrap-text">{{ $bonus->source  }}</td>
                             <td class="wrap-text">{{ $bonus->country ? $bonus->country->name : '' }}</td>
-                            <td class="wrap-text">{{ $bonus->jobList ? $bonus->jobList->name : '' }}</td>
-                            <td class="wrap-text">{{ $bonus->gender  }}</td>
-                            <td class="wrap-text">{{ $bonus->age_from  }} - {{ $bonus->age_to  }}</td>
-                            <td>0.00</td>
-                            <td>{{ $bonus->visa_qty  }}</td>
-                            <td class="wrap-text">{{ $bonus->currency ? $bonus->currency->name : '' }}</td>
+                            <td class="wrap-text">{{ $bonus->ticket_type  }}</td>
+                            <td class="wrap-text">{{ $bonus->total_candidate  }}</td>
+                            <td><b style="font-size: 14px;">{{ $bonus->pnr_number  }}</b> <br> <b style="font-size: 14px;" class="text-primary">{{ $bonus->flight_number  }}</b></td>
+                            <td>
+                            <span class="badge {{ $bonus->is_assigned == '1' ? 'badge-success' : 'badge-danger' }}">
+                                {{ $bonus->is_assigned == '1' ? 'Assigned' : 'Not Yet!' }}
+                            </span>
+                            </td>
+                            <td>
+                            <span class="badge {{ $bonus->is_pre_purchase == '1' ? 'badge-primary' : 'badge-success' }}">
+                                {{ $bonus->is_pre_purchase == '1' ? 'Pre Purchase' : 'Live Purchase!' }}
+                            </span>
+                            </td>
                             <td class="wrap-text">{{ $bonus->purchase_amount  }}</td>
-                            <td class="wrap-text">0.00</td>
+                            <td class="wrap-text">{{ $bonus->payment_type == 'Paid' ? '0.00' : $bonus->purchase_amount  }}</td>
                             <td>
                             <span class="badge {{ $bonus->payment_type == 'Paid' ? 'badge-success' : 'badge-danger' }}">
                                 {{ $bonus->payment_type == 'Paid' ? 'Paid' : 'Due' }}
                             </span>
                             </td>
-                            <td>
-                            <span class="badge {{ $bonus->status == 'Enabled' ? 'badge-success' : 'badge-danger' }}">
-                                {{ $bonus->status == 'Enabled' ? 'Enabled' : 'Disabled' }}
-                            </span>
-                            </td>
-
                         </tr>
                     @endforeach
                     </tbody>
@@ -201,7 +198,6 @@
                         success: function (data) {
                             let select = $('#selectCandidate');
                             select.empty();
-                            select.append('<option value="" disabled selected>Choose Candidate</option>');
 
                             data.forEach(function (candidate) {
                                 let selected = candidate.id === selectedCandidateId ? 'selected' : '';
@@ -214,21 +210,6 @@
                             });
                             // Ensure the item dropdown value is updated after population
                             select.val(selectedCandidateId).trigger('change');  // Set selected candidate
-
-                            let select1 = $('#multiSelectCandidate');
-                            select1.empty();
-
-                            data.forEach(function (candidate) {
-                                let selected = candidate.id === selectedCandidateId ? 'selected' : '';
-                                select1.append(
-                                    '<option value="' + candidate.id + '" ' + selected + '>' +
-                                    candidate.personal_info.first_name + ' ' +
-                                    candidate.personal_info.last_name +
-                                    '</option>'
-                                );
-                            });
-                            // Ensure the item dropdown value is updated after population
-                            select1.val(selectedCandidateId).trigger('change');  // Set selected candidate
                         },
                         error: function (xhr) {
                             console.error("Failed to fetch candidates:", xhr);
@@ -248,8 +229,6 @@
                     const typeId = $(this).val();
                     if (typeId) {
                         fetchCandidates(typeId);  // Fetch candidate based on the selected type
-                    } else {
-                        $('#selectCandidate').empty().append('<option value="" disabled selected>Choose Candidate</option>');
                     }
                 });
 
@@ -335,22 +314,15 @@
                 });
                 $('#ticket_type').on('change', function () {
                     const selectedText = $(this).find('option:selected').text();
-                    const selectElement = document.getElementById('selectCandidate'); // the actual DOM element
 
                     if (selectedText === 'System Ticket - Single person') {
                         $('#refund_button_container').show();
-                        $('#multiple-div').hide();
-                        $('#single-div').show();
                     }
                     else if (selectedText === 'System Ticket - Multi person') {
                         $('#refund_button_container').show();
-                        $('#multiple-div').show();
-                        $('#single-div').hide();
                     }
                     else {
                         $('#refund_button_container').hide();
-                        $('#multiple-div').hide();
-                        $('#single-div').show();
                     }
                 });
 
@@ -364,39 +336,59 @@
                     }
                 });
 
+                function handlePaymentOption() {
+                    if ($('#current_payment').is(':checked')) {
+                        $('#partial_amount_div').hide();
+                        $('#ticket_payment_method_container').show();
+                        $('#agent_commission_div').show();
+                    } else if ($('#partial_payment').is(':checked')) {
+                        $('#partial_amount_div').show();
+                        $('#ticket_payment_method_container').show();
+                        $('#agent_commission_div').show();
+                    } else if ($('#payment_by_agent').is(':checked')) {
+                        $('#partial_amount_div').hide();
+                        $('#ticket_payment_method_container').hide();
+                        $('#agent_commission_div').show();
+                    } else if ($('#due_payment').is(':checked')) {
+                        $('#partial_amount_div').hide();
+                        $('#ticket_payment_method_container').hide();
+                        $('#agent_commission_div').show();
+                    } else {
+                        $('#partial_amount_div').hide();
+                        $('#ticket_payment_method_container').hide();
+                        $('#agent_commission_div').hide();
+                    }
+                }
+
+                // When checkbox is toggled
                 $('#make_flight_complete').on('change', function () {
                     if ($(this).is(':checked')) {
-                        $('#flight-radio').show();
+                        $('#flight-radio').slideDown(); // smoother than show()
 
-                        if($('#current_payment').is(':checked')) {
-                            $('#partial_amount_div').hide();
-                            $('#ticket_payment_method_container').show();
-                            $('#agent_commission_div').show();
+                        // Run handler on load
+                        handlePaymentOption();
 
-                        } else if($('#partial_payment').is(':checked')) {
-                            $('#partial_amount_div').show();
-                            $('#ticket_payment_method_container').show();
-                            $('#agent_commission_div').show();
-                        } else if($('#payment_by_agent').is(':checked')) {
-                            $('#partial_amount_div').hide();
-                            $('#ticket_payment_method_container').hide();
-                            $('#agent_commission_div').show();
-                        } else if($('#due_payment').is(':checked')) {
-                            $('#partial_amount_div').hide();
-                            $('#ticket_payment_method_container').hide();
-                            $('#agent_commission_div').show();
-                        } else {
-                            $('#partial_amount_div').hide();
-                            $('#ticket_payment_method_container').hide();
-                            $('#agent_commission_div').hide();
-                        }
+                        // Attach radio change only once to avoid duplicates
+                        $('input[name="payment_type"]').off('change').on('change', function () {
+                            handlePaymentOption();
+                        });
                     } else {
-                        $('#flight-radio').hide();
+                        $('#flight-radio').slideUp();
+                        $('#partial_amount_div').hide();
+                        $('#ticket_payment_method_container').hide();
+                        $('#agent_commission_div').hide();
                     }
                 });
 
-
-
+                $('#is_pre_purchase').on('change', function () {
+                    if ($(this).is(':checked')) {
+                        $('#single-div').hide();
+                        $('#candidate-qty-div').show();
+                    } else {
+                        $('#single-div').show();
+                        $('#candidate-qty-div').hide();
+                    }
+                });
 
                 $('#ticketForm').on('submit', function (e) {
                     e.preventDefault();
@@ -488,60 +480,14 @@
                             $('#candidate_price').val(res.candidate_price);
                             $('#commission_amount').val(res.commission_amount);
                             $('#payment_type').val(res.payment_type);
-                            // Show existing file
-                            if (res.demand_latter) {
-                                const filePath = res.demand_latter; // example: expense_categories/filename.pdf
-                                const ext = filePath.split('.').pop().toLowerCase();
-
-                                // Prepend Laravel's public storage path
-                                const fileUrl = `/storage/${filePath}`;
-
-                                let previewHtml = '';
-
-                                if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
-                                    previewHtml = `<img src="${fileUrl}" alt="Uploaded File" class="img-thumbnail" style="max-height: 200px;">`;
-                                } else {
-                                    previewHtml = `<a href="${fileUrl}" target="_blank" class="btn btn-outline-primary btn-sm">View File</a>`;
-                                }
-
-                                $('#existing-file-preview1').html(previewHtml);
-                                $('#remove-file-section1').removeClass('d-none');
-                            } else {
-                                $('#existing-file-preview1').empty();
-                                $('#remove-file-section1').addClass('d-none');
-                                $('#remove_file1').prop('checked', false);
-                            }
-                            // Show existing file
-                            if (res.attachment) {
-                                const filePath = res.attachment; // example: expense_categories/filename.pdf
-                                const ext = filePath.split('.').pop().toLowerCase();
-
-                                // Prepend Laravel's public storage path
-                                const fileUrl = `/storage/${filePath}`;
-
-                                let previewHtml = '';
-
-                                if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
-                                    previewHtml = `<img src="${fileUrl}" alt="Uploaded File" class="img-thumbnail" style="max-height: 200px;">`;
-                                } else {
-                                    previewHtml = `<a href="${fileUrl}" target="_blank" class="btn btn-outline-primary btn-sm">View File</a>`;
-                                }
-
-                                $('#existing-file-preview').html(previewHtml);
-                                $('#remove-file-section').removeClass('d-none');
-                            } else {
-                                $('#existing-file-preview').empty();
-                                $('#remove-file-section').addClass('d-none');
-                                $('#remove_file').prop('checked', false);
-                            }
                             $('#provide_food').prop('checked', res.provide_food == '1');
                             $('#provide_accommodation').prop('checked', res.provide_accommodation == '1');
                             $('#status').prop('checked', res.status === 'Enabled');
-                            $('#modalTitle').text('Edit Visa');
-                            $('#modal-center').modal('show');
+                            $('#modalTitle').text('View Ticket');
+                            $('#view_ticket').modal('show');
                         },
                         error: function () {
-                            Swal.fire('Error', 'Could not load visa data.', 'error');
+                            Swal.fire('Error', 'Could not load ticket data.', 'error');
                         }
                     });
                 });
@@ -551,7 +497,7 @@
                     const url = '{{ route("admin.tickets.destroy", ":id") }}'.replace(':id', id);
 
                     Swal.fire({
-                        title: 'Delete Visa?',
+                        title: 'Delete Ticket?',
                         text: "This action cannot be undone.",
                         icon: 'warning',
                         showCancelButton: true,
@@ -574,7 +520,7 @@
                                     }
                                 },
                                 error: function () {
-                                    Swal.fire('Error!', 'Failed to delete the visa.', 'error');
+                                    Swal.fire('Error!', 'Failed to delete the ticket.', 'error');
                                 }
                             });
                         }

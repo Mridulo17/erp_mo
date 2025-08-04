@@ -1,4 +1,4 @@
-<div id="view_profile" class="modal center-modal fade view_profile_modal show" style="padding-right: 7px;" aria-modal="true"><div class="modal-dialog modal-xl" style="min-width: 25%;"><div class="modal-content" style="border-radius: 10px !important;">
+<div id="view_ticket" class="modal center-modal fade view_profile_modal show" style="padding-right: 7px;" aria-modal="true"><div class="modal-dialog modal-xl" style="min-width: 25%;"><div class="modal-content" style="border-radius: 10px !important;">
             <div class="modal-header">
                 <h5 class="modal-title view_profile_modal_title"><b id="profile_sponsor"></b>'s Profile</h5>
                 <button type="button" class="close text-danger" data-dismiss="modal"> <span aria-hidden="true">×</span> </button>

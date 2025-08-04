@@ -3,6 +3,8 @@
 namespace App\Models\Admin\Ticket;
 
 use App\Models\Admin\Process\AirlineOffice;
+use App\Models\Admin\Process\CandidateType;
+use App\Models\Admin\Process\OtherOffice;
 use App\Models\Supper_Admin\Location\Country;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,6 +21,7 @@ class Ticket extends Model
             'airline_office_id',
             'other_office_id',
             'is_pre_purchase',
+            'is_assigned',
             'pnr_number',
             'attachment',
             'flight_date',
@@ -45,8 +48,22 @@ class Ticket extends Model
     {
         return $this->belongsTo(Country::class);
     }
+
+    public function candidateType()
+    {
+        return $this->belongsTo(CandidateType::class);
+    }
     public function airlineOffice()
     {
         return $this->belongsTo(AirlineOffice::class);
+    }
+
+    public function otherOffice()
+    {
+        return $this->belongsTo(OtherOffice::class);
+    }
+    public function ticketCandidates()
+    {
+        return $this->hasMany(TicketCandidate::class);
     }
 }
