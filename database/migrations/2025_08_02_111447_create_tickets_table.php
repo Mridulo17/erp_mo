@@ -23,6 +23,8 @@ return new class extends Migration
             $table->foreign('candidate_type_id')->references('id')->on('candidate_types')->cascadeOnUpdate()->restrictOnDelete();
             $table->unsignedBigInteger('airline_office_id');
             $table->foreign('airline_office_id')->references('id')->on('airline_offices')->cascadeOnUpdate()->restrictOnDelete();
+            $table->unsignedBigInteger('other_office_id');
+            $table->foreign('other_office_id')->references('id')->on('other_offices')->cascadeOnUpdate()->restrictOnDelete();
             $table->integer('is_pre_purchase')->default(0)->nullable();
             $table->string('pnr_number');
             $table->string('attachment')->nullable();

@@ -179,7 +179,7 @@
 
                             data.forEach(function (candidate) {
                                 select.append(
-                                    '<option value="' + candidate.id + '">' +
+                                    '<option data-name="' + candidate.name + '" value="' + candidate.id + '">' +
                                     candidate.name +
                                 '</option>'
                                 );
@@ -238,6 +238,13 @@
 
                 // Trigger the fetchEmployees function when a category is selected
                 $('#candidateType').on('change', function () {
+                    const selectedOption = $(this).find('option:selected');
+                    const name = selectedOption.data('name');
+                    if(name && name.toLowerCase() === "air ticket") {
+                        $('#make_flight').show();
+                    } else {
+                        $('#make_flight').hide();
+                    }
                     const typeId = $(this).val();
                     if (typeId) {
                         fetchCandidates(typeId);  // Fetch candidate based on the selected type
@@ -347,7 +354,6 @@
                     }
                 });
 
-
                 $('#purchase_payment_type').on('change', function () {
                     const selectedText = $(this).find('option:selected').text();
 
@@ -357,6 +363,40 @@
                         $('#purchase_div').hide();
                     }
                 });
+
+                $('#make_flight_complete').on('change', function () {
+                    if ($(this).is(':checked')) {
+                        $('#flight-radio').show();
+
+                        if($('#current_payment').is(':checked')) {
+                            $('#partial_amount_div').hide();
+                            $('#ticket_payment_method_container').show();
+                            $('#agent_commission_div').show();
+
+                        } else if($('#partial_payment').is(':checked')) {
+                            $('#partial_amount_div').show();
+                            $('#ticket_payment_method_container').show();
+                            $('#agent_commission_div').show();
+                        } else if($('#payment_by_agent').is(':checked')) {
+                            $('#partial_amount_div').hide();
+                            $('#ticket_payment_method_container').hide();
+                            $('#agent_commission_div').show();
+                        } else if($('#due_payment').is(':checked')) {
+                            $('#partial_amount_div').hide();
+                            $('#ticket_payment_method_container').hide();
+                            $('#agent_commission_div').show();
+                        } else {
+                            $('#partial_amount_div').hide();
+                            $('#ticket_payment_method_container').hide();
+                            $('#agent_commission_div').hide();
+                        }
+                    } else {
+                        $('#flight-radio').hide();
+                    }
+                });
+
+
+
 
                 $('#visaForm').on('submit', function (e) {
                     e.preventDefault();
