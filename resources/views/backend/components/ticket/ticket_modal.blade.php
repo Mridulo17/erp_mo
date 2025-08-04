@@ -32,7 +32,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Choose Source</label>
-                                <select name="source" class="form-control" required>
+                                <select id="source" name="source" class="form-control" required>
                                     <option value="" disabled selected>Choose Source</option>
                                     <option value="IATA">IATA</option>
                                     <option value="Local Office">Local Office</option>
@@ -53,7 +53,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Ticket Type</label>
-                                <select name="ticket_type" class="form-control" required>
+                                <select id="ticket_type" name="ticket_type" class="form-control" required>
                                     <option value="" disabled selected>Choose Type</option>
                                     <option value="System Ticket - Single person">System Ticket - Single person</option>
                                     <option value="System Ticket - Multi person">System Ticket - Multi person</option>
@@ -70,6 +70,17 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row" id="other-office-div" style="display: none">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Other Office</label>
+                                <select id="selectOtherOffice" name="airline_office_id" class="form-control" required>
+                                    <option value="" disabled selected>Other Office</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
@@ -90,19 +101,18 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-sm-6" id="single-div">
                             <div class="form-group">
                                 <label>Choose Candidate</label>
-                                <select id="selectCandidate" name="airline_office_id" class="form-control">
+                                <select id="selectCandidate" name="airline_office_id[]" class="form-control">
                                     <option value="" disabled selected>Choose Candidate</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-6" id="multiple-div" style="display: none">
                             <div class="form-group">
                                 <label>Choose Candidate</label>
-                                <select name="airline_office_id" class="form-control">
-                                    <option value="" disabled selected>Choose Multiple Candidate</option>
+                                <select id="multiSelectCandidate" name="airline_office_id[]" class="form-control select2" multiple>
                                 </select>
                             </div>
                         </div>
@@ -143,7 +153,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Purchase Payment Type</label>
-                                <select name="purchase_payment_type" class="form-control">
+                                <select id="purchase_payment_type" name="purchase_payment_type" class="form-control">
                                     <option value="" disabled selected>Payment Type</option>
                                     <option value="Paid">Paid</option>
                                     <option value="Due">Due</option>
@@ -157,7 +167,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row payment_vat_tax_container">
+                    <div class="row" id="payment_vat_tax_container" style="display: none">
                         <div class="col-sm-12">
                             <div class="form-group">
                                 <label>Vat and/or Tax amount</label>
@@ -165,19 +175,21 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group account_head_container">
-                        <label>Choose Payment Method</label>
-                        <select name="payment_method" id="payment_method" class="form-control">
-                            <option value="" disabled selected>Payment Method</option>
-                            <option value="Bank Account">Bank Account</option>
-                            <option value="Cash in Hand">Cash in Hand</option>
-                            <option value="Mobile Banking">Mobile Banking</option>
-                            <option value="Office Assets">Office Assets</option>
-                        </select>
-                     </div>
-                    <div class="form-group account_head_container">
-                        <label>Transaction Related Note</label>
-                        <textarea name="transaction_note" class="form-control" placeholder="Transaction Related Note"></textarea>
+                    <div id="purchase_div" style="display: none">
+                        <div class="form-group">
+                            <label>Choose Payment Method</label>
+                            <select name="payment_method" id="payment_method" class="form-control">
+                                <option value="" disabled selected>Payment Method</option>
+                                <option value="Bank Account">Bank Account</option>
+                                <option value="Cash in Hand">Cash in Hand</option>
+                                <option value="Mobile Banking">Mobile Banking</option>
+                                <option value="Office Assets">Office Assets</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Transaction Related Note</label>
+                            <textarea name="transaction_note" class="form-control" placeholder="Transaction Related Note"></textarea>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-6">
@@ -194,58 +206,60 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group refund_button_container">
+                    <div class="form-group" id="refund_button_container">
                         <div class="checkbox checkbox-success">
                             <input name="is_refundable" id="is_refundable" type="checkbox">
                             <label for="is_refundable"> Support Refund/Reissue </label>
                         </div>
                     </div>
-                    <div class="form-group make_flight_compleate_container" style="display: block;">
-                        <div class="checkbox checkbox-success">
-                            <input name="make_flight_compleate" id="make_flight_compleate" type="checkbox" onchange="return make_flight_compleate_func();">
-                            <label for="make_flight_compleate"> Make Flight Compleate </label>
+                    <div id="make_flight" style="display: none;">
+                        <div class="form-group">
+                            <div class="checkbox checkbox-success">
+                                <input name="make_flight_compleate" id="make_flight_compleate" type="checkbox" onchange="return make_flight_compleate_func();">
+                                <label for="make_flight_compleate"> Make Flight Compleate </label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row make_flight_compleate_input_container">
-                        <div class="col-sm-12">
-                            <div class="box-body">
-                                <div class="demo-radio-button">
-                                    <input name="radio_paymeny_type" value="current_payment" type="radio" id="current_payment" class="radio-col-primary" checked="">
-                                    <label for="current_payment">Current Payment</label>
-                                    <input name="radio_paymeny_type" value="partial_payment" type="radio" id="partial_payment" class="radio-col-success">
-                                    <label for="partial_payment">Partial Payment</label>
-                                    <input name="radio_paymeny_type" value="payment_by_agent" type="radio" id="payment_by_agent" class="radio-col-info">
-                                    <label for="payment_by_agent">Payment By Agent</label>
-                                    <input name="radio_paymeny_type" value="due_payment" type="radio" id="due_payment" class="radio-col-warning">
-                                    <label for="due_payment">Due Payment</label>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="box-body">
+                                    <div class="demo-radio-button">
+                                        <input name="radio_paymeny_type" value="current_payment" type="radio" id="current_payment" class="radio-col-primary" checked="">
+                                        <label for="current_payment">Current Payment</label>
+                                        <input name="radio_paymeny_type" value="partial_payment" type="radio" id="partial_payment" class="radio-col-success">
+                                        <label for="partial_payment">Partial Payment</label>
+                                        <input name="radio_paymeny_type" value="payment_by_agent" type="radio" id="payment_by_agent" class="radio-col-info">
+                                        <label for="payment_by_agent">Payment By Agent</label>
+                                        <input name="radio_paymeny_type" value="due_payment" type="radio" id="due_payment" class="radio-col-warning">
+                                        <label for="due_payment">Due Payment</label>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <input type="hidden" name="payment_type_mood" value="current_payment">
-                        <div class="col-sm-6">
-                            <div class="form-group ticket_partial_payment_container">
-                                <label>Partial Amount</label>
-                                <input type="number" step="any" name="partial_sell_amount" max="" placeholder="Partial amount" class="form-control">
+                            <input type="hidden" name="payment_type_mood" value="current_payment">
+                            <div class="col-sm-6">
+                                <div class="form-group ticket_partial_payment_container">
+                                    <label>Partial Amount</label>
+                                    <input type="number" step="any" name="partial_sell_amount" max="" placeholder="Partial amount" class="form-control">
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-sm-6">
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group ticket_payment_method_container">
-                                <label>Ticket Price Received Payment Method</label>
-                                <select name="ticket_price_payment_method" class="form-control">
-                                    <option value="" disabled selected>Payment Method</option>
-                                    <option value="Bank Account">Bank Account</option>
-                                    <option value="Cash in Hand">Cash in Hand</option>
-                                    <option value="Mobile Banking">Mobile Banking</option>
-                                    <option value="Office Assets">Office Assets</option>
-                                </select>
+                            <div class="col-sm-6">
                             </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label>Agent Commission</label>
-                                <input type="number" step="any" name="agent_commission" value="0" placeholder="Agent comission amount" class="form-control" required="">
+                            <div class="col-sm-6">
+                                <div class="form-group ticket_payment_method_container">
+                                    <label>Ticket Price Received Payment Method</label>
+                                    <select name="ticket_price_payment_method" class="form-control">
+                                        <option value="" disabled selected>Payment Method</option>
+                                        <option value="Bank Account">Bank Account</option>
+                                        <option value="Cash in Hand">Cash in Hand</option>
+                                        <option value="Mobile Banking">Mobile Banking</option>
+                                        <option value="Office Assets">Office Assets</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Agent Commission</label>
+                                    <input type="number" step="any" name="agent_commission" value="0" placeholder="Agent comission amount" class="form-control" required="">
+                                </div>
                             </div>
                         </div>
                     </div>

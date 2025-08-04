@@ -131,7 +131,7 @@
                   @endphp
                   <li class="treeview {{ Request::routeIs(...$ticketRoutes) ? 'active' : '' }}">
                       <a href="#">
-                          <i class="fa-solid fa-users"><span class="path1"></span><span class="path2"></span></i>
+                          <i class="fa fa-ticket"><span class="path1"></span><span class="path2"></span></i>
                           <span>Ticket</span>
                           <span class="pull-right-container">
 						<i class="fa fa-angle-right pull-right"></i>

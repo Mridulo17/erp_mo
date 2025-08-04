@@ -135,7 +135,6 @@
                     @endforeach
                     </tbody>
                 </table>
-1
             </div>
         </div>
     </div>
@@ -215,6 +214,21 @@
                             });
                             // Ensure the item dropdown value is updated after population
                             select.val(selectedCandidateId).trigger('change');  // Set selected candidate
+
+                            let select1 = $('#multiSelectCandidate');
+                            select1.empty();
+
+                            data.forEach(function (candidate) {
+                                let selected = candidate.id === selectedCandidateId ? 'selected' : '';
+                                select1.append(
+                                    '<option value="' + candidate.id + '" ' + selected + '>' +
+                                    candidate.personal_info.first_name + ' ' +
+                                    candidate.personal_info.last_name +
+                                    '</option>'
+                                );
+                            });
+                            // Ensure the item dropdown value is updated after population
+                            select1.val(selectedCandidateId).trigger('change');  // Set selected candidate
                         },
                         error: function (xhr) {
                             console.error("Failed to fetch candidates:", xhr);
@@ -274,6 +288,75 @@
                         }
                     });
                 }
+
+                fetchOtherOffices();
+
+                function fetchOtherOffices() {
+                    $.ajax({
+                        url: "{{ route('admin.other-office.active') }}",
+                        method: "GET",
+                        success: function (data) {
+                            let select = $('#selectOtherOffice');
+                            select.empty();
+                            select.append('<option value="" disabled selected>Other Office</option>');
+
+                            data.forEach(function (office) {
+                                select.append(
+                                    '<option value="' + office.id + '">' +
+                                    office.name +
+                                    '</option>'
+                                );
+                            });
+                        },
+                        error: function (xhr) {
+                            console.error("Failed to fetch candidate types:", xhr);
+                        }
+                    });
+                }
+
+                $('#source').on('change', function () {
+                    const selectedText = $(this).find('option:selected').text();
+
+                    if (selectedText === 'Local Office' || selectedText === 'Budget Carrier') {
+                        $('#other-office-div').show();
+                    } else if (selectedText === 'IATA' || selectedText === 'Budget Carrier') {
+                        $('#payment_vat_tax_container').show();
+                    } else {
+                        $('#other-office-div').hide();
+                        $('#payment_vat_tax_container').hide();
+                    }
+                });
+                $('#ticket_type').on('change', function () {
+                    const selectedText = $(this).find('option:selected').text();
+                    const selectElement = document.getElementById('selectCandidate'); // the actual DOM element
+
+                    if (selectedText === 'System Ticket - Single person') {
+                        $('#refund_button_container').show();
+                        $('#multiple-div').hide();
+                        $('#single-div').show();
+                    }
+                    else if (selectedText === 'System Ticket - Multi person') {
+                        $('#refund_button_container').show();
+                        $('#multiple-div').show();
+                        $('#single-div').hide();
+                    }
+                    else {
+                        $('#refund_button_container').hide();
+                        $('#multiple-div').hide();
+                        $('#single-div').show();
+                    }
+                });
+
+
+                $('#purchase_payment_type').on('change', function () {
+                    const selectedText = $(this).find('option:selected').text();
+
+                    if (selectedText === 'Paid') {
+                        $('#purchase_div').show();
+                    } else {
+                        $('#purchase_div').hide();
+                    }
+                });
 
                 $('#visaForm').on('submit', function (e) {
                     e.preventDefault();

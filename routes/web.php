@@ -59,6 +59,7 @@ use App\Http\Controllers\Supper_Admin\service\WorkPermitcontroller;
 use App\Http\Controllers\Supper_Admin\Sponsor\MarketingVisaController;
 use App\Http\Controllers\Supper_Admin\Sponsor\SponsorController;
 use App\Http\Controllers\Supper_Admin\Sponsor\VisaController;
+use App\Models\Admin\Process\OtherOffice;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\Enquiry\InterviewedCandidateController;
@@ -189,6 +190,10 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('/candidate/active', [CandidateController::class, 'activeIndex'])->name('candidate.active');
     Route::get('/candidate-type/active', [CandidateTypeController::class, 'Activeindex'])->name('candidate-type.active');
     Route::get('/airline-office/active', [AirlineOfficeController::class, 'Activeindex'])->name('airline-office.active');
+    Route::get('/other-office/active', function () {
+        $offices = OtherOffice::where('budget_carrier', 'Enabled')->where('status', 'Active')->get(); // get all users
+        return response()->json($offices);
+    })->name('other-office.active');
 
     Route::get('investors/transactions', [InvestorTransactionController::class, 'index'])->name('investors.transactions');
     Route::post('investors/transactions', [InvestorTransactionController::class, 'store'])->name('investors.transactions');
