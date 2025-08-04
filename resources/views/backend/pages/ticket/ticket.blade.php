@@ -398,18 +398,18 @@
 
 
 
-                $('#visaForm').on('submit', function (e) {
+                $('#ticketForm').on('submit', function (e) {
                     e.preventDefault();
-                    let isEdit = $('#visa_id').val() !== '';
+                    let isEdit = $('#ticket_id').val() !== '';
                     let formData = new FormData(this);
-                    let id = $('#visa_id').val();
-                    formData.set('provide_food', $('#provide_food').is(':checked') ? '1' : '0');
-                    formData.set('provide_accommodation', $('#provide_accommodation').is(':checked') ? '1' : '0');
-                    formData.set('status', $('#status').is(':checked') ? 'Enabled' : 'Disabled');
-                    const baseUpdateUrl = "{{ url('supper_admin/visas') }}";
+                    let id = $('#ticket_id').val();
+                    formData.set('is_pre_purchase', $('#is_pre_purchase').is(':checked') ? '1' : '0');
+                    formData.set('is_refundable', $('#is_refundable').is(':checked') ? '1' : '0');
+                    formData.set('is_make_flight_complete', $('#make_flight_complete').is(':checked') ? '1' : '0');
+                    const baseUpdateUrl = "{{ url('admin/tickets') }}";
                     let url = isEdit
                         ? `${baseUpdateUrl}/${id}`
-                        : `{{ route('supper_admin.visas.store') }}`;
+                        : `{{ route('admin.tickets.store') }}`;
 
                     let method = isEdit ? 'POST' : 'POST';
                     if (isEdit) {
@@ -417,7 +417,7 @@
                     }
 
                     Swal.fire({
-                        title: isEdit ? "Update Visa?" : "Add Visa?",
+                        title: isEdit ? "Update Ticket?" : "Add Ticket?",
                         icon: "question",
                         showCancelButton: true,
                         confirmButtonText: "Yes, proceed"
@@ -433,15 +433,15 @@
                                     if (response.status === 'success') {
                                         $('#modal-center').modal('hide');
                                         Swal.fire('Success!', response.message, 'success');
-                                        $('#visaForm')[0].reset();
-                                        $('#visa_id').val('');
+                                        $('#ticketForm')[0].reset();
+                                        $('#ticket_id').val('');
                                         fetchTickets();
                                     } else {
                                         Swal.fire('Error!', response.message, 'error');
                                     }
                                 },
                                 error: function () {
-                                    Swal.fire('Error!', 'Failed to save visa.', 'error');
+                                    Swal.fire('Error!', 'Failed to save ticket.', 'error');
                                 }
                             });
                         }
@@ -449,9 +449,14 @@
                 });
 
                 $(document).on('click', '.addBlogButton', function () {
-                    $('#visaForm')[0].reset();
-                    $('#visa_id').val('');
-                    $('#currencySelect').val('').trigger('change');
+                    $('#ticketForm')[0].reset();
+                    $('#ticket_id').val('');
+                    $('#countrySelect').val('').trigger('change');
+                    $('#candidateType').val('').trigger('change');
+                    $('#selectOtherOffice').val('').trigger('change');
+                    $('#selectOffice').val('').trigger('change');
+                    $('#selectCandidate').val('').trigger('change');
+                    $('#multiSelectCandidate').val('').trigger('change');
                     $('#modalTitle').text('Buy Ticket');
                     $('#modal-center').modal('show');
 
@@ -459,13 +464,13 @@
 
                 $(document).on('click', '.editBlogButton', function () {
                     const id = $(this).data('id');
-                    const url = '{{ route("supper_admin.visas.edit", ":id") }}'.replace(':id', id);
+                    const url = '{{ route("admin.tickets.edit", ":id") }}'.replace(':id', id);
 
                     $.ajax({
                         url: url,
                         type: 'GET',
                         success: function (res) {
-                            $('#visa_id').val(id);
+                            $('#ticket_id').val(id);
                             $('#sponsorSelect').val(res.sponsor_id).trigger('change');
                             $('#jobSelect').val(res.job_list_id).trigger('change');
                             $('#countrySelect').val(res.country_id).trigger('change');
@@ -543,7 +548,7 @@
 
                 $(document).on('click', '.deleteBonusBtn', function () {
                     const id = $(this).data('id');
-                    const url = '{{ route("supper_admin.visas.destroy", ":id") }}'.replace(':id', id);
+                    const url = '{{ route("admin.tickets.destroy", ":id") }}'.replace(':id', id);
 
                     Swal.fire({
                         title: 'Delete Visa?',

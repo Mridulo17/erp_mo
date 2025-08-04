@@ -9,9 +9,9 @@
             </div>
 
             <!-- The Form -->
-            <form id="visaForm">
+            <form id="ticketForm">
                 @csrf
-                <input type="hidden" id="visa_id" name="visa_id" value="">
+                <input type="hidden" id="ticket_id" name="ticket_id" value="">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-sm-6">
@@ -178,7 +178,7 @@
                     <div id="purchase_div" style="display: none">
                         <div class="form-group">
                             <label>Choose Payment Method</label>
-                            <select name="payment_method" id="payment_method" class="form-control">
+                            <select name="payment_method" id="c" class="form-control">
                                 <option value="" disabled selected>Payment Method</option>
                                 <option value="Bank Account">Bank Account</option>
                                 <option value="Cash in Hand">Cash in Hand</option>
