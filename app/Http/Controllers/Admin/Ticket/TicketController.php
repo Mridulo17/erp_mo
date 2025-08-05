@@ -7,6 +7,7 @@ use App\Models\Admin\Ticket\Ticket;
 use App\Models\Admin\Ticket\TicketCandidate;
 use App\Models\Supper_Admin\Sponsor\Visa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class TicketController extends Controller
@@ -84,6 +85,7 @@ class TicketController extends Controller
                 'ticket_price_payment_method'  => $request->input('ticket_price_payment_method'),
                 'attachment'         => $attachmentPath,
                 'transaction_note'  => $request->input('transaction_note'),
+                'user_id'  => Auth::user()->id,
                 'note'  => $request->input('note')
             ]);
 
@@ -141,7 +143,7 @@ class TicketController extends Controller
             $ticket = Ticket::findOrFail($id);
 
             if(isset($ticket->ticketCandidates)){
-                $ticket->ticketCandidates->delete();
+                $ticket->ticketCandidates()->delete();
             }
             $ticket->delete();
             return response()->json(['status' => 'success', 'message' => 'Ticket deleted successfully']);

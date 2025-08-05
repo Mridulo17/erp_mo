@@ -6,6 +6,7 @@ use App\Models\Admin\Process\AirlineOffice;
 use App\Models\Admin\Process\CandidateType;
 use App\Models\Admin\Process\OtherOffice;
 use App\Models\Supper_Admin\Location\Country;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Ticket extends Model
@@ -41,6 +42,7 @@ class Ticket extends Model
             'payment_method',
             'ticket_price_payment_method',
             'transaction_note',
+            'user_id',
             'note'
         ];
 
@@ -65,5 +67,10 @@ class Ticket extends Model
     public function ticketCandidates()
     {
         return $this->hasMany(TicketCandidate::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

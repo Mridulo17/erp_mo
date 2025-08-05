@@ -90,8 +90,8 @@
                                     </button>
                                     <div class="dropdown-menu">
                                         <!-- Edit Button inside Dropdown -->
-                                        <a href="#" class="dropdown-item editBlogButton" data-toggle="modal" data-target="#modal-center" data-id="{{ $bonus->id }}">
-                                            <i class="fa fa-edit"></i> Edit
+                                        <a href="#" class="dropdown-item editBlogButton" data-toggle="modal" data-target="#view_ticket" data-id="{{ $bonus->id }}">
+                                            <i class="fa fa-ticket"></i>  View ticket
                                         </a>
 
                                         <!-- Delete Form inside Dropdown -->
@@ -112,7 +112,7 @@
                             <td class="wrap-text">{{ $bonus->ticket_type  }}</td>
                             <td class="wrap-text">{{ $bonus->total_candidate  }}</td>
                             <td><b style="font-size: 14px;">{{ $bonus->pnr_number  }}</b> <br> <b style="font-size: 14px;" class="text-primary">{{ $bonus->flight_number  }}</b></td>
-                            <td class="wrap-text">{{ $bonus->flight_date  }}</td>
+                            <td class="wrap-text">{{ $bonus->flight_date  }} {{ \Carbon\Carbon::parse($bonus->flight_time)->format('h:i A') }} </td>
                             <td>
                             <span class="badge {{ $bonus->is_assigned == '1' ? 'badge-success' : 'badge-danger' }}">
                                 {{ $bonus->is_assigned == '1' ? 'Assigned' : 'Not Yet!' }}

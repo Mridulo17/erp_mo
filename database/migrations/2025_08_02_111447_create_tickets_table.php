@@ -47,6 +47,8 @@ return new class extends Migration
             $table->enum('ticket_price_payment_method', ['Bank Account', 'Cash in Hand', 'Mobile Banking', 'Office Assets'])->nullable();
             $table->string('transaction_note', 2000)->nullable();
             $table->string('note', 2000)->nullable();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnUpdate()->restrictOnDelete();
             $table->timestamps();
         });
     }
