@@ -122,7 +122,7 @@ class TicketController extends Controller
      */
     public function edit(string $id)
     {
-        $ticket = Ticket::with(['country', 'candidateType', 'airlineOffice','otherOffice'])->findOrFail($id);
+        $ticket = Ticket::with(['country', 'candidateType', 'airlineOffice','otherOffice', 'user'])->findOrFail($id);
         return response()->json($ticket);
     }
 
