@@ -5,15 +5,12 @@ namespace App\Models\Admin\Ticket;
 use App\Models\Admin\Process\Candidate;
 use Illuminate\Database\Eloquent\Model;
 
-class AssignTicket extends Model
+class AssignTicketCandidate extends Model
 {
     protected $fillable =
         [
-            'ticket_id',
-            'ticket_type',
-            'pnr_number',
-            'total_candidate',
-            'note'
+            'assign_ticket_id',
+            'candidate_id'
         ];
 
     public function ticket()

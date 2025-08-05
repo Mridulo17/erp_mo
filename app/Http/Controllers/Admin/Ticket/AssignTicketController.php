@@ -13,7 +13,8 @@ class AssignTicketController extends Controller
      */
     public function index()
     {
-        //
+        $tickets = AssignTicket::get();
+        return view('backend.pages.ticket.assign_ticket', compact('tickets'));
     }
 
     /**

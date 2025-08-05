@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('assign_tickets', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('ticket_id');
+            $table->foreign('ticket_id')->references('id')->on('tickets')->cascadeOnUpdate()->restrictOnDelete();
+            $table->string('ticket_type');
+            $table->string('pnr_number');
+            $table->string('total_candidate');
+            $table->string('note', 2000)->nullable();
             $table->timestamps();
         });
     }

@@ -50,32 +50,7 @@
                         </div>
                     </div>
                 </div>
-                <script>
-                    function remove_assign_candidate(candidate_id, ticket_id){
-                        Swal.fire({
-                            title				: 'Are you sure?',
-                            text				: "You have to assign candidate again",
-                            icon				: 'warning',
-                            showCancelButton	: true,
-                            confirmButtonColor	: '#3085d6',
-                            cancelButtonColor	: '#d33',
-                            confirmButtonText	: 'Yes, remove it!'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                $.post({
-                                    url: 'http://erp.mahfuza-overseas.com/mahfuza_v2/home-pages/sponsor/buy-ticket',
-                                    data: {remove_assign_candidate: 'active', candidate_id: candidate_id, ticket_id: ticket_id},
-                                    beforeSend: function(){},
-                                    success: function(data){
-                                        var value = jQuery.parseJSON(data);
-                                        $('#ajax_message').html(value['message']);
-                                        view_ticket('ticket', ticket_id);
-                                    }
-                                });
-                            }
-                        });
-                    }
-                </script></div>
+            </div>
         </div>
     </div>
 </div>
