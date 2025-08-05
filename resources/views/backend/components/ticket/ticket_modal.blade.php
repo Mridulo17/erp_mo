@@ -74,7 +74,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Other Office</label>
-                                <select id="selectOtherOffice" name="other_office_id" class="form-control" required>
+                                <select id="selectOtherOffice" name="other_office_id" class="form-control">
                                     <option value="" disabled selected>Other Office</option>
                                 </select>
                             </div>
@@ -112,7 +112,7 @@
                         <div class="col-sm-6" id="candidate-qty-div" style="display: none">
                             <div class="form-group">
                                 <label>Write Candidate Quantity</label>
-                                <input type="number" step="any"  name="pnr_number" placeholder="Candidate Quantity" class="form-control">
+                                <input type="number" step="any" id="total_candidate" name="total_candidate" placeholder="Candidate Quantity" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -162,7 +162,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Purchase Amount</label>
-                                <input type="number" step="any" name="purchase_amount" value="0" placeholder="Amount/Cost" class="form-control" required="">
+                                <input type="number" step="any" name="purchase_amount" value="0" placeholder="Amount/Cost" class="form-control">
                             </div>
                         </div>
                     </div>
@@ -193,15 +193,14 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label>Sell amount total <small><b class="c_qty text-danger"></b></small></label>
-                                <input type="number" step="any" name="sell_amount_total" placeholder="Amount/Price" class="form-control" required="">
+                                <label>Sell amount total <small><b id="show_total_candidate" class="text-danger"></b></small></label>
+                                <input type="number" step="any" id="sell_amount_total" name="sell_amount_total" placeholder="Amount/Price" class="form-control" required>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Per ticket Amount</label>
-                                <input type="number" step="any" name="per_ticket_amount" placeholder="Amount/Price" class="form-control" readonly="">
-                                <input type="hidden" name="total_candidate" id="total_candidate">
+                                <input type="number" step="any" id="per_ticket_amount" name="per_ticket_amount" placeholder="Amount/Price" class="form-control" readonly>
                             </div>
                         </div>
                     </div>
@@ -255,7 +254,7 @@
                             <div class="col-sm-6" id="agent_commission_div" style="display: none">
                                 <div class="form-group">
                                     <label>Agent Commission</label>
-                                    <input type="number" step="any" name="agent_commission" value="0" placeholder="Agent comission amount" class="form-control" required="">
+                                    <input type="number" step="any" name="agent_commission" value="0" placeholder="Agent commission amount" class="form-control">
                                 </div>
                             </div>
                         </div>

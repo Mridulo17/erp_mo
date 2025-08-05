@@ -106,11 +106,13 @@
 
                             <td>{{ $key + 1 }}</td>
                             <td class="wrap-text">{{ $bonus->issue_date  }}</td>
+                            <td class="wrap-text">{{ $bonus->ticket_name  }}</td>
                             <td class="wrap-text">{{ $bonus->source  }}</td>
                             <td class="wrap-text">{{ $bonus->country ? $bonus->country->name : '' }}</td>
                             <td class="wrap-text">{{ $bonus->ticket_type  }}</td>
                             <td class="wrap-text">{{ $bonus->total_candidate  }}</td>
                             <td><b style="font-size: 14px;">{{ $bonus->pnr_number  }}</b> <br> <b style="font-size: 14px;" class="text-primary">{{ $bonus->flight_number  }}</b></td>
+                            <td class="wrap-text">{{ $bonus->flight_date  }}</td>
                             <td>
                             <span class="badge {{ $bonus->is_assigned == '1' ? 'badge-success' : 'badge-danger' }}">
                                 {{ $bonus->is_assigned == '1' ? 'Assigned' : 'Not Yet!' }}
@@ -124,8 +126,8 @@
                             <td class="wrap-text">{{ $bonus->purchase_amount  }}</td>
                             <td class="wrap-text">{{ $bonus->payment_type == 'Paid' ? '0.00' : $bonus->purchase_amount  }}</td>
                             <td>
-                            <span class="badge {{ $bonus->payment_type == 'Paid' ? 'badge-success' : 'badge-danger' }}">
-                                {{ $bonus->payment_type == 'Paid' ? 'Paid' : 'Due' }}
+                            <span class="badge {{ $bonus->purchase_payment_type == 'Paid' ? 'badge-success' : 'badge-danger' }}">
+                                {{ $bonus->purchase_payment_type == 'Paid' ? 'Paid' : 'Due' }}
                             </span>
                             </td>
                         </tr>
@@ -140,10 +142,10 @@
         <script>
             function fetchTickets() {
                 $.ajax({
-                    url: '{{ route("supper_admin.visas.index") }}',
+                    url: '{{ route("admin.tickets.index") }}',
                     type: 'GET',
                     success: function (data) {
-                        let newBody = $(data).find('table tbody').html();
+                        let newBody = $(data).find('#customDataTable tbody').html();
                         $('#customDataTable tbody').html(newBody);
                     },
                     error: function () {
@@ -388,6 +390,25 @@
                         $('#single-div').show();
                         $('#candidate-qty-div').hide();
                     }
+                });
+
+                $('#total_candidate').on('input', function () {
+                    const candidate =  $(this).val();
+                    $('#show_total_candidate').text("(" +candidate+ ")");
+
+                });
+                $('#sell_amount_total').on('input', function () {
+                    const totalSell =  $(this).val();
+                    const candidate =  $('#total_candidate').val();
+                    const perTicket = totalSell/candidate;
+                    $('#per_ticket_amount').val(perTicket);
+
+                });
+
+                $('#selectCandidate').on('change', function () {
+                    const selectedCount = $(this).find('option:selected').length;
+                    $('#total_candidate').val(selectedCount);
+                    $('#show_total_candidate').text("(" + selectedCount + ")");
                 });
 
                 $('#ticketForm').on('submit', function (e) {
