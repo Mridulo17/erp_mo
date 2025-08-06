@@ -320,12 +320,11 @@
 
                         data.forEach(function (employee) {
                             select.append(
-                                '<option data-employee_grand_total_salary="' + employee.employee_grand_total_salary +
+                                '<option data-employee_net_salary="' + employee.employee_net_salary +
                                 '" data-employee_present="' + employee.employee_present +
                                 '" data-advance_salary="' + employee.advance_salary +
                                 '" data-month_year="' + employee.month_year +
-                                '" data-employee_half_day="' + employee.employee_half_day +
-                                '" data-employee_full_day="' + employee.employee_full_day +
+                                '" data-employee_absent="' + employee.employee_absent +
                                 '" value="' + employee.employee_id + '">' +
                                 escapeHtml(employee.employee.first_name) + ' ' + escapeHtml(employee.employee.last_name) +
                                 '</option>'
@@ -346,17 +345,15 @@
 
             $('#employeeSelect').on('change', function () {
                 const selectedOption = $(this).find('option:selected');
-                const amount = selectedOption.data('employee_grand_total_salary');
+                const amount = selectedOption.data('employee_net_salary');
                 const advance = selectedOption.data('advance_salary');
                 const present = selectedOption.data('employee_present');
-                const half = selectedOption.data('employee_half_day');
-                const full = selectedOption.data('employee_full_day');
-                const totalLeave = half + full;
+                const absent = selectedOption.data('employee_absent');
                 const rawMonth = selectedOption.data('month_year'); // e.g., "2025-07"
                 const date = new Date(rawMonth + '-01'); // Add day to make valid date
                 const options = { year: 'numeric', month: 'long' };
                 const formattedMonthYear = date.toLocaleDateString('en-US', options);
-                $('#employee_absent').html(totalLeave + ' Days');
+                $('#employee_absent').html(absent + ' Days');
                 $('#employee_present').html(present + ' Days');
                 $('#employee_advance').text(advance);
                 $('#net_salary').text(amount);
@@ -482,12 +479,26 @@
             <td>${salary.employee.employee_code} - ${salary.employee.first_name} ${salary.employee.last_name}</td>
             <td>${salary.employee.department.name} - ${salary.employee.designation.name}</td>
             <td>${salary.employee.date_of_joining}</td>
-            <td>${salary.employee_present}</td>
+            <td>${salary.number_of_days}</td>
             <td>${salary.employee_basic_salary}</td>
-            <td>${salary.employee.basic_salary_daily}</td>
+            <td>${salary.inc_dec}</td>
+            <td>${salary.employee_monthly_salary}</td>
+            <td>${salary.employee_per_day_salary}</td>
             <td>${salary.employee_full_day}</td>
             <td>${salary.employee_half_day}</td>
-            <td>${salary.inc_dec}</td>
+            <td>${salary.employee_absent}</td>
+            <td>${salary.employee_present}</td>
+            <td>${salary.employee_total_present_amount}</td>
+            <td>${salary.weekend_days}</td>
+            <td>${salary.employee_weekend_days_amount}</td>
+            <td>${salary.employee_of_day_duty_bonus}</td>
+            <td>${salary.holidays}</td>
+            <td>${salary.employee_holidays_amount}</td>
+            <td>${salary.employee_holidays_duty_bonus}</td>
+            <td>${salary.employee_festival_day_bonus}</td>
+            <td>${salary.late_attendance_days}</td>
+            <td>${salary.employee_late_attendance_deduction}</td>
+            <td>${salary.employee_total_salary}</td>
             <td>${salary.performance_bonus}</td>
             <td>${salary.mobile_allowance}</td>
             <td>${salary.festival_bonus}</td>

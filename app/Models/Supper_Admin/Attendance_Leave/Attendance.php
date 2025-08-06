@@ -16,6 +16,8 @@ class Attendance extends Model
             'date_details',
             'check_in',
             'check_out',
+            'is_holiday',
+            'is_weekend',
             'note'
         ];
 

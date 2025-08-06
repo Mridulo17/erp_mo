@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Supper_Admin\Attendance_Leave;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin\HRM\Employee;
+use App\Models\Admin\MyOffice\Holiday;
 use App\Models\Supper_Admin\Attendance_Leave\Attendance;
+use App\Models\Supper_Admin\Attendance_Leave\Weekend;
 use App\Models\Supper_Admin\Payroll\Expense\ExpenseItem;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -34,7 +37,27 @@ class AttendanceController extends Controller
                 'check_in'      => 'required|string',
                 'check_out'      => 'required|string'
             ]);
+            // Check if attendance already exists for this date
+            if (Attendance::where('date', $request->input('date'))->where('employee_id', $request->input('employee_id'))->exists()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Employee attendance already exists for this date.'
+                ]);
+            }
             $dateDetails = Carbon::parse($request->input('date'))->format('l, jS \\of F Y');
+            $checkHoliday = Holiday::where('date', $request->input('date'))->first();
+            if (isset($checkHoliday)) {
+                $holiday = 1;
+            } else{
+                $holiday = 0;
+            }
+            $day = ucfirst(strtolower(Carbon::parse($request->input('date'))->format('l')));
+            $checkWeekend = Employee::whereRaw('LOWER(weekend_day) = ?', [strtolower($day)])->first();
+            if (isset($checkWeekend)) {
+                $weekend = 1;
+            } else{
+                $weekend = 0;
+            }
             Attendance::create([
                 'department_id'      => $request->input('department_id'),
                 'employee_id'      => $request->input('employee_id'),
@@ -42,6 +65,8 @@ class AttendanceController extends Controller
                 'date_details'      => $dateDetails,
                 'check_in'      => $request->input('check_in'),
                 'check_out'      => $request->input('check_out'),
+                'is_holiday'      => $holiday,
+                'is_weekend'      => $weekend,
                 'note'  => $request->input('note')
             ]);
             return response()->json(['status' => 'success', 'message' => 'Attendance added Successfully']);
@@ -82,8 +107,27 @@ class AttendanceController extends Controller
                 'check_in'      => 'required|string',
                 'check_out'      => 'required|string'
             ]);
+            // Check if attendance already exists for this date
+            if (Attendance::where('date', $request->input('date'))->where('employee_id', $request->input('employee_id'))->where('id', '!=', $id)->exists()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Employee attendance already exists for this date.'
+                ]);
+            }
             $dateDetails = Carbon::parse($request->input('date'))->format('l, jS \\of F Y');
-
+            $checkHoliday = Holiday::where('date', $request->input('date'))->first();
+            if (isset($checkHoliday)) {
+                $holiday = 1;
+            } else{
+                $holiday = 0;
+            }
+            $day = ucfirst(strtolower(Carbon::parse($request->input('date'))->format('l')));
+            $checkWeekend = Employee::whereRaw('LOWER(weekend_day) = ?', [strtolower($day)])->first();
+            if (isset($checkWeekend)) {
+                $weekend = 1;
+            } else{
+                $weekend = 0;
+            }
             $attendance = Attendance::findOrFail($id);
             $attendance->department_id = $request->department_id;
             $attendance->employee_id = $request->employee_id;
@@ -91,6 +135,8 @@ class AttendanceController extends Controller
             $attendance->date_details = $dateDetails;
             $attendance->check_in = $request->check_in;
             $attendance->check_out = $request->check_out;
+            $attendance->is_holiday = $holiday;
+            $attendance->is_weekend = $weekend;
             $attendance->note = $request->note;
             $attendance->save();
 

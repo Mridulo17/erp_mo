@@ -1,10 +1,10 @@
 <aside class="main-sidebar">
     <!-- sidebar-->
-    <section class="sidebar position-relative">	
+    <section class="sidebar position-relative">
 	  	<div class="multinav">
-		  <div class="multinav-scroll" style="height: 100%;">	
+		  <div class="multinav-scroll" style="height: 100%;">
 			  <!-- sidebar menu-->
-			  <ul class="sidebar-menu" data-widget="tree">	
+			  <ul class="sidebar-menu" data-widget="tree">
 				<li>
 				  <a href="{{route('dashboard')}}">
 					<i class="fas fa-house-user"><span class="path1"></span><span class="path2"></span></i>
@@ -21,7 +21,7 @@
 								<i class="fa fa-angle-right pull-right"></i>
 							</span>
 						</a>
-						<ul class="treeview-menu" style="{{ request()->routeIs('admin.candidates.*') ? 'display: block;' : '' }}">							
+						<ul class="treeview-menu" style="{{ request()->routeIs('admin.candidates.*') ? 'display: block;' : '' }}">
 							<li class="treeview {{ request()->routeIs('admin.candidates.*') ? 'active menu-open' : '' }}">
 								<a href="#">
 									<i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>
@@ -76,7 +76,7 @@
 						<i class="fa fa-angle-right pull-right"></i>
 					  </span>
 					</a>
-					<ul class="treeview-menu">	
+					<ul class="treeview-menu">
 						{{-- <li class="treeview {{ request()->routeIs('admin.phone-calls.*') ? 'active menu-open' : '' }}">
 							<a href="#">
 								<i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>
@@ -86,7 +86,7 @@
 								</span>
 							</a>
 							<ul class="treeview-menu" style="{{ request()->routeIs('admin.candidates.*') ? 'display: block;' : '' }}">
-								
+
 							</ul>
 						</li> --}}
 						<li class="{{ request()->routeIs('admin.phone-calls.index') ? 'active menu-open' : '' }}">
@@ -94,7 +94,7 @@
 								<i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>
 								Phone Calls
 							</a>
-						</li>	
+						</li>
 						<li class="{{ request()->routeIs('admin.visitor-books.index') ? 'active menu-open' : '' }}">
 							<a href="{{ route('admin.visitor-books.index') }}">
 								<i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>
@@ -118,11 +118,30 @@
 						<i class="fa fa-angle-right pull-right"></i>
 					  </span>
 					</a>
-					<ul class="treeview-menu">		
+					<ul class="treeview-menu">
 						<li><a href=""><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Add Customer</a></li>
 						<li><a href=""><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Customer List</a></li>
 					</ul>
 				</li>
+                  @php
+                      $ticketRoutes = [
+                          'admin.tickets.*',
+                          'admin.assign-tickets.*',
+                      ];
+                  @endphp
+                  <li class="treeview {{ Request::routeIs(...$ticketRoutes) ? 'active' : '' }}">
+                      <a href="#">
+                          <i class="fa fa-ticket"><span class="path1"></span><span class="path2"></span></i>
+                          <span>Ticket</span>
+                          <span class="pull-right-container">
+						<i class="fa fa-angle-right pull-right"></i>
+					  </span>
+                      </a>
+                      <ul class="treeview-menu" @if (Request::routeIs(...$ticketRoutes)) style="display: block;" @endif>
+                          <li class="{{ Request::routeIs('admin.tickets.*') ? 'active' : '' }}"><a href="{{ route('admin.tickets.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Buy Ticket</a></li>
+                          <li class="{{ Request::routeIs('admin.assign-tickets.*') ? 'active' : '' }}"><a href="{{ route('admin.assign-tickets.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Assign Ticket</a></li>
+                      </ul>
+                  </li>
 				<li class="treeview">
 					<a href="#">
 					  <i class="fas fa-running"><span class="path1"></span><span class="path2"></span></i>
@@ -131,7 +150,7 @@
 						<i class="fa fa-angle-right pull-right"></i>
 					  </span>
 					</a>
-					<ul class="treeview-menu">	
+					<ul class="treeview-menu">
 						<li><a href=""><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Manage Sponsor</a></li>
 						<li><a href=""><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Sponsor Visa</a></li>
 						<li><a href=""><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Marketing Visa</a></li>
@@ -203,7 +222,7 @@
 						<i class="fa fa-angle-right pull-right"></i>
 					  </span>
 					</a>
-					<ul class="treeview-menu">		
+					<ul class="treeview-menu">
 						<li>
 							<a href="{{route('admin.employees.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Employees</a>
 						</li>
@@ -305,7 +324,7 @@
 						<i class="fa fa-angle-right pull-right"></i>
 					  </span>
 					</a>
-					<ul class="treeview-menu">		
+					<ul class="treeview-menu">
 						<li class="treeview">
 							<a href="#">
 								<i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Manage Account
@@ -372,7 +391,7 @@
 						<i class="fa fa-angle-right pull-right"></i>
 					  </span>
 					</a>
-					<ul class="treeview-menu">		
+					<ul class="treeview-menu">
 						<li><a href="{{route('admin.branches.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Branch</a></li>
 						<li><a href="{{route('admin.departments.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Department</a></li>
 						<li><a href="{{route('admin.designations.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Designation</a></li>
@@ -392,7 +411,7 @@
 						<i class="fa fa-angle-right pull-right"></i>
 					  </span>
 					</a>
-					<ul class="treeview-menu">		
+					<ul class="treeview-menu">
 						<li><a href="{{route('admin.permissions.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Permision Button</a></li>
 						<li><a href="{{route('admin.permissions.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Assign Permision</a></li>
 					</ul>
@@ -405,7 +424,7 @@
 						<i class="fa fa-angle-right pull-right"></i>
 					  </span>
 					</a>
-					<ul class="treeview-menu">		
+					<ul class="treeview-menu">
 						<li><a href="{{route('admin.hotspots.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Hotspot User</a></li>
 						<li><a href="{{route('admin.mac-address.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Mac Address</a></li>
 					</ul>

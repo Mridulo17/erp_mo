@@ -33,20 +33,34 @@
                                            <tr>
                                                <th>Employee</th>
                                                <th>Department</th>
-                                               <th>JD</th>
-                                               <th>TP</th>
-                                               <th>BMS</th>
-                                               <th>PD</th>
-                                               <th>FDL</th>
-                                               <th>HDL</th>
-                                               <th>I & D</th>
-                                               <th>PB</th>
-                                               <th>MA</th>
-                                               <th>FB</th>
-                                               <th>AS</th>
-                                               <th>GTS</th>
-                                               <th>SPM</th>
-                                               <th>Received</th>
+                                               <th title="Joining Date">JD</th>
+                                               <th title="Number of days">NOD</th>
+                                               <th title="Basic Monthly Salary">BMS</th>
+                                               <th title="Increment & Decrement">I & D</th>
+                                               <th title="Monthly Salary">MS</th>
+                                               <th title="Per day Salary">PD</th>
+                                               <th title="Total Full Day Leave">FDL</th>
+                                               <th title="Total Half Days Leave">HDL</th>
+                                               <th title="Total Absent">TA</th>
+                                               <th title="Total Present">TP</th>
+                                               <th title="Total Present Amount">TPA</th>
+                                               <th title="Weekend Days">WD</th>
+                                               <th title="Weekend Days Amount">WDA</th>
+                                               <th title="Off Day Duty Bonus">ODDB</th>
+                                               <th title="Holidays">H</th>
+                                               <th title="Holidays Amount">HA</th>
+                                               <th title="Holidays Duty Bonus">HDB</th>
+                                               <th title="Festival Duty Bonus">FDB</th>
+                                               <th title="Late Attendance Days">LAD</th>
+                                               <th title="Late Attendance Deduction Amount">LADA</th>
+                                               <th title="Total Salary">TS</th>
+                                               <th title="Performance Bonus">PB</th>
+                                               <th title="Mobile Allowance">MA</th>
+                                               <th title="Festival Bonus">FS</th>
+                                               <th title="Advance Salary">AS</th>
+                                               <th title="Grant Total Salary">GTS</th>
+                                               <th title="Salary Pay Method">SPM</th>
+                                               <th title="Is employee received the salary?">Received</th>
                                            </tr>
                                             </thead>
                                             <tbody id="view_salary_list">

@@ -147,7 +147,16 @@
                     success: function (response) {
                         if (response.status === 'success') {
                             Swal.fire('Success!', response.message, 'success');
-                            fetchAssignRoasting();
+                            // Get currently selected department ID
+                            const selectedDeptId = $('#departmentSelect').val();
+
+                            // Refresh the employee list filtered by selected department
+                            if (selectedDeptId) {
+                                fetchAssignRoasting(selectedDeptId);
+                            } else {
+                                // If no department selected, you can reload all employees or handle accordingly
+                                fetchAssignRoasting();
+                            }
                         } else {
                             Swal.fire('Error!', response.message, 'error');
                         }

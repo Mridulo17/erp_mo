@@ -154,18 +154,34 @@ class CandidateController extends Controller
         return view('backend.pages.process.candidates.index', compact('candidateTypes', 'transactionPurposes'));
     }
 
-    public function activeIndex()
+    public function activeIndex(Request $request)
     {
-        $candidates = Candidate::whereHas('candidateType', function ($query) {
-            $query->select('id', 'name')->where('status', 1);
-        })->with([
-            'candidateType' => function ($query) {
-                $query->select('id', 'name');
-            },
-            'personalInfo' => function ($query) {
-                $query->select('candidate_id', 'first_name', 'last_name');
-            }
-        ])->get();
+        if ($request->has('candidate_type_id') && $request->candidate_type_id) {
+            $typeId = $request->get('candidate_type_id');
+            $candidates = Candidate::whereHas('candidateType', function ($query) {
+                $query->select('id', 'name')->where('status', 1);
+            })->with([
+                'candidateType' => function ($query) {
+                    $query->select('id', 'name');
+                },
+                'personalInfo' => function ($query) {
+                    $query->select('candidate_id', 'first_name', 'last_name');
+                }
+            ])
+                ->where('candidate_type_id', $typeId)
+                ->get();
+        } else {
+            $candidates = Candidate::whereHas('candidateType', function ($query) {
+                $query->select('id', 'name')->where('status', 1);
+            })->with([
+                'candidateType' => function ($query) {
+                    $query->select('id', 'name');
+                },
+                'personalInfo' => function ($query) {
+                    $query->select('candidate_id', 'first_name', 'last_name');
+                }
+            ])->get();
+        }
 
         return response()->json($candidates);
 

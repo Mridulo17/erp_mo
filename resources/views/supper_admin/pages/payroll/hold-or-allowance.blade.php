@@ -74,9 +74,9 @@
                         <th style="width: 5%;">DB:ID</th>
                         <th>Employee Name & ID</th>
                         <th>Department</th>
-                        <th>Hold Salary</th>
+{{--                        <th>Hold Salary</th>--}}
                         <th>Mobile Bill</th>
-                        <th>Accommodation</th>
+{{--                        <th>Accommodation</th>--}}
                         <th>White List</th>
                     </tr>
                     </thead>
@@ -86,17 +86,17 @@
                             <td style="width: 5%;">{{ $key + 1 }}</td>
                             <td><b>{{$employee->employee_code}}</b> - {{$employee->first_name}} {{$employee->last_name}}</td>
                             <td><b>{{$employee->department ? $employee->department->name : '' }}</b> - {{$employee->designation ? $employee->designation->name : '' }}</td>
-                            <td>
-                                <div class="form-check">
-                                    <input class="form-check-input"
-                                           onclick="hold_and_allowance_config('{{ $employee->id }}')"
-                                           id="is_hold_salary_{{ $employee->id }}"
-                                           name="is_hold_salary"
-                                           {{ $employee->is_hold_salary == '1' ? 'checked' : '' }}
-                                           type="checkbox">
-                                    <label for="is_hold_salary_{{ $employee->id }}"></label>
-                                </div>
-                            </td>
+{{--                            <td>--}}
+{{--                                <div class="form-check">--}}
+{{--                                    <input class="form-check-input"--}}
+{{--                                           onclick="hold_and_allowance_config('{{ $employee->id }}')"--}}
+{{--                                           id="is_hold_salary_{{ $employee->id }}"--}}
+{{--                                           name="is_hold_salary"--}}
+{{--                                           {{ $employee->is_hold_salary == '1' ? 'checked' : '' }}--}}
+{{--                                           type="checkbox">--}}
+{{--                                    <label for="is_hold_salary_{{ $employee->id }}"></label>--}}
+{{--                                </div>--}}
+{{--                            </td>--}}
                             <td>
                                 <div class="form-check">
                                     <input class="form-check-input"
@@ -108,17 +108,17 @@
                                     <label for="is_mobile_bill_{{ $employee->id }}"></label>
                                 </div>
                             </td>
-                            <td>
-                                <div class="form-check">
-                                    <input class="form-check-input"
-                                           onclick="hold_and_allowance_config('{{ $employee->id }}')"
-                                           id="is_accommodation_{{ $employee->id }}"
-                                           name="is_accommodation"
-                                           {{ $employee->is_accommodation == '1' ? 'checked' : '' }}
-                                           type="checkbox">
-                                    <label for="is_accommodation_{{ $employee->id }}"></label>
-                                </div>
-                            </td>
+{{--                            <td>--}}
+{{--                                <div class="form-check">--}}
+{{--                                    <input class="form-check-input"--}}
+{{--                                           onclick="hold_and_allowance_config('{{ $employee->id }}')"--}}
+{{--                                           id="is_accommodation_{{ $employee->id }}"--}}
+{{--                                           name="is_accommodation"--}}
+{{--                                           {{ $employee->is_accommodation == '1' ? 'checked' : '' }}--}}
+{{--                                           type="checkbox">--}}
+{{--                                    <label for="is_accommodation_{{ $employee->id }}"></label>--}}
+{{--                                </div>--}}
+{{--                            </td>--}}
                             <td>
                                 <div class="form-check">
                                     <input class="form-check-input"
@@ -184,7 +184,16 @@
                     success: function (response) {
                         if (response.status === 'success') {
                             Swal.fire('Success!', response.message, 'success');
-                            fetchHoldOrAllowance(); // Optional: update UI
+                            // Get currently selected department ID
+                            const selectedDeptId = $('#departmentSelect').val();
+
+                            // Refresh the employee list filtered by selected department
+                            if (selectedDeptId) {
+                                fetchHoldOrAllowance(selectedDeptId);
+                            } else {
+                                // If no department selected, you can reload all employees or handle accordingly
+                                fetchHoldOrAllowance();
+                            }
                         } else {
                             Swal.fire('Error!', response.message, 'error');
                         }
@@ -201,7 +210,9 @@
                 $('#departmentSelect').on('change', function () {
                     const departmentId = $(this).val();
                     if (departmentId) {
-                        fetchHoldOrAllowance(departmentId);
+                        fetchHoldOrAllowance(departmentId);  // Fetch employee based on the selected department
+                    } else {
+                        $('#employeeSelect').empty().append('<option value="" disabled selected>Choose Employee</option>');
                     }
                 });
             });

@@ -71,6 +71,7 @@
                         <th style="">Age</th>
                         <th style="">p:Qty</th>
                         <th style="">A:Qty</th>
+                        <th style="">Currency</th>
                         <th style="">Purchase Price</th>
                         <th style="">Due Amount</th>
                         <th style="">Payment</th>
@@ -116,6 +117,7 @@
                             <td class="wrap-text">{{ $bonus->age_from  }} - {{ $bonus->age_to  }}</td>
                             <td>0.00</td>
                             <td>{{ $bonus->visa_qty  }}</td>
+                            <td class="wrap-text">{{ $bonus->currency ? $bonus->currency->name : '' }}</td>
                             <td class="wrap-text">{{ $bonus->purchase_amount  }}</td>
                             <td class="wrap-text">0.00</td>
                             <td>
@@ -203,7 +205,7 @@
 
                             data.forEach(function (job) {
                                 select.append(
-                                    '<option value="' + job.id + '">' +
+                                    '<option data-job_type="' + job.job_type + '" value="' + job.id + '">' +
                                     job.name +
                                     '</option>'
                                 );
@@ -258,53 +260,6 @@
                     });
                 }
 
-                fetchSalaryCurrencies();
-
-                function fetchSalaryCurrencies() {
-                    $.ajax({
-                        url: "{{ route('supper_admin.currency.active') }}",
-                        method: "GET",
-                        success: function (data) {
-                            let select = $('#salaryCurrencySelect');
-                            select.empty();
-                            select.append('<option value="" disabled selected>Choose Currency</option>');
-                            data.forEach(function (currency) {
-                                select.append(
-                                    '<option data-bdt_amount="' + currency.bdt_amount + '" data-name="' + currency.name + '" value="' + currency.id + '">' +
-                                    currency.name + '</option>'
-                                );
-                            });
-
-                        },
-                        error: function (xhr) {
-                            console.error("Failed to fetch currencies:", xhr);
-                        }
-                    });
-                }
-
-                fetchPurchaseCurrencies();
-
-                function fetchPurchaseCurrencies() {
-                    $.ajax({
-                        url: "{{ route('supper_admin.currency.active') }}",
-                        method: "GET",
-                        success: function (data) {
-                            let select = $('#purchaseCurrencySelect');
-                            select.empty();
-                            select.append('<option value="" disabled selected>Choose Currency</option>');
-                            data.forEach(function (currency) {
-                                select.append(
-                                    '<option data-bdt_amount="' + currency.bdt_amount + '" data-name="' + currency.name + '" value="' + currency.id + '">' +
-                                    currency.name + '</option>'
-                                );
-                            });
-
-                        },
-                        error: function (xhr) {
-                            console.error("Failed to fetch currencies:", xhr);
-                        }
-                    });
-                }
 
                 $('#currencySelect').on('change', function () {
                     const selectedOption = $(this).find('option:selected');
@@ -314,20 +269,18 @@
                     $('#bdt_price').val(bdt_amount);
                 });
 
-                $('#salaryCurrencySelect').on('change', function () {
+                $('#jobSelect').on('change', function () {
                     const selectedOption = $(this).find('option:selected');
-                    const bdt_amount = selectedOption.data('bdt_amount');
-                    const name = selectedOption.data('name');
-                    $('#salary_currency_details').text("(1 " + name + " = " + bdt_amount + " BDT)");
-                    $('#salary_bdt_amount').val(bdt_amount);
-                });
-
-                $('#purchaseCurrencySelect').on('change', function () {
-                    const selectedOption = $(this).find('option:selected');
-                    const bdt_amount = selectedOption.data('bdt_amount');
-                    const name = selectedOption.data('name');
-                    $('#purchase_currency_details').text("(1 " + name + " = " + bdt_amount + " BDT)");
-                    $('#purchase_bdt_amount').val(bdt_amount);
+                    const job_type = selectedOption.data('job_type');
+                    if(job_type && job_type.toLowerCase() === "commission") {
+                        $('#visa_qty').val(0);
+                        $('#purchase_div_prev').hide();
+                        $('#commission_div').show();
+                    } else {
+                        $('#visa_qty').val('');
+                        $('#purchase_div_prev').show();
+                        $('#commission_div').hide();
+                    }
                 });
 
                 $('#visaForm').on('submit', function (e) {
@@ -384,8 +337,6 @@
                     $('#visaForm')[0].reset();
                     $('#visa_id').val('');
                     $('#currencySelect').val('').trigger('change');
-                    $('#purchaseCurrencySelect').val('').trigger('change');
-                    $('#salaryCurrencySelect').val('').trigger('change');
                     $('#modalTitle').text('Manage Visa');
                     $('#modal-center').modal('show');
 
@@ -403,8 +354,6 @@
                             $('#sponsorSelect').val(res.sponsor_id).trigger('change');
                             $('#jobSelect').val(res.job_list_id).trigger('change');
                             $('#countrySelect').val(res.country_id).trigger('change');
-                            $('#salaryCurrencySelect').val(res.salary_currency_id).trigger('change');
-                            $('#purchaseCurrencySelect').val(res.purchase_currency_id).trigger('change');
                             $('#currencySelect').val(res.currency_id).trigger('change');
                             $('#issue_date').val(res.issue_date);
                             $('#age_from').val(res.age_from);
@@ -417,6 +366,7 @@
                             $('#purchase_amount').val(res.purchase_amount);
                             $('#agent_price').val(res.agent_price);
                             $('#candidate_price').val(res.candidate_price);
+                            $('#commission_amount').val(res.commission_amount);
                             $('#payment_type').val(res.payment_type);
                             // Show existing file
                             if (res.demand_latter) {

@@ -97,6 +97,15 @@
                                     <option value="Haji">Haji</option>
                                 </select> </div>
                         </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label for="currency_id" class="font-weight-bold text-dark" style="font-size: 14px;">Currency <small id="currency_details" style="color: #ff0000"></small></label>
+                                <select name="currency_id" id="currencySelect" class="form-control" required>
+                                    <option value="" disabled selected>Choose Currency</option>
+                                </select>
+                                <input type="hidden" name="bdt_price" id="bdt_price" value="">
+                            </div>
+                        </div>
                     </div>
                     <div class="row" style="display:none;">
                         <div class="col-sm-12" style="border: solid 2px #d9d9d9;padding-top: 10px;border-radius: 15px;">
@@ -122,27 +131,16 @@
                         </div>
                     </div>
 
-                    <div class="row payment_type_container">
+                    <div class="row payment_type_container" id="purchase_div_prev">
                         <div class="col-sm-12" style="border: solid 2px #d9d9d9;padding-top: 10px;border-radius: 15px;margin-bottom: 10px;margin-top: 10px;">
                             <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <div class="form-group">
-                                            <label for="purchase_currency_id" class="font-weight-bold text-dark" style="font-size: 14px;">Currency <small id="purchase_currency_details" style="color: #ff0000"></small></label>
-                                            <select name="purchase_currency_id" id="purchaseCurrencySelect" class="form-control">
-                                                <option value="" disabled selected>Choose Currency</option>
-                                            </select>
-                                            <input type="hidden" name="purchase_bdt_amount" id="purchase_bdt_amount" value="">
-                                        </div>
-                                    </div>
-                                </div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label>Purchase Amount</label>
                                         <input type="number" step="any" name="purchase_amount" id="purchase_amount" placeholder="Amount/Cost" class="form-control">
                                     </div>
                                 </div>
-                                <div class="col-sm-12">
+                                <div class="col-sm-6">
                                     <div class="form-group">
                                         <label>Payment Type</label>
                                         <select name="payment_type" id="payment_type" class="form-control">
@@ -158,15 +156,6 @@
                     <div class="row agent_candidate_price_container">
                         <div class="col-sm-12" style="border: solid 2px #d9d9d9;padding-top: 10px;border-radius: 15px;margin-bottom: 10px;">
                             <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <label for="currency_id" class="font-weight-bold text-dark" style="font-size: 14px;">Currency <small id="currency_details" style="color: #ff0000"></small></label>
-                                        <select name="currency_id" id="currencySelect" class="form-control" required>
-                                            <option value="" disabled selected>Choose Currency</option>
-                                        </select>
-                                        <input type="hidden" name="bdt_price" id="bdt_price" value="">
-                                    </div>
-                                </div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label>Agent Price </label>
@@ -177,6 +166,12 @@
                                     <div class="form-group">
                                         <label>Candidate Price </label>
                                         <input type="number" step="any" name="candidate_price" id="candidate_price" placeholder="Candidate Sell Amount" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6" id="commission_div" style="display: none">
+                                    <div class="form-group">
+                                        <label>Commission Amount </label>
+                                        <input type="number" step="any" name="commission_amount" id="commission_amount" placeholder="Commission Amount" class="form-control">
                                     </div>
                                 </div>
                             </div>
