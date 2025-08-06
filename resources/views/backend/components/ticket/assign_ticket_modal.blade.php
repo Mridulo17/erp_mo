@@ -35,7 +35,7 @@
                                 <div class="checkbox checkbox-success">
                                     <input name="is_complete_assigned" id="is_complete_assigned" type="checkbox">
                                     <label for="is_complete_assigned"> Make Assigned Complete <br>
-                                        <small class="text-danger" style="position: absolute; top: 60%;">For lowest candidate quantity</small></label>
+                                        <small class="text-danger" id="show_total_candidate_text"></small></label>
                                 </div>
                             </div>
                         </div>

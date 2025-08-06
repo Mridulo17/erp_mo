@@ -215,8 +215,10 @@
                 $('#selectTicket').on('change', function () {
                     const selectedOption = $(this).find('option:selected');
                     const ticket_type = selectedOption.data('ticket_type');
+                    const total_candidate = selectedOption.data('total_candidate');
                     if(ticket_type === "System Ticket - Multi person" || ticket_type === "Group Ticket - Multi person") {
                         $('#complete_assign_div').show();
+                        $('#show_total_candidate_text').text("(" +" Selected candidate should be " + total_candidate + ")");
                     } else {
                         $('#complete_assign_div').hide();
                     }
@@ -226,181 +228,42 @@
                     }
                 });
 
-                fetchcountriess();
-                function fetchcountriess() {
-                    $.ajax({
-                        url: "{{ route('supper_admin.country.active') }}",
-                        method: "GET",
-                        success: function(data) {
-                            let select = $('#countrySelect');
-                            select.empty();
-                            select.append('<option value="" disabled selected>Country</option>');
-                            data.forEach(function(State) {
-                                select.append('<option value="' + State.id + '">' + State.name + '</option>');
-                            });
-                        },
-                        error: function(xhr) {
-                            console.error("Failed to fetch countries:", xhr);
-                        }
-                    });
+                function getSelectedCount() {
+                    return $('#SelectCandidate option:selected').length;
                 }
 
-                fetchAirlineOffices();
-
-                function fetchAirlineOffices() {
-                    $.ajax({
-                        url: "{{ route('admin.airline-office.active') }}",
-                        method: "GET",
-                        success: function (data) {
-                            let select = $('#selectOffice');
-                            select.empty();
-                            select.append('<option value="" disabled selected>Airlines Office</option>');
-                            data.forEach(function (office) {
-                                select.append(
-                                    '<option value="' + office.id + '">' +
-                                    office.name + '</option>'
-                                );
-                            });
-
-                        },
-                        error: function (xhr) {
-                            console.error("Failed to fetch currencies:", xhr);
-                        }
-                    });
+                function getTotalCandidate() {
+                    const selectedOption = $('#selectTicket').find('option:selected');
+                    return selectedOption.data('total_candidate');
                 }
 
-                fetchOtherOffices();
+                $('#is_complete_assigned').on('change', function () {
+                    const selectedCount = getSelectedCount();
+                    const totalCandidate = getTotalCandidate();
 
-                function fetchOtherOffices() {
-                    $.ajax({
-                        url: "{{ route('admin.other-office.active') }}",
-                        method: "GET",
-                        success: function (data) {
-                            let select = $('#selectOtherOffice');
-                            select.empty();
-                            select.append('<option value="" disabled selected>Other Office</option>');
-
-                            data.forEach(function (office) {
-                                select.append(
-                                    '<option value="' + office.id + '">' +
-                                    office.name +
-                                    '</option>'
-                                );
-                            });
-                        },
-                        error: function (xhr) {
-                            console.error("Failed to fetch candidate types:", xhr);
-                        }
-                    });
-                }
-
-                $('#source').on('change', function () {
-                    const selectedText = $(this).find('option:selected').text();
-
-                    if (selectedText === 'Local Office' || selectedText === 'Budget Carrier') {
-                        $('#other-office-div').show();
-                    } else if (selectedText === 'IATA' || selectedText === 'Budget Carrier') {
-                        $('#payment_vat_tax_container').show();
-                    } else {
-                        $('#other-office-div').hide();
-                        $('#payment_vat_tax_container').hide();
-                    }
-                });
-                $('#ticket_type').on('change', function () {
-                    const selectedText = $(this).find('option:selected').text();
-
-                    if (selectedText === 'System Ticket - Single person') {
-                        $('#refund_button_container').show();
-                    }
-                    else if (selectedText === 'System Ticket - Multi person') {
-                        $('#refund_button_container').show();
-                    }
-                    else {
-                        $('#refund_button_container').hide();
-                    }
-                });
-
-                $('#purchase_payment_type').on('change', function () {
-                    const selectedText = $(this).find('option:selected').text();
-
-                    if (selectedText === 'Paid') {
-                        $('#purchase_div').show();
-                    } else {
-                        $('#purchase_div').hide();
-                    }
-                });
-
-                function handlePaymentOption() {
-                    if ($('#current_payment').is(':checked')) {
-                        $('#partial_amount_div').hide();
-                        $('#ticket_payment_method_container').show();
-                        $('#agent_commission_div').show();
-                    } else if ($('#partial_payment').is(':checked')) {
-                        $('#partial_amount_div').show();
-                        $('#ticket_payment_method_container').show();
-                        $('#agent_commission_div').show();
-                    } else if ($('#payment_by_agent').is(':checked')) {
-                        $('#partial_amount_div').hide();
-                        $('#ticket_payment_method_container').hide();
-                        $('#agent_commission_div').show();
-                    } else if ($('#due_payment').is(':checked')) {
-                        $('#partial_amount_div').hide();
-                        $('#ticket_payment_method_container').hide();
-                        $('#agent_commission_div').show();
-                    } else {
-                        $('#partial_amount_div').hide();
-                        $('#ticket_payment_method_container').hide();
-                        $('#agent_commission_div').hide();
-                    }
-                }
-
-                // When checkbox is toggled
-                $('#make_flight_complete').on('change', function () {
                     if ($(this).is(':checked')) {
-                        $('#flight-radio').slideDown(); // smoother than show()
+                        if (selectedCount !== totalCandidate) {
+                            // Show warning
+                            $('#show_total_candidate_text').text(
+                                "(You must select exactly " + totalCandidate + " candidates)"
+                            );
 
-                        // Run handler on load
-                        handlePaymentOption();
-
-                        // Attach radio change only once to avoid duplicates
-                        $('input[name="payment_type"]').off('change').on('change', function () {
-                            handlePaymentOption();
-                        });
+                            // Uncheck the checkbox
+                            $(this).prop('checked', false);
+                        } else {
+                            $('#show_total_candidate_text').text(""); // clear warning
+                        }
                     } else {
-                        $('#flight-radio').slideUp();
-                        $('#partial_amount_div').hide();
-                        $('#ticket_payment_method_container').hide();
-                        $('#agent_commission_div').hide();
+                        $('#show_total_candidate_text').text(""); // clear warning on uncheck
                     }
                 });
 
-                $('#is_pre_purchase').on('change', function () {
-                    if ($(this).is(':checked')) {
-                        $('#single-div').hide();
-                        $('#candidate-qty-div').show();
-                    } else {
-                        $('#single-div').show();
-                        $('#candidate-qty-div').hide();
+                // Optional: clear warning on select change
+                $('#SelectCandidate').on('change', function () {
+                    if ($('#is_complete_assigned').is(':checked')) {
+                        // Revalidate when changing selection
+                        $('#is_complete_assigned').trigger('change');
                     }
-                });
-
-                $('#total_candidate').on('input', function () {
-                    const candidate =  $(this).val();
-                    $('#show_total_candidate').text("(" +candidate+ ")");
-
-                });
-                $('#sell_amount_total').on('input', function () {
-                    const totalSell =  $(this).val();
-                    const candidate =  $('#total_candidate').val();
-                    const perTicket = totalSell/candidate;
-                    $('#per_ticket_amount').val(perTicket);
-
-                });
-
-                $('#selectCandidate').on('change', function () {
-                    const selectedCount = $(this).find('option:selected').length;
-                    $('#total_candidate').val(selectedCount);
-                    $('#show_total_candidate').text("(" + selectedCount + ")");
                 });
 
                 $('#ticketForm').on('submit', function (e) {
@@ -408,13 +271,11 @@
                     let isEdit = $('#ticket_id').val() !== '';
                     let formData = new FormData(this);
                     let id = $('#ticket_id').val();
-                    formData.set('is_pre_purchase', $('#is_pre_purchase').is(':checked') ? '1' : '0');
-                    formData.set('is_refundable', $('#is_refundable').is(':checked') ? '1' : '0');
-                    formData.set('is_make_flight_complete', $('#make_flight_complete').is(':checked') ? '1' : '0');
-                    const baseUpdateUrl = "{{ url('admin/tickets') }}";
+                    formData.set('is_complete_assigned', $('#is_complete_assigned').is(':checked') ? '1' : '0');
+                    const baseUpdateUrl = "{{ url('admin/assign-tickets') }}";
                     let url = isEdit
                         ? `${baseUpdateUrl}/${id}`
-                        : `{{ route('admin.tickets.store') }}`;
+                        : `{{ route('admin.assign-tickets.store') }}`;
 
                     let method = isEdit ? 'POST' : 'POST';
                     if (isEdit) {
@@ -422,7 +283,7 @@
                     }
 
                     Swal.fire({
-                        title: isEdit ? "Update Ticket?" : "Add Ticket?",
+                        title: isEdit ? "Update Assign?" : "Assign Ticket?",
                         icon: "question",
                         showCancelButton: true,
                         confirmButtonText: "Yes, proceed"
@@ -446,7 +307,7 @@
                                     }
                                 },
                                 error: function () {
-                                    Swal.fire('Error!', 'Failed to save ticket.', 'error');
+                                    Swal.fire('Error!', 'Failed to assign ticket.', 'error');
                                 }
                             });
                         }
@@ -460,7 +321,7 @@
                     $('#candidateType').val('').trigger('change');
                     $('#selectOtherOffice').val('').trigger('change');
                     $('#selectOffice').val('').trigger('change');
-                    $('#selectCandidate').val('').trigger('change');
+                    $('#SelectCandidate').val('').trigger('change');
                     $('#multiSelectCandidate').val('').trigger('change');
                     $('#modalTitle').text('Assign Ticket');
                     $('#modal-center').modal('show');
