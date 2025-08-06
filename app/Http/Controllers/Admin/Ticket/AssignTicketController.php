@@ -35,10 +35,7 @@ class AssignTicketController extends Controller
     {
         try {
             $request->validate([
-                'ticket_id'      => 'required|integer',
-                'ticket_type'      => 'required',
-                'pnr_number'      => 'required',
-                'total_candidate'      => 'required|integer',
+                'ticket_id'      => 'required|integer'
                 ]);
 
             $ticket = Ticket::where('id', $request->ticket_id)->first();
@@ -63,7 +60,7 @@ class AssignTicketController extends Controller
                 AssignTicketCandidate::insert($data);
             }
             if ($request->is_complete_assigned == '1') {
-                $ticket->update(['is_make_flight_complete' => '1']);
+                $ticket->update(['is_assigned' => '1']);
             }
 
             return response()->json(['status' => 'success', 'message' => 'Ticket assigned Successfully']);
@@ -85,9 +82,10 @@ class AssignTicketController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(AssignTicket $assignTicket)
+    public function edit(string $id)
     {
-        //
+        $assignTicket = AssignTicket::with(['ticket','ticket.country', 'assignTicketCandidates' , 'assignTicketCandidates.candidate.personalInfo', 'assignTicketCandidates.candidate.candidateType'])->findOrFail($id);
+        return response()->json($assignTicket);
     }
 
     /**

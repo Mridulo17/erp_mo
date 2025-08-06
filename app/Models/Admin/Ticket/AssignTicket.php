@@ -20,8 +20,8 @@ class AssignTicket extends Model
     {
         return $this->belongsTo(Ticket::class);
     }
-    public function candidate()
+    public function assignTicketCandidates()
     {
-        return $this->belongsTo(Candidate::class);
+        return $this->hasMany(AssignTicketCandidate::class);
     }
 }

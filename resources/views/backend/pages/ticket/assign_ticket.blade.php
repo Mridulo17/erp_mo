@@ -55,6 +55,7 @@
 
         @include('backend.components.ticket.assign_ticket_modal')
         @include('backend.components.ticket.view_candidate_list_modal')
+        @include('backend.components.ticket.view_candidate_modal')
 
         <div class="box-body">
             <div class="table-responsive">
@@ -76,52 +77,21 @@
                         <tr>
                             <td>
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="dropdown"
-                                            aria-haspopup="true" aria-expanded="false">
-                                        <i class="fa fa-bars"></i> Action
-                                    </button>
-                                    <div class="dropdown-menu">
+
                                         <!-- Edit Button inside Dropdown -->
-                                        <a href="#" class="dropdown-item editBlogButton" data-toggle="modal" data-target="#view_ticket" data-id="{{ $bonus->id }}">
-                                            <i class="fa fa-ticket"></i>  View ticket
+                                        <a href="#" class="dropdown-item editBlogButton btn btn-primary btn-sm" title="View Candidate" data-toggle="modal" data-target="#view_ticket" data-id="{{ $bonus->id }}">
+                                            <i class="fa fa-eye"></i>
                                         </a>
 
-                                        <!-- Delete Form inside Dropdown -->
-                                        <button type="button"
-                                                class="dropdown-item text-danger deleteBonusBtn"
-                                                data-id="{{ $bonus->id }}">
-                                            <i class="fa fa-trash"></i> Delete
-                                        </button>
-                                    </div>
                                 </div>
                             </td>
 
                             <td>{{ $key + 1 }}</td>
-                            <td class="wrap-text">{{ $bonus->issue_date  }}</td>
-                            <td class="wrap-text">{{ $bonus->ticket_name  }}</td>
-                            <td class="wrap-text">{{ $bonus->source  }}</td>
-                            <td class="wrap-text">{{ $bonus->country ? $bonus->country->name : '' }}</td>
+                            <td class="wrap-text">{{ $bonus->ticket ? $bonus->ticket->ticket_name : '' }}</td>
                             <td class="wrap-text">{{ $bonus->ticket_type  }}</td>
+                            <td class="wrap-text">{{ $bonus->pnr_number  }}</td>
                             <td class="wrap-text">{{ $bonus->total_candidate  }}</td>
-                            <td><b style="font-size: 14px;">{{ $bonus->pnr_number  }}</b> <br> <b style="font-size: 14px;" class="text-primary">{{ $bonus->flight_number  }}</b></td>
-                            <td class="wrap-text">{{ $bonus->flight_date  }} {{ \Carbon\Carbon::parse($bonus->flight_time)->format('h:i A') }} </td>
-                            <td>
-                            <span class="badge {{ $bonus->is_assigned == '1' ? 'badge-success' : 'badge-danger' }}">
-                                {{ $bonus->is_assigned == '1' ? 'Assigned' : 'Not Yet!' }}
-                            </span>
-                            </td>
-                            <td>
-                            <span class="badge {{ $bonus->is_pre_purchase == '1' ? 'badge-primary' : 'badge-success' }}">
-                                {{ $bonus->is_pre_purchase == '1' ? 'Pre Purchase' : 'Live Purchase!' }}
-                            </span>
-                            </td>
-                            <td class="wrap-text">{{ $bonus->purchase_amount  }}</td>
-                            <td class="wrap-text">{{ $bonus->purchase_payment_type == 'Paid' ? '0.00' : $bonus->purchase_amount  }}</td>
-                            <td>
-                            <span class="badge {{ $bonus->purchase_payment_type == 'Paid' ? 'badge-success' : 'badge-danger' }}">
-                                {{ $bonus->purchase_payment_type == 'Paid' ? 'Paid' : 'Due' }}
-                            </span>
-                            </td>
+                            <td class="wrap-text">{{ $bonus->created_at->format('Y-m-d')  }}</td>
                         </tr>
                     @endforeach
                     </tbody>
@@ -132,16 +102,16 @@
 
     @section('script')
         <script>
-            function fetchTickets() {
+            function fetchAssignTickets() {
                 $.ajax({
-                    url: '{{ route("admin.tickets.index") }}',
+                    url: '{{ route("admin.assign-tickets.index") }}',
                     type: 'GET',
                     success: function (data) {
                         let newBody = $(data).find('#customDataTable tbody').html();
                         $('#customDataTable tbody').html(newBody);
                     },
                     error: function () {
-                        console.error('Failed to refresh sponsor table.');
+                        console.error('Failed to refresh assign ticket table.');
                     }
                 });
             }
@@ -301,7 +271,7 @@
                                         Swal.fire('Success!', response.message, 'success');
                                         $('#ticketForm')[0].reset();
                                         $('#ticket_id').val('');
-                                        fetchTickets();
+                                        fetchAssignTickets();
                                     } else {
                                         Swal.fire('Error!', response.message, 'error');
                                     }
@@ -330,51 +300,19 @@
 
                 $(document).on('click', '.editBlogButton', function () {
                     const id = $(this).data('id');
-                    const url = '{{ route("admin.tickets.edit", ":id") }}'.replace(':id', id);
+                    const url = '{{ route("admin.assign-tickets.edit", ":id") }}'.replace(':id', id);
 
                     $.ajax({
                         url: url,
                         type: 'GET',
                         success: function (res) {
-                            $('#ticket_id').val(id);
-                            $('#sponsorSelect').val(res.sponsor_id).trigger('change');
-                            $('#jobSelect').val(res.job_list_id).trigger('change');
-                            $('#countrySelect').val(res.country_id).trigger('change');
-                            $('#currencySelect').val(res.currency_id).trigger('change');
-                            $('#view_ticket_name').text(res.pnr_number + '-' + res.ticket_name);
-                            $('#user_name').text(res.user.name);
-                            const date = new Date(res.created_at);
-                            const formattedDate = date.toISOString().split('T')[0]; // YYYY-MM-DD
-
-                            const formattedRegistrationDay = date
-                                    .toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
-                                    .replace(/(\d+)(?=,)/, (_, d) => d + (["th","st","nd","rd"][(d%10>3||Math.floor(d%100/10)==1)?0:d%10]) + ' of')
-                                + ` (${formattedDate})`;
-                            $('#ticket_date').text(formattedRegistrationDay);
-
-                            $('#title').text(res.ticket_name);
-                            $('#view_source').text(res.source);
-                            $('#view_ticket_type').text(res.ticket_type);
-                            $('#view_country').text(res.country.name);
-                            $('#view_office').text(res.airline_office.name);
-                            $('#view_qty').text(res.total_candidate);
+                            $('#view_name').html('<b>Name</b>: ' + res.ticket.ticket_name);
+                            $('#view_source').html('<b>Source</b>: ' + res.ticket.source);
+                            $('#view_type').html('<b>Type</b>: ' + res.ticket_type);
+                            $('#view_country').html('<b>Country</b>: ' + res.ticket.country.name);
                             $('#view_pnr').text(res.pnr_number);
-                            $('#view_flight_date').text(res.flight_date);
-
-                            // Show existing file
-                            if (res.attachment) {
-                                const filePath = res.attachment;
-                                const ext = filePath.split('.').pop().toLowerCase();
-                                const fileUrl = `/storage/${filePath}`;
-
-                                let previewHtml = '';
-
-                                previewHtml = `<a href="${fileUrl}" title="click to view file" target="_blank" class="mr-5"><i class="fa fa-file"></i></a>`;
-
-                                $('#existing-file-preview').html(previewHtml);
-                            }
-
-                            const time = res.flight_time;
+                            $('#view_flight').text(res.ticket.flight_number);
+                            const time = res.ticket.flight_time;
                             const dateTime = '1970-01-01T' + time; // ISO 8601 format
 
                             const formattedTime = new Date(dateTime).toLocaleTimeString('en-US', {
@@ -383,12 +321,58 @@
                                 hour12: true
                             });
 
-                            $('#view_flight_time').text(formattedTime);
+                            $('#view_time').html('<b>Time</b>: ' + res.ticket.flight_date + ' - ' + '<small></small>' + formattedTime);
+                            let candidateListHtml = '';
+
+                            res.assign_ticket_candidates.forEach(function (candidate) {
+                                candidateListHtml += `
+        <li>
+            <a href="#" class="dropdown-item viewCandidateButton" data-toggle="modal" data-target="#view_candidate" data-id="${candidate.candidate_id}">
+                <b>${candidate.candidate.personal_info.first_name} ${candidate.candidate.personal_info. last_name}</b>
+            </a>(${candidate.candidate.candidate_type.name})
+        </li>`;
+                            });
+
+                            $('#candidateList').html(candidateListHtml);
+
                             $('#modalTitle').text('View Ticket');
                             $('#view_ticket').modal('show');
                         },
                         error: function () {
                             Swal.fire('Error', 'Could not load ticket data.', 'error');
+                        }
+                    });
+                });
+
+                $(document).on('click', '.viewCandidateButton', function () {
+                    const id = $(this).data('id');
+                    const url = '{{ route("admin.assign-tickets.edit", ":id") }}'.replace(':id', id);
+
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        success: function (res) {
+                            $('#view_name').html('<b>Name</b>: ' + res.ticket.ticket_name);
+                            $('#view_source').html('<b>Source</b>: ' + res.ticket.source);
+                            $('#view_type').html('<b>Type</b>: ' + res.ticket_type);
+                            $('#view_country').html('<b>Country</b>: ' + res.ticket.country.name);
+                            $('#view_pnr').text(res.pnr_number);
+                            $('#view_flight').text(res.ticket.flight_number);
+                            const time = res.ticket.flight_time;
+                            const dateTime = '1970-01-01T' + time; // ISO 8601 format
+
+                            const formattedTime = new Date(dateTime).toLocaleTimeString('en-US', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: true
+                            });
+
+                            $('#view_time').html('<b>Time</b>: ' + res.ticket.flight_date + ' - ' + '<small></small>' + formattedTime);
+                            $('#modalTitle').text('View Ticket');
+                            $('#view_candidate').modal('show');
+                        },
+                        error: function () {
+                            Swal.fire('Error', 'Could not load candidate data.', 'error');
                         }
                     });
                 });
@@ -415,7 +399,7 @@
                                 success: function (response) {
                                     if (response.status === 'success') {
                                         Swal.fire('Deleted!', response.message, 'success');
-                                        fetchTickets();
+                                        fetchAssignTickets();
                                     } else {
                                         Swal.fire('Error!', response.message, 'error');
                                     }

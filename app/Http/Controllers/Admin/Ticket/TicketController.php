@@ -23,7 +23,7 @@ class TicketController extends Controller
 
     public function prePurchaseTicketList()
     {
-        $tickets = Ticket::where('is_pre_purchase', 1)->get();
+        $tickets = Ticket::where('is_pre_purchase', 1)->where('is_assigned', 0)->get();
         return response()->json($tickets);
     }
 

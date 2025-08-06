@@ -26,7 +26,7 @@
                         <div class="col-sm-12">
                             <div class="form-group ">
                                 <label>Choose Candidates</label>
-                                <select id="SelectCandidate" name="multi_candidate[]" multiple="" class="form-control select2" required>
+                                <select id="SelectCandidate" name="candidate_id[]" multiple="" class="form-control select2" required>
                                 </select>
                             </div>
                         </div>
