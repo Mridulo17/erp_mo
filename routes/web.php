@@ -195,6 +195,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
         return response()->json($offices);
     })->name('other-office.active');
 
+    Route::get('/pre-purchase-ticket', [TicketController::class, 'prePurchaseTicketList'])->name('pre-purchase-ticket');
+
     Route::get('investors/transactions', [InvestorTransactionController::class, 'index'])->name('investors.transactions');
     Route::post('investors/transactions', [InvestorTransactionController::class, 'store'])->name('investors.transactions');
 

@@ -157,27 +157,27 @@
 
             $(document).ready(function () {
 
-                fetchCandidateTypes();
+                fetchTickets();
 
-                function fetchCandidateTypes() {
+                function fetchTickets() {
                     $.ajax({
-                        url: "{{ route('admin.candidate-type.active') }}",
+                        url: "{{ route('admin.pre-purchase-ticket') }}",
                         method: "GET",
                         success: function (data) {
-                            let select = $('#candidateType');
+                            let select = $('#selectTicket');
                             select.empty();
-                            select.append('<option value="" disabled selected>Candidate Type</option>');
+                            select.append('<option value="" disabled selected>Choose Ticket</option>');
 
-                            data.forEach(function (candidate) {
+                            data.forEach(function (ticket) {
                                 select.append(
-                                    '<option data-name="' + candidate.name + '" value="' + candidate.id + '">' +
-                                    candidate.name +
+                                    '<option data-total_candidate="' + ticket.total_candidate + '" data-ticket_type="' + ticket.ticket_type + '" data-candidate_type_id="' + ticket.candidate_type_id + '" value="' + ticket.id + '">' +
+                                    ticket.ticket_name +
                                 '</option>'
                                 );
                             });
                         },
                         error: function (xhr) {
-                            console.error("Failed to fetch candidate types:", xhr);
+                            console.error("Failed to fetch tickets:", xhr);
                         }
                     });
                 }
@@ -190,7 +190,7 @@
                         method: "GET",
                         data: {candidate_type_id: typeId}, // Pass candidate_type_id to filter employees
                         success: function (data) {
-                            let select = $('#selectCandidate');
+                            let select = $('#SelectCandidate');
                             select.empty();
 
                             data.forEach(function (candidate) {
@@ -212,17 +212,17 @@
                 }
 
                 // Trigger the fetchEmployees function when a category is selected
-                $('#candidateType').on('change', function () {
+                $('#selectTicket').on('change', function () {
                     const selectedOption = $(this).find('option:selected');
-                    const name = selectedOption.data('name');
-                    if(name && name.toLowerCase() === "air ticket") {
-                        $('#make_flight').show();
+                    const ticket_type = selectedOption.data('ticket_type');
+                    if(ticket_type === "System Ticket - Multi person" || ticket_type === "Group Ticket - Multi person") {
+                        $('#complete_assign_div').show();
                     } else {
-                        $('#make_flight').hide();
+                        $('#complete_assign_div').hide();
                     }
-                    const typeId = $(this).val();
-                    if (typeId) {
-                        fetchCandidates(typeId);  // Fetch candidate based on the selected type
+                    const candidate_type_id = selectedOption.data('candidate_type_id');
+                    if (candidate_type_id) {
+                        fetchCandidates(candidate_type_id);  // Fetch candidate based on the selected type
                     }
                 });
 

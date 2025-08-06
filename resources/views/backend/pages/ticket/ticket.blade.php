@@ -320,9 +320,6 @@
                     if (selectedText === 'System Ticket - Single person') {
                         $('#refund_button_container').show();
                     }
-                    else if (selectedText === 'System Ticket - Multi person') {
-                        $('#refund_button_container').show();
-                    }
                     else {
                         $('#refund_button_container').hide();
                     }
@@ -383,11 +380,20 @@
                 });
 
                 $('#is_pre_purchase').on('change', function () {
+                    const ticketType =  $('#ticket_type').val();
                     if ($(this).is(':checked')) {
                         $('#single-div').hide();
-                        $('#candidate-qty-div').show();
+                        $('#make_flight').hide();
+                        if(ticketType === 'System Ticket - Single person') {
+                            $('#candidate-qty-div').hide();
+                            $('#total_candidate').val(1);
+                            $('#show_total_candidate').text("(1)");
+                        } else {
+                            $('#candidate-qty-div').show();
+                        }
                     } else {
                         $('#single-div').show();
+                        $('#make_flight').show();
                         $('#candidate-qty-div').hide();
                     }
                 });

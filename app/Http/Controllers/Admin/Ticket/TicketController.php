@@ -21,6 +21,12 @@ class TicketController extends Controller
         return view('backend.pages.ticket.ticket', compact('tickets'));
     }
 
+    public function prePurchaseTicketList()
+    {
+        $tickets = Ticket::where('is_pre_purchase', 1)->get();
+        return response()->json($tickets);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
