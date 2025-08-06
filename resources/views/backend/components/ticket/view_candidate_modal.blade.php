@@ -1,7 +1,6 @@
 <div id="view_candidate" class="modal center-modal fade view_profile_modal show" style="padding-right: 7px;" aria-modal="true"><div class="modal-dialog modal-xl" style="min-width: 25%;"><div class="modal-content" style="border-radius: 10px !important;">
             <div class="modal-header">
-                <h5 class="modal-title view_profile_modal_title">Ticket:<b id="view_ticket_name"></b></h5>
-                <button type="button" class="close text-danger" data-dismiss="modal"> <span aria-hidden="true">×</span> </button>
+                <h5 class="modal-title view_profile_modal_title"><b id="view_candidate_name"></b>'s Profile</h5><button type="button" class="close text-danger" data-dismiss="modal"> <span aria-hidden="true">×</span> </button>
             </div>
             <div class="modal-body view_profile_modal_body" style="overflow-x: hidden;max-height: 80vh; overflow-y: scroll;">
                 <link rel="stylesheet" type="text/css" href="http://erp.mahfuza-overseas.com/mahfuza_v2/assets/home/js/cropper/cropper.css">
@@ -21,66 +20,58 @@
                                                 <div class="logo-lg p-0">
                                                     <span class="light-logo" style="font-size: 20px; font-weight: 500;"><i class="fa fa-plane" style="font-size: x-large;"></i><i><span style="color: #f00;">M</span>ahfuza<span style="color: #f00;">O</span>verseas</i></span>
                                                 </div>
-                                                Registration by: <b>Foyez Ahmed</b> |
-                                                Employee id: <b>00017</b><br>
-                                                Department: <b>Computer Oparetor</b> |
-                                                Designation: <b>Graphics Designer</b><br>
-                                                Date: <b>Saturday, 30th of November 2024 (2024-11-30)</b>
+                                                Registration by: <b id="candidate_registration_by"></b> |
+                                                Employee id: <b></b><br>
+                                                Department: <b></b> |
+                                                Designation: <b></b><br>
+                                                Date: <b id="candidate_date"></b>
                                             </center>
                                         </div>
                                     </div>
                                     <hr>
                                     <div class="row">
                                         <div class="col-sm-3" style="max-width: 30%;">
-                                            <div class="image_area">
-                                                <form method="post">
-                                                    <label for="upload_image">
-                                                        <img src="http://erp.mahfuza-overseas.com/mahfuza_v2/assets/uploads/documents/candidate/files_2024_11_30_374426092666812548.jpg" id="uploaded_image" class="img-responsive img-circle">
-                                                        <div class="overlay">
-                                                            <div class="text">Click to Change Profile Picture</div>
-                                                        </div>
-                                                        <input type="file" name="image" class="image" id="upload_image" accept="image/*" style="display:none">
-                                                    </label>
-                                                </form>
+                                            <div class="image_preview">
+
                                             </div>
                                         </div>
                                         <div class="col-sm-9" style="max-width: 70%;">
                                             <b><u>Personal Information</u></b>
                                             <table class="table table-sm">
                                                 <tbody><tr>
-                                                    <td>First name</td> <td>:</td> <td><b>MD BABUL </b></td>
-                                                    <td>Last name</td> <td>:</td> <td><b>MIA</b></td>
+                                                    <td>First name</td> <td>:</td> <td><b id="first_name"></b></td>
+                                                    <td>Last name</td> <td>:</td> <td><b id="last_name"></b></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Gender</td> <td>:</td> <td><b>Male</b></td>
-                                                    <td>Date of birth</td> <td>:</td> <td><b>1998-10-09</b></td>
+                                                    <td>Gender</td> <td>:</td> <td><b id="gender"></b></td>
+                                                    <td>Date of birth</td> <td>:</td> <td><b id="dob"></b></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Email</td> <td>:</td> <td><b></b></td>
-                                                    <td>Phone number</td> <td>:</td> <td><b>01923323953</b></td>
+                                                    <td>Email</td> <td>:</td> <td><b id="email"></b></td>
+                                                    <td>Phone number</td> <td>:</td> <td><b id="number"></b></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Contact person number</td> <td>:</td> <td><b></b></td>
-                                                    <td>NID / Birth certificate</td> <td>:</td> <td><b>7319123449</b></td>
+                                                    <td>Contact person number</td> <td>:</td> <td><b id="contact"></b></td>
+                                                    <td>NID / Birth certificate</td> <td>:</td> <td><b id="birth"></b></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Father name</td> <td>:</td> <td><b></b></td>
-                                                    <td>Mother name</td> <td>:</td> <td><b></b></td>
+                                                    <td>Father name</td> <td>:</td> <td><b id="father"></b></td>
+                                                    <td>Mother name</td> <td>:</td> <td><b id="mother"></b></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Marital status</td> <td>:</td> <td><b></b></td>
-                                                    <td>Spouse name</td> <td>:</td> <td><b></b></td>
+                                                    <td>Marital status</td> <td>:</td> <td><b id="marital"></b></td>
+                                                    <td>Spouse name</td> <td>:</td> <td><b id="spouse"></b></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Nominee name</td> <td>:</td> <td><b></b></td>
-                                                    <td>Relation with nominee</td> <td>:</td> <td><b></b></td>
+                                                    <td>Nominee name</td> <td>:</td> <td><b id="nominee"></b></td>
+                                                    <td>Relation with nominee</td> <td>:</td> <td><b id="relation"></b></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Religion</td> <td>:</td> <td><b></b></td>
-                                                    <td>Blood group</td> <td>:</td> <td><b></b></td>
+                                                    <td>Religion</td> <td>:</td> <td><b id="religion"></b></td>
+                                                    <td>Blood group</td> <td>:</td> <td><b id="blood"></b></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Note</td> <td>:</td> <td colspan="4"><b></b></td>
+                                                    <td>Note</td> <td>:</td> <td colspan="4"><b id="note"></b></td>
                                                 </tr>
                                                 </tbody></table>
                                         </div>
@@ -90,19 +81,19 @@
                                             <b><u>Basic Information</u></b>
                                             <table class="table table-sm">
                                                 <tbody><tr>
-                                                    <td style="width: 150px;">Candidate type</td> <td>:</td> <td colspan="4"><b>Air Ticket</b></td>
+                                                    <td style="width: 150px;">Candidate type</td> <td>:</td> <td colspan="4"><b id="type"></b></td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="width: 150px;">Interested Country</td> <td>:</td> <td><b>Bangladesh</b></td>
-                                                    <td style="width: 150px;">Interested job</td> <td>:</td> <td><b>Air Ticket Air Ticket</b></td>
+                                                    <td style="width: 150px;">Interested Country</td> <td>:</td> <td><b id="interested_country"></b></td>
+                                                    <td style="width: 150px;">Interested job</td> <td>:</td> <td><b id="interested_job"></b></td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="width: 150px;">Process Country</td> <td>:</td> <td><b>Bangladesh</b></td>
-                                                    <td style="width: 150px;">Process job</td> <td>:</td> <td><b>N/A</b></td>
+                                                    <td style="width: 150px;">Process Country</td> <td>:</td> <td><b id="process_country">Bangladesh</b></td>
+                                                    <td style="width: 150px;">Process job</td> <td>:</td> <td><b id="process_job">N/A</b></td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="width: 150px;">Referral Agent</td> <td>:</td> <td><b>1. Walk in Candidate</b></td>
-                                                    <td style="width: 150px;">Nationality</td> <td>:</td> <td><b>Bangladeshi</b></td>
+                                                    <td style="width: 150px;">Referral Agent</td> <td>:</td> <td><b id="referral_agent"></b></td>
+                                                    <td style="width: 150px;">Nationality</td> <td>:</td> <td><b id="nationality"></b></td>
                                                 </tr>
                                                 </tbody></table>
                                         </div>
@@ -110,15 +101,14 @@
                                             <b><u>Document Information</u></b>
                                             <table class="table table-sm">
                                                 <tbody><tr>
-                                                    <td>Candidate photo</td> <td>:</td> <td><b>
-                                                            <a href="http://erp.mahfuza-overseas.com/mahfuza_v2/assets/uploads/documents/candidate/files_2024_11_30_374426092666812548.jpg" title="click to view file" target="_blank" class="mr-5"><i class="fa fa-file"></i></a>									</b></td>
+                                                    <td>Candidate photo</td> <td>:</td> <td><b id="img_pre"></b></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Police Verification</td> <td>:</td> <td><b>
                                                         </b></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Other Certication</td> <td>:</td> <td><b>
+                                                    <td>Other Certification</td> <td>:</td> <td><b>
                                                         </b></td>
                                                 </tr>
                                                 <tr>
@@ -132,29 +122,10 @@
                                         <div class="col-sm-9">
                                             <b><u>Experience Information</u></b>
                                             <table class="table table-sm">
-                                                <tbody><tr>
-                                                    <td style="width: 150px;">Experiance Type</td> <td>:</td> <td colspan="4"><b></b></td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="width: 150px;">Company Name</td> <td>:</td> <td><b></b></td>
-                                                    <td>Work Type</td> <td>:</td> <td><b></b></td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="width: 150px;">Departure Date</td> <td>:</td> <td><b></b></td>
-                                                    <td>Arrival Date</td> <td>:</td> <td><b></b></td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="width: 150px;">Departure Seal</td> <td>:</td> <td><b></b></td>
-                                                    <td>Arrival Seal</td> <td>:</td> <td><b></b></td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="width: 150px;">Old Company Address</td> <td>:</td> <td colspan="4"><b></b></td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="width: 150px;">Travelled Country</td> <td>:</td> <td colspan="4"><b>
-                                                        </b></td>
-                                                </tr>
-                                                </tbody></table>
+                                                <tbody id="candidateExperience">
+
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -162,16 +133,16 @@
                                             <b><u>Passport Information</u></b>
                                             <table class="table table-sm">
                                                 <tbody><tr>
-                                                    <td style="width: 150px;">Passport Number</td> <td>:</td> <td><b></b></td>
-                                                    <td style="width: 150px;">Passport Issue Date</td> <td>:</td> <td><b></b></td>
+                                                    <td style="width: 150px;">Passport Number</td> <td>:</td> <td><b id="pass_no"></b></td>
+                                                    <td style="width: 150px;">Passport Issue Date</td> <td>:</td> <td><b id="pass_issue_date"></b></td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="width: 150px;">Passport Issue Place</td> <td>:</td> <td><b></b></td>
-                                                    <td style="width: 150px;">Validity Year</td> <td>:</td> <td><b></b></td>
+                                                    <td style="width: 150px;">Passport Issue Place</td> <td>:</td> <td><b id="pass_issue_place"></b></td>
+                                                    <td style="width: 150px;">Validity Year</td> <td>:</td> <td><b id="validate_year"></b></td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="width: 150px;">Passport Scan Copy</td> <td>:</td> <td><b></b></td>
-                                                    <td style="width: 150px;">Note</td> <td>:</td> <td><b></b></td>
+                                                    <td style="width: 150px;">Passport Scan Copy</td> <td>:</td> <td><b id="pass_scan"></b></td>
+                                                    <td style="width: 150px;">Note</td> <td>:</td> <td><b id="pass_note"></b></td>
                                                 </tr>
                                                 </tbody></table>
                                         </div>

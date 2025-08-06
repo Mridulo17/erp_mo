@@ -199,6 +199,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     Route::get('investors/transactions', [InvestorTransactionController::class, 'index'])->name('investors.transactions');
     Route::post('investors/transactions', [InvestorTransactionController::class, 'store'])->name('investors.transactions');
+    Route::get('assign-ticket/candidateInfoByID/{ID}', [AssignTicketController::class, 'candidateInfoByID'])->name('assign-ticket.candidateInfoByID');
 
     Route::resource('branches', BranchController::class);
     Route::resource('departments', DepartmentController::class);

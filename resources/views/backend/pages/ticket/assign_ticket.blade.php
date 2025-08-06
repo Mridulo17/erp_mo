@@ -327,7 +327,7 @@
                             res.assign_ticket_candidates.forEach(function (candidate) {
                                 candidateListHtml += `
         <li>
-            <a href="#" class="dropdown-item viewCandidateButton" data-toggle="modal" data-target="#view_candidate" data-id="${candidate.candidate_id}">
+            <a href="#" class="dropdown-item viewCandidateButton" data-toggle="modal" data-target="#view_candidate" data-id="${candidate.id}">
                 <b>${candidate.candidate.personal_info.first_name} ${candidate.candidate.personal_info. last_name}</b>
             </a>(${candidate.candidate.candidate_type.name})
         </li>`;
@@ -346,18 +346,108 @@
 
                 $(document).on('click', '.viewCandidateButton', function () {
                     const id = $(this).data('id');
-                    const url = '{{ route("admin.assign-tickets.edit", ":id") }}'.replace(':id', id);
+                    const url = '{{ route("admin.assign-ticket.candidateInfoByID", ":id") }}'.replace(':id', id);
 
                     $.ajax({
                         url: url,
                         type: 'GET',
                         success: function (res) {
-                            $('#view_name').html('<b>Name</b>: ' + res.ticket.ticket_name);
-                            $('#view_source').html('<b>Source</b>: ' + res.ticket.source);
-                            $('#view_type').html('<b>Type</b>: ' + res.ticket_type);
-                            $('#view_country').html('<b>Country</b>: ' + res.ticket.country.name);
-                            $('#view_pnr').text(res.pnr_number);
-                            $('#view_flight').text(res.ticket.flight_number);
+                            $('#view_candidate_name').text(res.candidate.personal_info.first_name + ' '+res.candidate.personal_info.last_name);
+                            $('#candidate_registration_by').text(res.assign_ticket.ticket.user.name);
+                            const date = new Date(res.created_at);
+                            const formattedDate = date.toISOString().split('T')[0]; // YYYY-MM-DD
+
+                            const formattedRegistrationDay = date
+                                    .toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+                                    .replace(/(\d+)(?=,)/, (_, d) => d + (["th","st","nd","rd"][(d%10>3||Math.floor(d%100/10)==1)?0:d%10]) + ' of')
+                                + ` (${formattedDate})`;
+                            $('#candidate_date').text(formattedRegistrationDay);
+                            if (res.candidate.file && res.candidate.file.file_type === 'photo' && res.candidate.file.file_path) {
+                                const filePath = res.candidate.file.file_path;
+                                const fileUrl = `/storage/${filePath}`;
+
+                                let previewHtml = '';
+                                let previewLinkHtml = '';
+
+                                previewHtml = `<img src="${fileUrl}" class="img-responsive img-circle">`;
+                                previewLinkHtml = `<a href="${fileUrl}" title="click to view file" target="_blank" class="mr-5"><i class="fa fa-file"></i></a>	`;
+
+                                $('#image_preview').html(previewHtml);
+                                $('#img_pre').html(previewLinkHtml);
+                            }
+                            $('#first_name').text(res.candidate.personal_info.first_name);
+                            $('#last_name').text(res.candidate.personal_info.last_name);
+                            $('#gender').text(res.candidate.personal_info.gender.name);
+                            $('#dob').text(res.candidate.personal_info.date_of_birth);
+                            $('#email').text(res.candidate.personal_info.email);
+                            $('#number').text(res.candidate.personal_info.phone_number);
+                            $('#contact').text(res.candidate.personal_info.contact_person_number);
+                            $('#birth').text(res.candidate.personal_info.nid_or_birth_certificate);
+                            $('#father').text(res.candidate.personal_info.father_name);
+                            $('#mother').text(res.candidate.personal_info.mother_name);
+                            $('#marital').text(res.candidate.personal_info.marital_status);
+                            $('#spouse').text(res.candidate.personal_info.spouse_name);
+                            $('#nominee').text(res.candidate.personal_info.nominee_name);
+                            $('#relation').text(res.candidate.personal_info.nominee_relation.name);
+                            $('#religion').text(res.candidate.personal_info.religion.name);
+                            $('#blood').text(res.candidate.personal_info.blood_group.name);
+                            $('#note').text(res.candidate.personal_info.note);
+
+                            $('#type').text(res.candidate.candidate_type.name);
+                            $('#interested_country').text(res.candidate.country.name);
+                            $('#interested_job').text(res.candidate.profession.name);
+                            $('#referral_agent').text(res.candidate.agent.first_name + ' ' + res.candidate.agent.last_name);
+                            $('#nationality').text(res.candidate.nationality);
+
+                            let candidateExperienceHtml = '';
+
+                            res.candidate.experiences.forEach(function (experience) {
+                                candidateExperienceHtml += `
+        <tr>
+            <td style="width: 150px;">Experience Type</td> <td>:</td> <td colspan="4"><b>${experience.experience_type}</b></td>
+        </tr>
+        <tr>
+            <td style="width: 150px;">Company Name</td> <td>:</td> <td><b>${experience.company_name}</b></td>
+            <td>Work Type</td> <td>:</td> <td><b>${experience.workType?.name || ''}</b></td>
+        </tr>
+        <tr>
+            <td style="width: 150px;">Departure Date</td> <td>:</td> <td><b>${experience.departure_date}</b></td>
+            <td>Arrival Date</td> <td>:</td> <td><b>${experience.arrival_date}</b></td>
+        </tr>
+        <tr>
+            <td style="width: 150px;">Departure Seal</td> <td>:</td> <td><b>${experience.departure_seal}</b></td>
+            <td>Arrival Seal</td> <td>:</td> <td><b>${experience.arrival_seal}</b></td>
+        </tr>
+        <tr>
+            <td style="width: 150px;">Old Company Address</td> <td>:</td> <td colspan="4"><b>${experience.old_company_address}</b></td>
+        </tr>
+        <tr>
+            <td style="width: 150px;">Travelled Country</td> <td>:</td> <td colspan="4"><b>${experience.travelledCountry?.name || ''}</b></td>
+        </tr>
+        <tr><td colspan="6" style="border-bottom: 2px solid #ddd;"></td></tr>
+    `;
+                            });
+
+                            $('#candidateExperience').html(candidateExperienceHtml);
+
+                            $('#pass_no').text(res.candidate.passport.passport_number);
+                            $('#pass_issue_date').text(res.candidate.passport.passport_issue_date);
+                            $('#pass_issue_place').text(res.candidate.passport.issue_place.name);
+                            $('#validate_year').text(res.candidate.passport.validity_years);
+                            $('#pass_note').text(res.candidate.passport.note);
+
+                            if (res.candidate.passport.passport_scan_copy) {
+                                const filePath = res.candidate.passport.passport_scan_copy;
+                                const fileUrl = `/storage/${filePath}`;
+
+                                let passportHtml = '';
+
+                                passportHtml = `<a href="${fileUrl}" title="click to view file" target="_blank" class="mr-5"><i class="fa fa-file"></i></a>	`;
+
+                                $('#pass_scan').html(passportHtml);
+                            }
+
+
                             const time = res.ticket.flight_time;
                             const dateTime = '1970-01-01T' + time; // ISO 8601 format
 

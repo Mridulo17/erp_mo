@@ -88,6 +88,13 @@ class AssignTicketController extends Controller
         return response()->json($assignTicket);
     }
 
+    public function candidateInfoByID(string $id)
+    {
+        $assignTicketCandidate = AssignTicketCandidate::with(['assignTicket.ticket','assignTicket.ticket.country','assignTicket.ticket.user', 'candidate' , 'candidate.personalInfo', 'candidate.personalInfo.gender','candidate.personalInfo.religion', 'candidate.personalInfo.bloodGroup', 'candidate.personalInfo.nomineeRelation',  'candidate.candidateType','candidate.country',  'candidate.experiences', 'candidate.experiences.workType', 'candidate.experiences.travelledCountry', 'candidate.passport', 'candidate.passport.issuePlace', 'candidate.location', 'candidate.profession','candidate.file', 'candidate.agent'])->findOrFail($id);
+        return response()->json($assignTicketCandidate);
+    }
+
+
     /**
      * Update the specified resource in storage.
      */

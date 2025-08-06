@@ -60,4 +60,9 @@ class Candidate extends Model
         return $this->hasOne(CandidateLocation::class);
     }
 
+    public function file()
+    {
+        return $this->hasOne(CandidateFile::class);
+    }
+
 }

@@ -13,9 +13,9 @@ class AssignTicketCandidate extends Model
             'candidate_id'
         ];
 
-    public function ticket()
+    public function assignTicket()
     {
-        return $this->belongsTo(Ticket::class);
+        return $this->belongsTo(AssignTicket::class);
     }
     public function candidate()
     {
