@@ -37,7 +37,7 @@ class VisaController extends Controller
                 'visa_qty'      => 'required',
                 'gender'    => 'required|in:Male,Female,Haji',
                 'agent_price'      => 'required',
-                'bdt_price'      => 'required',
+                'bdt_price'      => 'nullable',
                 'candidate_price'      => 'required',
                 'demand_letter' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240', // 10MB max
                 'attachment' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240', // 10MB max
@@ -125,7 +125,7 @@ class VisaController extends Controller
                 'visa_qty'      => 'required',
                'gender'    => 'required|in:Male,Female,Haji',
                 'agent_price'      => 'required',
-                'bdt_price'      => 'required',
+                'bdt_price'      => 'nullable',
                 'candidate_price'      => 'required',
                 'demand_letter' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240', // 10MB max
                 'attachment' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240', // 10MB max
