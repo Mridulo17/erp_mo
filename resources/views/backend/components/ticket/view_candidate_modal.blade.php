@@ -177,7 +177,9 @@
                                         <div class="col-sm-5">
                                             <b><u>Candidate Related All files</u></b>
                                             <table class="table table-sm">
-                                                <tbody><tr><td>Candidate Photo</td> <td>:</td> <td><a href="http://erp.mahfuza-overseas.com/mahfuza_v2/assets/uploads/documents/candidate/files_2024_11_30_374426092666812548.jpg" target="_blank"><i class="fa fa-eye"></i></a></td></tr>																																																																							</tbody></table>
+                                                <tbody id="related_docs">
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
 

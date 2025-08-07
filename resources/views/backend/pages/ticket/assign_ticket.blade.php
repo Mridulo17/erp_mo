@@ -484,6 +484,32 @@
                                 $('#candidate_ticket_attachment').html(passportHtml);
                             }
 
+                            let candidateDocsHtml = '';
+
+                            res.candidate.files.forEach(function (eachFile) {
+                                if (eachFile.file_path) {
+                                    const filePath = eachFile.file_path;
+                                    const fileUrl = `/storage/${filePath}`;
+
+                                    // Format file_type: "passport_copy" => "Passport Copy"
+                                    const formattedType = eachFile.file_type
+                                        .replace(/_/g, ' ')                // replace underscores with spaces
+                                        .replace(/\b\w/g, char => char.toUpperCase()); // capitalize each word
+
+                                    candidateDocsHtml += `
+            <tr>
+                <td>${formattedType}</td>
+                <td>:</td>
+                <td><a href="${fileUrl}" target="_blank"><i class="fa fa-eye"></i></a></td>
+            </tr>
+        `;
+                                }
+                            });
+
+                            $('#related_docs').html(candidateDocsHtml);
+
+
+
                             $('#modalTitle').text('View Ticket');
                             $('#view_candidate').modal('show');
                         },
