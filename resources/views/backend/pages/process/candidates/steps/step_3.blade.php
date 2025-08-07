@@ -49,13 +49,14 @@
     
         <div class="form-group col-md-6">
             <label for="travelled_country_id" class="font-weight-bold text-dark" style="font-size: 14px;">Travelled Country</label>
-            <select id="travelled_country_id" name="travelled_country_id" class="form-control select2">
+            <select id="travelled_country_id" name="travelled_country_id[]" class="form-control select2" multiple>
                 <option value="">--Select One--</option>
                 @foreach ($travelledCountries as $id => $name)
-                    <option value="{{ $id }}" 
-                        {{ session('form.step_3.travelled_country_id') == $id ? 'selected' : '' }}>
-                        {{ $name }}
-                    </option>
+                    <option value="{{ $id }}"
+                        @if(is_array(session('form.step_3.travelled_country_id')) && in_array($id, session('form.step_3.travelled_country_id')))
+                            selected
+                        @endif
+                    >{{ $name }}</option>
                 @endforeach
             </select>
         </div>

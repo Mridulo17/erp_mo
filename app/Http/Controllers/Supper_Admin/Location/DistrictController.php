@@ -87,5 +87,11 @@ class DistrictController extends Controller
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
         }
     }
+
+    public function getDistrictByDivision($division_id)
+    {
+        $districts = \App\Models\Supper_Admin\Location\District::where('division_id', $division_id)->pluck('name', 'id');
+        return response()->json($districts);
+    }
 }
 

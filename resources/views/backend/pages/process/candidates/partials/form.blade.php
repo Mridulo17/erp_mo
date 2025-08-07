@@ -44,8 +44,7 @@ $steps = [
         @else
             <div></div>
         @endif
-
-        <button type="submit" class="btn btn-primary">
+        <button type="submit" class="btn btn-primary" id="finalSubmitBtn" @if($step == 7) disabled @endif>
             {{ $step < 7 ? 'Next' : 'Submit' }}
         </button>
     </div>

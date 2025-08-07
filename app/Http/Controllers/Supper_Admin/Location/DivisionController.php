@@ -90,4 +90,10 @@ class DivisionController extends Controller
             return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
         }
     }
+
+    public function getDivisionByCountry($country_id)
+    {
+        $divisions = \App\Models\Supper_Admin\Location\Division::where('country_id', $country_id)->pluck('name', 'id');
+        return response()->json($divisions);
+    }
 }

@@ -45,16 +45,59 @@ class CandidateController extends Controller
             $data = Candidate::with(['agent', 'personalInfo', 'personalInfo.gender', 'experiences', 'experiences.workType', 'passport',]);
             return DataTables::of($data)
                 ->addIndexColumn()
-                ->addColumn('name', function ($row) {
-                    return $row->personalInfo?->full_name ?? '';
+                ->addColumn('name', function($row){
+                    $name = $row->personalInfo?->full_name ?? 'N/A';
+                    return '
+                    <div class="dropdown" style="position: relative;">
+                        <a href="#" class="badge badge-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa-solid fa-list"></i> '.$name.'
+                        </a>
+
+                        <div class="dropdown-menu">
+                            <a href="#" class="dropdown-item view-profile-btn" data-toggle="modal" data-target="#candidateProfileModal" data-id="'.$row->id.'">View Profile</a>
+                            <a href="#" class="dropdown-item view-transaction-btn" data-toggle="modal" data-target="#candidateTransactionListModal" data-id="'.$row->id.'" data-name="'.$name.'">View Transactions</a>
+                            <a href="#" class="dropdown-item make-transaction-btn" data-toggle="modal" data-target="#candidateTransactionModal" data-id="'.$row->id.'" data-name="'.$name.'">Make Transaction</a>
+                            <a href="#" class="dropdown-item candidate-type-transfer-btn" data-toggle="modal" data-target="#candidateTypeTransferModal" data-id="'.$row->id.'" data-current-type-id="'.$row->candidate_type_id.'" data-current-type="'.($row->candidateType?->name ?? '').'">Type Transfer</a>
+                            <a class="dropdown-item" href="#">Print Dynamic Form</a>
+                            <a class="dropdown-item" href="#">Applications Logs</a>
+                            <a href="#" class="dropdown-item text-success candidate-comments-btn" data-toggle="modal" data-target="#candidateCommentsModal" data-id="'.$row->id.'">Comments</a>
+                        </div>
+                    </div>';
                 })
-                ->addColumn('agent', function($row) {
-                    return $row->agent?->full_name ?? '';
+                ->filterColumn('name', function ($query, $keyword) {
+                    $query->whereHas('personalInfo', function ($q) use ($keyword) {
+                        $q->whereRaw("LOWER(CONCAT(first_name, ' ', last_name)) LIKE ?", ["%" . strtolower($keyword) . "%"]);
+                    });
+                })
+                ->addColumn('agent', function($row){
+                    $agent = $row->agent?->full_name ?? '';
+                    return '
+                    <div class="dropdown" style="position: relative;">
+                        <a href="#" class="badge badge-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa-solid fa-list"></i> '.$agent.'
+                        </a>
+
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="' . route('admin.candidates.show', $row->id) . '">View Profile</a>
+                            <a class="dropdown-item" href="#">View Transactions</a>
+                            <a class="dropdown-item" href="#">Make Transaction</a>
+                        </div>
+                    </div>';
+                })
+                ->filterColumn('agent', function ($query, $keyword) {
+                    $query->whereHas('agent', function ($q) use ($keyword) {
+                        $q->whereRaw("LOWER(CONCAT(first_name, ' ', last_name)) LIKE ?", ["%" . strtolower($keyword) . "%"]);
+                    });
                 })
                 ->addColumn('age_gender', function ($row) {
                     $age = $row->personalInfo?->age . 'y';
                     $gender = $row->personalInfo?->gender?->name;
                     return $age . ($gender ? " - {$gender}" : '');
+                })
+                ->filterColumn('age_gender', function ($query, $keyword) {
+                    $query->whereHas('personalInfo', function ($q) use ($keyword) {
+                        $q->whereRaw("LOWER(date_of_birth) LIKE ?", ["%" . strtolower($keyword) . "%"]);
+                    });
                 })
                 ->addColumn('nid', function ($row) {
                     return $row->personalInfo?->nid_or_birth_certificate ?? '';
@@ -68,8 +111,18 @@ class CandidateController extends Controller
                 ->addColumn('interested_country', function ($row) {
                     return $row->country?->name ?? '';
                 })
+                ->filterColumn('interested_country', function ($query, $keyword) {
+                    $query->whereHas('country', function ($q) use ($keyword) {
+                        $q->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($keyword) . '%']);
+                    });
+                })
                 ->addColumn('interested_profession', function ($row) {
                     return $row->profession?->name ?? '';
+                })
+                ->filterColumn('interested_profession', function ($query, $keyword) {
+                    $query->whereHas('profession', function ($q) use ($keyword) {
+                        $q->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($keyword) . '%']);
+                    });
                 })
                 ->addColumn('status', function ($row) {
                     return $row->status === 1
@@ -92,11 +145,13 @@ class CandidateController extends Controller
                         </div>
                     </div>';
                 })
-                ->rawColumns(['status', 'action'])
+                ->rawColumns(['name', 'agent', 'status', 'action'])
                 ->make(true);
         }
 
-        return view('backend.pages.process.candidates.index');
+        $candidateTypes = CandidateType::where('status', 1)->pluck('name', 'id')->toArray();
+        $transactionPurposes = \App\Models\Admin\Process\CandidateTransaction::$transactionPurposes;
+        return view('backend.pages.process.candidates.index', compact('candidateTypes', 'transactionPurposes'));
     }
 
     public function activeIndex(Request $request)
@@ -181,6 +236,10 @@ class CandidateController extends Controller
                 if ($request->hasFile('arrival_seal')) {
                     $data['arrival_seal'] = $this->uploadFile('candidate', $request->file('arrival_seal'), 'candidate/arrival_seal');
                 }
+                
+                if (isset($data['travelled_country_id']) && is_array($data['travelled_country_id'])) {
+                    $data['travelled_country_id'] = json_encode($data['travelled_country_id']);
+                }
             }
 
             if ($step == 4) {
@@ -190,8 +249,17 @@ class CandidateController extends Controller
             }
 
             if ($step == 6) {
-                if ($request->hasFile('file_path')) {
-                    $data['file_path'] = $this->uploadFile('candidate', $request->file('file_path'), 'candidate/files');
+                if ($request->hasFile('candidate_photo')) {
+                    $data['candidate_photo'] = $this->uploadFile('candidate', $request->file('candidate_photo'), 'candidate/files');
+                }
+                if ($request->hasFile('police_verification')) {
+                    $data['police_verification'] = $this->uploadFile('candidate', $request->file('police_verification'), 'candidate/files');
+                }
+                if ($request->hasFile('other_certification')) {
+                    $data['other_certification'] = $this->uploadFile('candidate', $request->file('other_certification'), 'candidate/files');
+                }
+                if ($request->hasFile('optional_file')) {
+                    $data['optional_file'] = $this->uploadFile('candidate', $request->file('optional_file'), 'candidate/files');
                 }
             }
 
@@ -227,6 +295,9 @@ class CandidateController extends Controller
                     ]));
 
                     // Step 3 → Experience
+                    if (isset($step3['travelled_country_id']) && is_array($step3['travelled_country_id'])) {
+                        $step3['travelled_country_id'] = json_encode($step3['travelled_country_id']);
+                    }
                     CandidateExperience::create(array_merge($step3, [
                         'candidate_id' => $candidate->id,
                     ]));
@@ -299,6 +370,21 @@ class CandidateController extends Controller
             $data['thanas'] = Thana::where('status', 1)->pluck('name', 'id');
             $data['postOffices'] = PostOffice::where('status', 1)->pluck('name', 'id');
             $data['states'] = State::where('status', 1)->pluck('name', 'id');
+        } elseif ($step == 7) {
+            $data['candidateTypes'] = CandidateType::where('status', 1)->pluck('name', 'id')->toArray();
+            $data['agents'] = Agent::where('status', 1)->get()->pluck('full_name', 'id')->toArray();
+            $data['professions'] = Profession::where('status', 1)->pluck('name', 'id')->toArray();
+            $data['genders'] = Gender::where('status', 1)->pluck('name', 'id')->toArray();
+            $data['relations'] = Relation::where('status', 1)->pluck('name', 'id')->toArray();
+            $data['religions'] = Religion::where('status', 1)->pluck('name', 'id')->toArray();
+            $data['bloodGroups'] = BloodGroup::where('status', 1)->pluck('name', 'id')->toArray();
+            $data['countries'] = Country::where('status', 1)->pluck('name', 'id')->toArray();
+            $data['divisions'] = Division::where('status', 1)->pluck('name', 'id')->toArray();
+            $data['districts'] = District::where('status', 1)->pluck('name', 'id')->toArray();
+            $data['thanas'] = Thana::where('status', 1)->pluck('name', 'id')->toArray();
+            $data['postOffices'] = PostOffice::where('status', 1)->pluck('name', 'id')->toArray();
+            $data['states'] = State::where('status', 1)->pluck('name', 'id')->toArray();
+            $data['travelledCountries'] = Country::where('status', 1)->pluck('name', 'id')->toArray();
         }
 
         // Render next form step
@@ -313,7 +399,16 @@ class CandidateController extends Controller
 
     public function show(Candidate $candidate)
     {
-        //
+        $countries = \App\Models\Supper_Admin\Location\Country::pluck('name', 'id')->toArray();
+        $candidate->load([
+            'personalInfo',
+            'experiences',
+            'passport',
+            'location',
+            'files',
+        ]);
+
+        return view('backend.pages.process.candidates.partials.candidate_profile_modal_data', compact('candidate', 'countries'));
     }
 
     public function edit(Candidate $candidate)
@@ -329,5 +424,116 @@ class CandidateController extends Controller
     public function destroy(Candidate $candidate)
     {
         //
+    }
+
+    public function updateCandidatePhoto(Request $request)
+    {
+        $request->validate([
+            'candidate_id' => 'required|exists:candidates,id',
+            'candidate_photo' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        $candidate = \App\Models\Admin\Process\Candidate::findOrFail($request->candidate_id);
+        $candidateFile = $candidate->files; // Assuming relation: files() in Candidate model
+
+
+        if (!$candidateFile) {
+            // If no file record exists, create one
+            $candidateFile = new \App\Models\Admin\Process\CandidateFile();
+            $candidateFile->candidate_id = $candidate->id;
+        }
+        
+        if ($request->hasFile('candidate_photo')) {
+            $path = $this->uploadFile('candidate', $request->file('candidate_photo'), 'candidate/files');
+            $candidateFile->candidate_photo = $path;
+            $candidateFile->save();
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'photo_url' => asset($candidateFile->candidate_photo),
+        ]);
+    }
+
+    public function typeTransfer(Request $request)
+    {
+        $request->validate([
+            'candidate_id' => 'required|exists:candidates,id',
+            'candidate_type_id' => 'required|exists:candidate_types,id',
+        ]);
+
+        $candidate = Candidate::findOrFail($request->candidate_id);
+        $candidate->candidate_type_id = $request->candidate_type_id;
+        $candidate->save();
+
+        return response()->json(['status' => 'success']);
+    }
+
+    public function getCandidateComment($id)
+    {
+        $candidate = Candidate::findOrFail($id);
+        if (!$candidate) {
+            return response()->json(['error' => 'Candidate not found.'], 404);
+        }
+        return response()->json(['comment' => $candidate->comments]);
+    }
+
+    public function saveCandidateComment(Request $request)
+    {
+        $request->validate([
+            'candidate_id' => 'required|exists:candidates,id',
+            'comments' => 'nullable|string|max:2000',
+        ]);
+        $candidate = Candidate::findOrFail($request->candidate_id);
+        $candidate->comments = $request->comments;
+        $candidate->save();
+        return response()->json(['status' => 'success']);
+    }
+
+    public function storeCandidateTransaction(Request $request)
+    {
+        $validated = $request->validate([
+            'candidate_id' => 'required|exists:candidates,id',
+            'transaction_type' => 'required|string',
+            'payment_method' => 'required|string',
+            'currency' => 'required|string',
+            'transaction_purpose' => 'required|string',
+            'amount' => 'required|numeric',
+            'amount_bdt' => 'required|numeric',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240',
+            'transaction_note' => 'nullable|string',
+            'note' => 'nullable|string',
+        ]);
+        $data = $validated;
+        if ($request->hasFile('attachment')) {
+            $data['attachment'] = $this->uploadFile('candidate', $request->file('attachment'), 'candidate/transaction');
+        }
+        $transaction = \App\Models\Admin\Process\CandidateTransaction::create($data);
+        return response()->json(['status' => 'success', 'transaction' => $transaction]);
+    }
+
+    public function getCandidateTransactions(Request $request, $candidate_id)
+    {
+        $transactions = \App\Models\Admin\Process\CandidateTransaction::where('candidate_id', $candidate_id)
+            ->orderByDesc('id')
+            ->get();
+
+        // Map to required columns
+        $data = $transactions->map(function($t) {
+            return [
+                'id' => $t->id,
+                'transaction_type' => ucfirst($t->transaction_type),
+                'transaction_purpose' => $t->transaction_purpose,
+                'payment_method' => $t->payment_method,
+                'currency' => $t->currency,
+                'amount' => $t->amount,
+                'amount_bdt' => $t->amount_bdt,
+                'transaction_note' => $t->transaction_note ?? '',
+                'note' => $t->note ?? '',
+                'date' => $t->created_at ? $t->created_at->format('Y-m-d') : '',
+            ];
+        });
+
+        return response()->json(['data' => $data]);
     }
 }
