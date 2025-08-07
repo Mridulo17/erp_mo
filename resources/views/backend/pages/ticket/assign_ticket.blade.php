@@ -362,19 +362,22 @@
                                     .replace(/(\d+)(?=,)/, (_, d) => d + (["th","st","nd","rd"][(d%10>3||Math.floor(d%100/10)==1)?0:d%10]) + ' of')
                                 + ` (${formattedDate})`;
                             $('#candidate_date').text(formattedRegistrationDay);
-                            if (res.candidate.file && res.candidate.file.file_type === 'photo' && res.candidate.file.file_path) {
-                                const filePath = res.candidate.file.file_path;
-                                const fileUrl = `/storage/${filePath}`;
 
-                                let previewHtml = '';
-                                let previewLinkHtml = '';
+                            if (res.candidate.files && Array.isArray(res.candidate.files)) {
+                                const photoFile = res.candidate.files.find(file => file.file_type === 'photo' && file.file_path);
 
-                                previewHtml = `<img src="${fileUrl}" class="img-responsive img-circle">`;
-                                previewLinkHtml = `<a href="${fileUrl}" title="click to view file" target="_blank" class="mr-5"><i class="fa fa-file"></i></a>	`;
+                                if (photoFile) {
+                                    const filePath = photoFile.file_path;
+                                    const fileUrl = `/storage/${filePath}`;
 
-                                $('#image_preview').html(previewHtml);
-                                $('#img_pre').html(previewLinkHtml);
+                                    let previewHtml = `<img src="${fileUrl}" class="img-responsive img-circle">`;
+                                    let previewLinkHtml = `<a href="${fileUrl}" title="click to view file" target="_blank" class="mr-5"><i class="fa fa-file"></i></a>`;
+
+                                    $('#image_preview').html(previewHtml);
+                                    $('#img_pre').html(previewLinkHtml);
+                                }
                             }
+
                             $('#first_name').text(res.candidate.personal_info.first_name);
                             $('#last_name').text(res.candidate.personal_info.last_name);
                             $('#gender').text(res.candidate.personal_info.gender.name);
