@@ -446,9 +446,24 @@
 
                                 $('#pass_scan').html(passportHtml);
                             }
+                            $('#country').text(res.candidate.location.country.name);
+                            $('#division').text(res.candidate.location.division.name);
+                            $('#district').text(res.candidate.location.district.name);
+                            $('#thana').text(res.candidate.location.thana.name);
+                            $('#postOffice').text(res.candidate.location.post_office.name);
+                            $('#state').text(res.candidate.location.state.name);
+                            $('#current_address').text(res.candidate.location.current_address);
+                            $('#permanent_address').text(res.candidate.location.permanent_address);
 
 
-                            const time = res.ticket.flight_time;
+                            $('#candidate_ticket').text(res.assign_ticket.ticket.ticket_name);
+                            $('#candidate_source').text(res.assign_ticket.ticket.source);
+                            $('#candidate_ticket_type').text(res.assign_ticket.ticket.ticket_type);
+                            $('#ticket_country').text(res.assign_ticket.ticket.country.name);
+                            $('#candidate_office_name').text(res.assign_ticket.ticket.airline_office.name);
+                            $('#pnr_flight').text(res.assign_ticket.ticket.pnr_number + '-' + res.assign_ticket.ticket.flight_number);
+
+                            const time = res.assign_ticket.ticket.flight_time;
                             const dateTime = '1970-01-01T' + time; // ISO 8601 format
 
                             const formattedTime = new Date(dateTime).toLocaleTimeString('en-US', {
@@ -456,8 +471,19 @@
                                 minute: '2-digit',
                                 hour12: true
                             });
+                            $('#candidate_flight_date_time').text(res.assign_ticket.ticket.flight_date + '-' + formattedTime);
 
-                            $('#view_time').html('<b>Time</b>: ' + res.ticket.flight_date + ' - ' + '<small></small>' + formattedTime);
+                            if (res.assign_ticket.ticket.attachment) {
+                                const filePath = res.assign_ticket.ticket.attachment;
+                                const fileUrl = `/storage/${filePath}`;
+
+                                let passportHtml = '';
+
+                                passportHtml = `<a href="${fileUrl}" title="click to view file" target="_blank" class="mr-5"><i class="fa fa-file"></i></a>	`;
+
+                                $('#candidate_ticket_attachment').html(passportHtml);
+                            }
+
                             $('#modalTitle').text('View Ticket');
                             $('#view_candidate').modal('show');
                         },

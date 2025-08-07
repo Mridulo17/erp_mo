@@ -152,22 +152,22 @@
                                             <b><u>Location Information</u></b>
                                             <table class="table table-sm">
                                                 <tbody><tr>
-                                                    <td style="width: 150px;">Country</td> <td>:</td> <td><b></b></td>
-                                                    <td style="width: 150px;">Division</td> <td>:</td> <td><b></b></td>
+                                                    <td style="width: 150px;">Country</td> <td>:</td> <td><b id="country"></b></td>
+                                                    <td style="width: 150px;">Division</td> <td>:</td> <td><b id="division"></b></td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="width: 150px;">District</td> <td>:</td> <td><b></b></td>
-                                                    <td style="width: 150px;">Thana</td> <td>:</td> <td><b></b></td>
+                                                    <td style="width: 150px;">District</td> <td>:</td> <td><b id="district"></b></td>
+                                                    <td style="width: 150px;">Thana</td> <td>:</td> <td><b id="thana"></b></td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="width: 150px;">PostOffice</td> <td>:</td> <td><b></b></td>
-                                                    <td style="width: 150px;">State</td> <td>:</td> <td><b></b></td>
+                                                    <td style="width: 150px;">PostOffice</td> <td>:</td> <td><b id="postOffice"></b></td>
+                                                    <td style="width: 150px;">State</td> <td>:</td> <td><b id="state"></b></td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="width: 150px;">Current address</td> <td>:</td> <td colspan="4"><b></b></td>
+                                                    <td style="width: 150px;">Current address</td> <td>:</td> <td colspan="4"><b id="current_address"></b></td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="width: 150px;">Permanent address</td> <td>:</td> <td colspan="4"><b></b></td>
+                                                    <td style="width: 150px;">Permanent address</td> <td>:</td> <td colspan="4"><b id="permanent_address"></b></td>
                                                 </tr>
                                                 </tbody></table>
                                         </div>
@@ -175,7 +175,7 @@
 
                                     <div class="row">
                                         <div class="col-sm-5">
-                                            <b><u>Candidate Releted All files</u></b>
+                                            <b><u>Candidate Related All files</u></b>
                                             <table class="table table-sm">
                                                 <tbody><tr><td>Candidate Photo</td> <td>:</td> <td><a href="http://erp.mahfuza-overseas.com/mahfuza_v2/assets/uploads/documents/candidate/files_2024_11_30_374426092666812548.jpg" target="_blank"><i class="fa fa-eye"></i></a></td></tr>																																																																							</tbody></table>
                                         </div>
@@ -186,28 +186,28 @@
                                             <b><u>Candidate Ticket Information</u></b>
                                             <table class="table table-sm">
                                                 <tbody><tr>
-                                                    <td style="width: 150px;">Ticket name</td> <td>:</td> <td><b>BODRUN NESA &amp; 8 OTHER UMRAH PAX_JED-DAC</b></td>
+                                                    <td style="width: 150px;">Ticket name</td> <td>:</td> <td><b id="candidate_ticket"></b></td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="width: 150px;">Ticket Source</td> <td>:</td> <td><b>IATA</b></td>
+                                                    <td style="width: 150px;">Ticket Source</td> <td>:</td> <td><b id="candidate_source"></b></td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="width: 150px;">Ticket Type</td> <td>:</td> <td><b>System Ticket - Multi person</b></td>
+                                                    <td style="width: 150px;">Ticket Type</td> <td>:</td> <td><b id="candidate_ticket_type"></b></td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="width: 150px;">Ticket Country</td> <td>:</td> <td><b>Bangladesh</b></td>
+                                                    <td style="width: 150px;">Ticket Country</td> <td>:</td> <td><b id="ticket_country"></b></td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="width: 150px;">Office Name</td> <td>:</td> <td><b></b></td>
+                                                    <td style="width: 150px;">Office Name</td> <td>:</td> <td><b id="candidate_office_name"></b></td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="width: 150px;">PNR - Flight</td> <td>:</td> <td><b>06VTOC - BS362</b></td>
+                                                    <td style="width: 150px;">PNR - Flight</td> <td>:</td> <td><b id="pnr_flight"></b></td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="width: 150px;">Flight Time</td> <td>:</td> <td><b>2024-08-01 - 08:40:00 pm</b></td>
+                                                    <td style="width: 150px;">Flight Time</td> <td>:</td> <td><b id="candidate_flight_date_time"></b></td>
                                                 </tr>
-                                                <tr>
-                                                    <td style="width: 150px;">Attachment</td> <td>:</td> <td><a href="http://erp.mahfuza-overseas.com/mahfuza_v2/assets/uploads/documents/ticket/files_2024_07_10_695688708556180134.pdf" title="click to view file" target="_blank" class="mr-5"><i class="fa fa-file"></i></a></td>
+                                                <tr>.
+                                                    <td style="width: 150px;">Attachment</td> <td>:</td> <td id="candidate_ticket_attachment"></td>
                                                 </tr>
                                                 </tbody></table>
                                         </div>
@@ -219,34 +219,6 @@
                     </div>
                 </div>
 
-                <div class="modal center-modal fade" id="modal_profile_picture" data-backdrop="static" data-keyboard="false" tabindex="-1">
-                    <div class="modal-dialog modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Crop Image Before Upload</h5>
-                                <button type="button" class="close" onclick="close_inner_modal()"> <span aria-hidden="true">×</span> </button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="img-container">
-                                    <div class="row">
-                                        <div class="col-md-8" style="max-height: 450px;">
-                                            <img src="" id="sample_image">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="preview"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" id="crop" class="btn btn-success float-right"><i class="mdi mdi-crop"></i> &nbsp; Crop &amp; Save</button>
-                                <button type="button" class="btn btn-danger float-right" onclick="close_inner_modal()"><i class="fa fa-times-circle-o"></i> &nbsp; Cancel</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <script src="http://erp.mahfuza-overseas.com/mahfuza_v2/assets/home/js/cropper/cropper.js"></script>
-                <script src="http://erp.mahfuza-overseas.com/mahfuza_v2/assets/home/js/print/printThis.js"></script>
                 <script>
                     var $modal = $('#modal_profile_picture');
                     var image = document.getElementById('sample_image');
