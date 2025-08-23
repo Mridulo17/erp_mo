@@ -397,6 +397,41 @@
             }
         });
     });
+
+    $(document).on('click', '.deleteBonusBtn', function () {
+        const id = $(this).data('id');
+        const url = '{{ route("admin.candidates.destroy", ":id") }}'.replace(':id', id);
+
+        Swal.fire({
+            title: 'Delete Candidate?',
+            text: "This action cannot be undone.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Delete'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        _method: 'DELETE',
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function (response) {
+                        if (response.status === 'success') {
+                            Swal.fire('Deleted!', response.message, 'success');
+                            fetchTickets();
+                        } else {
+                            Swal.fire('Error!', response.message, 'error');
+                        }
+                    },
+                    error: function () {
+                        Swal.fire('Error!', 'Failed to delete the ticket.', 'error');
+                    }
+                });
+            }
+        });
+    });
 </script>
 {{-- End::candidate type transfer --}}
 

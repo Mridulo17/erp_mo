@@ -60,6 +60,7 @@ class CandidateController extends Controller
                             <a href="#" class="dropdown-item make-transaction-btn" data-toggle="modal" data-target="#candidateTransactionModal" data-id="'.$row->id.'" data-name="'.$name.'">Make Transaction</a>
                             <a href="#" class="dropdown-item candidate-type-transfer-btn" data-toggle="modal" data-target="#candidateTypeTransferModal" data-id="'.$row->id.'" data-current-type-id="'.$row->candidate_type_id.'" data-current-type="'.($row->candidateType?->name ?? '').'">Type Transfer</a>
                             <a class="dropdown-item" href="#">Print Dynamic Form</a>
+                            <a href="#" class="dropdown-item deleteBonusBtn" data-id="'.$row->id.'">Delete</a>
                             <a class="dropdown-item" href="#">Applications Logs</a>
                             <a href="#" class="dropdown-item text-success candidate-comments-btn" data-toggle="modal" data-target="#candidateCommentsModal" data-id="'.$row->id.'">Comments</a>
                         </div>
@@ -421,12 +422,6 @@ class CandidateController extends Controller
     {
         //
     }
-
-    public function destroy(Candidate $candidate)
-    {
-        //
-    }
-
     public function updateCandidatePhoto(Request $request)
     {
         $request->validate([
@@ -550,5 +545,37 @@ class CandidateController extends Controller
         });
 
         return response()->json(['data' => $data]);
+    }
+
+    public function destroy(string $id)
+    {
+        try {
+            $candidate = Candidate::findOrFail($id);
+
+            if(isset($candidate->personalInfo)){
+                $candidate->personalInfo()->delete();
+            }
+            if(isset($candidate->experiences)){
+                $candidate->experiences()->delete();
+            }
+            if(isset($candidate->passport)){
+                $candidate->passport()->delete();
+            }
+
+            if(isset($candidate->location)){
+                $candidate->location()->delete();
+            }
+
+            if(isset($candidate->files)){
+                $candidate->files()->delete();
+            }
+            if(isset($candidate->transactions)){
+                $candidate->transactions()->delete();
+            }
+            $candidate->delete();
+            return response()->json(['status' => 'success', 'message' => 'Candidate deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
+        }
     }
 }
