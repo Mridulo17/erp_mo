@@ -112,6 +112,7 @@
     </div>
 </div>
 @include('backend.pages.process.candidates.partials.candidate_profile_modal')
+@include('backend.pages.process.candidates.partials.candidate_commission_setup_modal')
 @include('backend.pages.process.candidates.partials.candidate_type_transfer_modal', ['candidateTypes' => $candidateTypes])
 @include('backend.pages.process.candidates.partials.candidate_comments_modal')
 @include('backend.pages.process.candidates.partials.candidate_transaction_list_modal')
@@ -202,7 +203,7 @@
 <script>
     $(document).on('click', '.view-profile-btn', function(e) {
         e.preventDefault();
-        const candidateId = $(this).data('id');    
+        const candidateId = $(this).data('id');
 
         // Optional: show loading
         $('#modalContent').html('<p>Loading...</p>');
@@ -213,7 +214,7 @@
             type: 'GET',
             success: function(response) {
                 console.log(response);
-                
+
                 $('#modalContent').html(response);
             },
             error: function() {
@@ -267,6 +268,75 @@
         $('#transfer_candidate_id').val(candidateId);
         $('#current_candidate_type').val(currentType);
         $('#candidateTypeTransferModal').modal('show');
+    });
+
+    $(document).on('click', '.candidate-commission-setup-btn', function(e) {
+        e.preventDefault();
+        var candidateId = $(this).data('id');
+        var currentCommission = $(this).data('commission') || '';
+        var name = $(this).data('name') || '';
+        $('#commission_candidate_id').val(candidateId);
+        $('#current_candidate_commission').val(currentCommission);
+        $('#candidate_name_modal_title').text(name);
+        $('#candidateCommissionSetupModal').modal('show');
+    });
+
+    // Handle form submit
+    $(document).on('submit', '#candidateCommissionSetupForm', function(e) {
+        e.preventDefault();
+        var formData = $(this).serialize();
+        $.ajax({
+            url: '/admin/candidates/commission-setup',
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                if(response.status === 'success') {
+                    $('#candidateCommissionSetupModal').modal('hide');
+                    Swal.fire({
+                        position: "center",
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Candidate commission setup successfully!',
+                        customClass: {
+                            popup: 'swal2-popup',
+                            title: 'swal2-title',
+                            confirmButton: 'swal2-btn'
+                        }
+                    });
+
+                    // Reload the page
+                    setTimeout(function() {
+                        // location.reload();
+                        dtTable.ajax.reload(null, false); // reload yajra datatable
+                    }, 1000);
+                } else {
+                    Swal.fire({
+                        position: "center",
+                        icon: 'error',
+                        title: 'Failed',
+                        text: 'Failed to setup candidate commission.',
+                        customClass: {
+                            popup: 'swal2-popup',
+                            title: 'swal2-title',
+                            confirmButton: 'swal2-btn'
+                        }
+                    });
+                }
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    position: "center",
+                    icon: 'error',
+                    title: 'Error',
+                    text: (xhr.responseJSON?.message || 'Unknown error'),
+                    customClass: {
+                        popup: 'swal2-popup',
+                        title: 'swal2-title',
+                        confirmButton: 'swal2-btn'
+                    }
+                });
+            }
+        });
     });
 
     // Handle form submit
@@ -416,12 +486,12 @@
     // fetch currency rates
     let currentRate = null; // Global variable
     function fetchCurrencyRates() {
-        let dataExchangeApiKey = "{{ config('services.exchange.key') }}";        
+        let dataExchangeApiKey = "{{ config('services.exchange.key') }}";
         let currency = $('#currency_select').val();
         $.ajax({
             url: `https://v6.exchangerate-api.com/v6/${dataExchangeApiKey}/latest/${currency}`,
             method: 'GET',
-            success: function(data) {                
+            success: function(data) {
                 let rate = data.conversion_rates['BDT'];
                 currentRate = rate; // save globally
 
@@ -438,7 +508,7 @@
 
     function updateCurrencyInfoAndAmount() {
         let amount = parseFloat($('#amount').val()) || 0;
-    
+
         if (currentRate === null) {
             $('#amount_bdt').val('');
             return;
@@ -572,7 +642,7 @@
             type: 'GET',
             success: function(response) {
                 console.log(response);
-                
+
                 var rows = '';
                 if (response.data.length > 0) {
                     $.each(response.data, function(i, t) {

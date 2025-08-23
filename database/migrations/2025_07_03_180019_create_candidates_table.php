@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('nationality')->nullable();
             $table->longText('note')->nullable();
             $table->longText('comments')->nullable();
+            $table->decimal('commission', 10, 2)->default(0)->nullable();
             $table->timestamps();
         });
     }

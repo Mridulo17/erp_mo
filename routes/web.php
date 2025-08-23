@@ -221,6 +221,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::post('candidates/transaction', [CandidateController::class, 'storeCandidateTransaction'])->name('candidates.storeTransaction');
     Route::get('candidates/{candidate_id}/transactions', [CandidateController::class, 'getCandidateTransactions'])->name('candidates.transactions');
     Route::post('candidates/type-transfer', [CandidateController::class, 'typeTransfer'])->name('candidates.typeTransfer');
+    Route::post('candidates/commission-setup', [CandidateController::class, 'commissionSetup'])->name('candidates.commission-setup');
     Route::get('candidates/comment/{id}', [CandidateController::class, 'getCandidateComment'])->name('candidates.getComment');
     Route::post('candidates/comment', [CandidateController::class, 'saveCandidateComment'])->name('candidates.saveComment');
     Route::resource('enquiry/phone-calls', PhoneCallController::class);

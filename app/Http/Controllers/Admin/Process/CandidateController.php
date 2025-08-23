@@ -55,6 +55,7 @@ class CandidateController extends Controller
 
                         <div class="dropdown-menu">
                             <a href="#" class="dropdown-item view-profile-btn" data-toggle="modal" data-target="#candidateProfileModal" data-id="'.$row->id.'">View Profile</a>
+                            <a href="#" class="dropdown-item candidate-commission-setup-btn" data-toggle="modal" data-target="#candidateCommissionSetupModal" data-id="'.$row->id.'" data-commission="'.$row->commission.'" data-name="'.$name.'">Commission Setup</a>
                             <a href="#" class="dropdown-item view-transaction-btn" data-toggle="modal" data-target="#candidateTransactionListModal" data-id="'.$row->id.'" data-name="'.$name.'">View Transactions</a>
                             <a href="#" class="dropdown-item make-transaction-btn" data-toggle="modal" data-target="#candidateTransactionModal" data-id="'.$row->id.'" data-name="'.$name.'">Make Transaction</a>
                             <a href="#" class="dropdown-item candidate-type-transfer-btn" data-toggle="modal" data-target="#candidateTypeTransferModal" data-id="'.$row->id.'" data-current-type-id="'.$row->candidate_type_id.'" data-current-type="'.($row->candidateType?->name ?? '').'">Type Transfer</a>
@@ -236,7 +237,7 @@ class CandidateController extends Controller
                 if ($request->hasFile('arrival_seal')) {
                     $data['arrival_seal'] = $this->uploadFile('candidate', $request->file('arrival_seal'), 'candidate/arrival_seal');
                 }
-                
+
                 if (isset($data['travelled_country_id']) && is_array($data['travelled_country_id'])) {
                     $data['travelled_country_id'] = json_encode($data['travelled_country_id']);
                 }
@@ -442,7 +443,7 @@ class CandidateController extends Controller
             $candidateFile = new \App\Models\Admin\Process\CandidateFile();
             $candidateFile->candidate_id = $candidate->id;
         }
-        
+
         if ($request->hasFile('candidate_photo')) {
             $path = $this->uploadFile('candidate', $request->file('candidate_photo'), 'candidate/files');
             $candidateFile->candidate_photo = $path;
@@ -464,6 +465,20 @@ class CandidateController extends Controller
 
         $candidate = Candidate::findOrFail($request->candidate_id);
         $candidate->candidate_type_id = $request->candidate_type_id;
+        $candidate->save();
+
+        return response()->json(['status' => 'success']);
+    }
+
+    public function commissionSetup(Request $request)
+    {
+        $request->validate([
+            'candidate_id' => 'required|exists:candidates,id',
+            'commission' => 'required',
+        ]);
+
+        $candidate = Candidate::findOrFail($request->candidate_id);
+        $candidate->commission = $request->commission;
         $candidate->save();
 
         return response()->json(['status' => 'success']);
