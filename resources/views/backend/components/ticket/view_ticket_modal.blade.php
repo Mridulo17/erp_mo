@@ -12,7 +12,7 @@
                                         <div class="logo-lg p-0">
                                             <span class="light-logo" style="font-size: 20px; font-weight: 500;"><i class="fa fa-plane" style="font-size: x-large;"></i><i><span style="color: #f00;">M</span>ahfuza<span style="color: #f00;">O</span>verseas</i></span>
                                         </div>
-                                        Entry by: <b id="user_name">SHARIFUL ISLAM</b> |
+                                        Entry by: <b id="user_name"></b> |
                                         Employee id: <b></b><br>
                                         Department: <b></b> |
                                         Designation: <b></b><br>
