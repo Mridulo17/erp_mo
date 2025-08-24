@@ -63,6 +63,10 @@ class CandidateController extends Controller
                             <a class="dropdown-item" href="#">Print Dynamic Form</a>
                             <a href="#" class="dropdown-item deleteBonusBtn" data-id="'.$row->id.'">Delete</a>
                             <a class="dropdown-item" href="#">Applications Logs</a>
+                            <a class="dropdown-item" href="'.($row->files?->candidate_photo ? asset($row->files->candidate_photo) : '#').'" target="_blank">
+    Candidate Photo
+</a>
+
                             <a href="#" class="dropdown-item text-success candidate-comments-btn" data-toggle="modal" data-target="#candidateCommentsModal" data-id="'.$row->id.'">Comments</a>
                         </div>
                     </div>';
