@@ -578,48 +578,6 @@
     $('#amount').on('input change', function () {
         updateCurrencyInfoAndAmount();
     });
-    // fetch currency rates for agent
-    function fetchCurrencyRates1() {
-        let dataExchangeApiKey = "{{ config('services.exchange.key') }}";
-        let currency = $('#currency_select1').val();
-        $.ajax({
-            url: `https://v6.exchangerate-api.com/v6/${dataExchangeApiKey}/latest/${currency}`,
-            method: 'GET',
-            success: function(data) {
-                let rate = data.conversion_rates['BDT'];
-                currentRate = rate; // save globally
-
-                // Update currency rate display
-                $('#currency_rate_info1').text(`(1 ${currency} = ${rate} BDT)`);
-
-                updateCurrencyInfoAndAmount1();
-            },
-            error: function() {
-                console.warn("Failed to fetch currency rates.");
-            }
-        });
-    };
-
-    function updateCurrencyInfoAndAmount1() {
-        let amount = parseFloat($('#amount1').val()) || 0;
-
-        if (currentRate === null) {
-            $('#amount_bdt1').val('');
-            return;
-        }
-
-        // Calculate BDT amount
-        let bdt = (amount * currentRate).toFixed(2);
-        $('#amount_bdt1').val(bdt);
-    }
-
-    $('#currency_select1').on('input change', function () {
-        fetchCurrencyRates1();
-    });
-
-    $('#amount1').on('input change', function () {
-        updateCurrencyInfoAndAmount1();
-    });
 
     $(document).on('submit', '#candidateTransactionForm', function(e) {
         e.preventDefault();
@@ -701,6 +659,50 @@
             }
         });
     });
+
+    // fetch currency rates for agent
+    function fetchCurrencyRates1() {
+        let dataExchangeApiKey = "{{ config('services.exchange.key') }}";
+        let currency = $('#currency_select1').val();
+        $.ajax({
+            url: `https://v6.exchangerate-api.com/v6/${dataExchangeApiKey}/latest/${currency}`,
+            method: 'GET',
+            success: function(data) {
+                let rate = data.conversion_rates['BDT'];
+                currentRate = rate; // save globally
+
+                // Update currency rate display
+                $('#currency_rate_info1').text(`(1 ${currency} = ${rate} BDT)`);
+
+                updateCurrencyInfoAndAmount1();
+            },
+            error: function() {
+                console.warn("Failed to fetch currency rates.");
+            }
+        });
+    };
+
+    function updateCurrencyInfoAndAmount1() {
+        let amount = parseFloat($('#amount1').val()) || 0;
+
+        if (currentRate === null) {
+            $('#amount_bdt1').val('');
+            return;
+        }
+
+        // Calculate BDT amount
+        let bdt = (amount * currentRate).toFixed(2);
+        $('#amount_bdt1').val(bdt);
+    }
+
+    $('#currency_select1').on('input change', function () {
+        fetchCurrencyRates1();
+    });
+
+    $('#amount1').on('input change', function () {
+        updateCurrencyInfoAndAmount1();
+    });
+
 
     $(document).on('submit', '#agentTransactionForm', function(e) {
         e.preventDefault();
@@ -850,6 +852,65 @@
             },
             error: function() {
                 $('#candidateTransactionTable tbody').html('<tr><td colspan=\"8\">Failed to load data.</td></tr>');
+            }
+        });
+    });
+
+    $(document).on('click', '.view-agent-transaction-btn', function() {
+        var candidateId = $(this).data('id');
+        var candidateName = $(this).data('name') || '';
+
+        // Set the modal title
+        $('#agentTransactionListModalLabel').text('Related transaction about - ' + candidateName);
+
+        $('#agentTransactionListModal').modal('show');
+
+        // Destroy previous DataTable if exists
+        if ($.fn.DataTable.isDataTable('#agentTransactionTable')) {
+            $('#agentTransactionTable').DataTable().destroy();
+        }
+
+        // Clear table body before loading
+        $('#agentTransactionTable tbody').html('<tr><td colspan=\"8\">Loading...</td></tr>');
+
+        // Fetch data via AJAX and initialize DataTable
+        $.ajax({
+            url: '/admin/agent/' + candidateId + '/transactions',
+            type: 'GET',
+            success: function(response) {
+                console.log(response);
+
+                var rows = '';
+                if (response.data.length > 0) {
+                    $.each(response.data, function(i, t) {
+                        rows += '<tr>' +
+                            '<td>' + t.id + '</td>' +
+                            '<td>' + t.transaction_type + '</td>' +
+                            '<td>' + t.payment_method + '</td>' +
+                            '<td>' + t.amount_bdt + '</td>' +
+                            '<td>' + t.transaction_note + '</td>' +
+                            '<td>' + t.date + '</td>' +
+                            '</tr>';
+                    });
+                } else {
+                    rows = '<tr><td colspan=\"8\">No transactions found.</td></tr>';
+                }
+                $('#agentTransactionTable tbody').html(rows);
+
+                // Initialize DataTable
+                $('#agentTransactionTable').DataTable({
+                    responsive: true,
+                    ordering: true,
+                    pageLength: 5,
+                    lengthMenu: [5, 10, 25, 50],
+                    language: {
+                        search: "_INPUT_",
+                        searchPlaceholder: "Search transactions..."
+                    }
+                });
+            },
+            error: function() {
+                $('#agentTransactionTable tbody').html('<tr><td colspan=\"8\">Failed to load data.</td></tr>');
             }
         });
     });

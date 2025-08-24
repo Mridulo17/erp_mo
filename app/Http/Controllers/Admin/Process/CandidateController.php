@@ -82,7 +82,7 @@ class CandidateController extends Controller
 
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="' . route('admin.candidates.show', $row->id) . '">View Profile</a>
-                                 <a href="#" class="dropdown-item view-transaction-btn" data-toggle="modal" data-target="#candidateTransactionListModal" data-id="'.$row->id.'" data-name="'.$agent.'">View Transactions</a>
+                                 <a href="#" class="dropdown-item view-agent-transaction-btn" data-toggle="modal" data-target="#agentTransactionListModal" data-id="'.$row->id.'" data-name="'.$agent.'">View Transactions</a>
                             <a href="#" class="dropdown-item make-agent-transaction-btn" data-toggle="modal" data-target="#agentTransactionModal" data-id="'.$row->id.'" data-name="'.$agent.'" data-referral_agent_id="'.$row->referral_agent_id.'">Make Transaction</a>
                         </div>
                     </div>';
@@ -574,7 +574,7 @@ class CandidateController extends Controller
 
     public function getAgentTransactions(Request $request, $candidate_id)
     {
-        $transactions = \App\Models\Admin\Process\CandidateTransaction::where('candidate_id', $candidate_id)
+        $transactions = AgentTransaction::where('candidate_id', $candidate_id)
             ->orderByDesc('id')
             ->get();
 
@@ -583,7 +583,6 @@ class CandidateController extends Controller
             return [
                 'id' => $t->id,
                 'transaction_type' => ucfirst($t->transaction_type),
-                'transaction_purpose' => $t->transaction_purpose,
                 'payment_method' => $t->payment_method,
                 'currency' => $t->currency,
                 'amount' => $t->amount,
