@@ -49,7 +49,9 @@ class SponsorController extends Controller
             $openingBalanceSheetPath = null;
 
             if ($request->hasFile('sponsor_photo')) {
-                $openingBalanceSheetPath = $request->file('sponsor_photo')->store('sponsors', 'public');
+                $file = $request->file('sponsor_photo');
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $openingBalanceSheetPath = $file->storeAs('uploads/sponsors', $filename, 'public');
             }
 
             Sponsor::create([
@@ -119,24 +121,28 @@ class SponsorController extends Controller
             $sponsor->email = $request->email;
             $sponsor->opening_balance = $request->opening_balance;
             $sponsor->nid = $request->nid;
+
             // If user asked to remove file
             if ($request->has('remove_file') && $request->remove_file) {
                 if ($sponsor->sponsor_photo) {
                     Storage::disk('public')->delete($sponsor->sponsor_photo);
+                    $sponsor->sponsor_photo = null; // Clear DB field
                 }
             }
 
-            // If a new file was uploaded
-            $openingBalanceSheetPath = null;
+// If a new file was uploaded
             if ($request->hasFile('sponsor_photo')) {
-
+                // Delete old file if exists
                 if ($sponsor->sponsor_photo) {
                     Storage::disk('public')->delete($sponsor->sponsor_photo);
                 }
-                $openingBalanceSheetPath = $request->file('sponsor_photo')->store('sponsors', 'public');
-            }
 
-            $sponsor->sponsor_photo = $openingBalanceSheetPath;
+                $file = $request->file('sponsor_photo');
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $sponsorPhotoPath = $file->storeAs('uploads/sponsors', $filename, 'public');
+
+                $sponsor->sponsor_photo = $sponsorPhotoPath; // Save new file path
+            }
             $sponsor->address = $request->address;
             $sponsor->note = $request->note;
             $sponsor->status = $request->status === 'Enabled' ? 'Enabled' : 'Disabled';

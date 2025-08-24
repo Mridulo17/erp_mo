@@ -616,7 +616,7 @@
 
                 });
 
-                const storageBaseUrl = "{{ asset('storage') }}/";
+                const storageBaseUrl = "{{ asset('') }}";
 
                 $(document).on('click', '.transactionButton', function () {
                     const id = $(this).data('id');
