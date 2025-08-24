@@ -62,7 +62,6 @@ class CandidateController extends Controller
                             <a href="#" class="dropdown-item candidate-type-transfer-btn" data-toggle="modal" data-target="#candidateTypeTransferModal" data-id="'.$row->id.'" data-current-type-id="'.$row->candidate_type_id.'" data-current-type="'.($row->candidateType?->name ?? '').'">Type Transfer</a>
                             <a class="dropdown-item" href="#">Print Dynamic Form</a>
                             <a href="#" class="dropdown-item deleteBonusBtn" data-id="'.$row->id.'">Delete</a>
-                            <a class="dropdown-item" href="#">Applications Logs</a>
                             <a class="dropdown-item" href="'.($row->files?->candidate_photo ? asset($row->files->candidate_photo) : '#').'" target="_blank">
     Candidate Photo
 </a>
