@@ -29,9 +29,10 @@
                                         </div>
                                     </div>
                                     <hr>
+
                                     <div class="row">
-                                        <div class="col-sm-3" style="max-width: 30%;">
-                                            <div class="image_preview">
+                                        <div class="col-md-3">
+                                            <div class="image_area" id="image_preview_test">
 
                                             </div>
                                         </div>
@@ -177,7 +178,7 @@
                                         <div class="col-sm-5">
                                             <b><u>Candidate Related All files</u></b>
                                             <table class="table table-sm">
-                                                <tbody id="related_docs">
+                                                <tbody id="related_docs1">
                                                 </tbody>
                                             </table>
                                         </div>

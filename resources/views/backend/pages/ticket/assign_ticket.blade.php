@@ -363,19 +363,18 @@
                                 + ` (${formattedDate})`;
                             $('#candidate_date').text(formattedRegistrationDay);
 
-                            if (res.candidate.files && Array.isArray(res.candidate.files)) {
-                                const photoFile = res.candidate.files.find(file => file.file_type === 'photo' && file.file_path);
+                            if (res.candidate.files) {
+                                const filePath = res.candidate.files.candidate_photo;
+                                const fileUrl = `/${filePath}`;
 
-                                if (photoFile) {
-                                    const filePath = photoFile.file_path;
-                                    const fileUrl = `/storage/${filePath}`;
+                                let previewHtml = `<img src="${fileUrl}"  alt="Agent Image"
+                id="candidate_photo_preview"
+                class="img-responsive img-thumbnail rounded-circle"
+                style="width: 250px; height: 250px; object-fit: cover;">`;
+                                let previewLinkHtml = `<a href="${fileUrl}" title="click to view file" target="_blank" class="mr-5"><i class="fa fa-file"></i></a>`;
 
-                                    let previewHtml = `<img src="${fileUrl}" class="img-responsive img-circle">`;
-                                    let previewLinkHtml = `<a href="${fileUrl}" title="click to view file" target="_blank" class="mr-5"><i class="fa fa-file"></i></a>`;
-
-                                    $('#image_preview').html(previewHtml);
-                                    $('#img_pre').html(previewLinkHtml);
-                                }
+                                $('#image_preview_test').html(previewHtml);
+                                $('#img_pre').html(previewLinkHtml);
                             }
 
                             $('#first_name').text(res.candidate.personal_info.first_name);
@@ -402,62 +401,89 @@
                             $('#referral_agent').text(res.candidate.agent.first_name + ' ' + res.candidate.agent.last_name);
                             $('#nationality').text(res.candidate.nationality);
 
-                            let candidateExperienceHtml = '';
+                            if (res.candidate.experiences) {
+                                const experience = res.candidate.experiences;
 
-                            res.candidate.experiences.forEach(function (experience) {
-                                candidateExperienceHtml += `
+                                // Departure & Arrival Seal
+                                const departureFileUrl = experience.departure_seal ? `/${experience.departure_seal}` : '';
+                                const arrivalFileUrl   = experience.arrival_seal ? `/${experience.arrival_seal}` : '';
+
+                                // Passport scan (if exists)
+                                let passportHtml = '';
+                                if (experience.passport_scan) {
+                                    const passportFileUrl = `/${experience.passport_scan}`;
+                                    passportHtml = `<a href="${passportFileUrl}" title="click to view file" target="_blank" class="mr-5"><i class="fa fa-file"></i></a>`;
+                                }
+                                $('#pass_scan').html(passportHtml);
+
+                                // Experience details table
+                                let candidateExperienceHtml = `
         <tr>
-            <td style="width: 150px;">Experience Type</td> <td>:</td> <td colspan="4"><b>${experience.experience_type}</b></td>
+            <td style="width: 150px;">Experience Type</td> <td>:</td>
+            <td colspan="4"><b>${experience.experience_type || ''}</b></td>
         </tr>
         <tr>
-            <td style="width: 150px;">Company Name</td> <td>:</td> <td><b>${experience.company_name}</b></td>
-            <td>Work Type</td> <td>:</td> <td><b>${experience.workType?.name || ''}</b></td>
+            <td style="width: 150px;">Company Name</td> <td>:</td>
+            <td><b>${experience.company_name || ''}</b></td>
+            <td>Work Type</td> <td>:</td>
+            <td><b>${experience.workType?.name || ''}</b></td>
         </tr>
         <tr>
-            <td style="width: 150px;">Departure Date</td> <td>:</td> <td><b>${experience.departure_date}</b></td>
-            <td>Arrival Date</td> <td>:</td> <td><b>${experience.arrival_date}</b></td>
+            <td style="width: 150px;">Departure Date</td> <td>:</td>
+            <td><b>${experience.departure_date || ''}</b></td>
+            <td>Arrival Date</td> <td>:</td>
+            <td><b>${experience.arrival_date || ''}</b></td>
         </tr>
         <tr>
-            <td style="width: 150px;">Departure Seal</td> <td>:</td> <td><b>${experience.departure_seal}</b></td>
-            <td>Arrival Seal</td> <td>:</td> <td><b>${experience.arrival_seal}</b></td>
+            <td style="width: 150px;">Departure Seal</td> <td>:</td>
+            <td>${departureFileUrl ? `<a href="${departureFileUrl}" target="_blank"><i class="fa fa-eye"></i></a>` : ''}</td>
+            <td>Arrival Seal</td> <td>:</td>
+            <td>${arrivalFileUrl ? `<a href="${arrivalFileUrl}" target="_blank"><i class="fa fa-eye"></i></a>` : ''}</td>
         </tr>
         <tr>
-            <td style="width: 150px;">Old Company Address</td> <td>:</td> <td colspan="4"><b>${experience.old_company_address}</b></td>
+            <td style="width: 150px;">Old Company Address</td> <td>:</td>
+            <td colspan="4"><b>${experience.old_company_address || ''}</b></td>
         </tr>
         <tr>
-            <td style="width: 150px;">Travelled Country</td> <td>:</td> <td colspan="4"><b>${experience.travelledCountry?.name || ''}</b></td>
+            <td style="width: 150px;">Travelled Country</td> <td>:</td>
+            <td colspan="4"><b>${experience.travelledCountry?.name || ''}</b></td>
         </tr>
         <tr><td colspan="6" style="border-bottom: 2px solid #ddd;"></td></tr>
     `;
-                            });
 
-                            $('#candidateExperience').html(candidateExperienceHtml);
-
-                            $('#pass_no').text(res.candidate.passport.passport_number);
-                            $('#pass_issue_date').text(res.candidate.passport.passport_issue_date);
-                            $('#pass_issue_place').text(res.candidate.passport.issue_place.name);
-                            $('#validate_year').text(res.candidate.passport.validity_years);
-                            $('#pass_note').text(res.candidate.passport.note);
-
-                            if (res.candidate.passport.passport_scan_copy) {
-                                const filePath = res.candidate.passport.passport_scan_copy;
-                                const fileUrl = `/storage/${filePath}`;
-
-                                let passportHtml = '';
-
-                                passportHtml = `<a href="${fileUrl}" title="click to view file" target="_blank" class="mr-5"><i class="fa fa-file"></i></a>	`;
-
-                                $('#pass_scan').html(passportHtml);
+                                $('#candidateExperience').html(candidateExperienceHtml);
                             }
-                            $('#country').text(res.candidate.location.country.name);
-                            $('#division').text(res.candidate.location.division.name);
-                            $('#district').text(res.candidate.location.district.name);
-                            $('#thana').text(res.candidate.location.thana.name);
-                            $('#postOffice').text(res.candidate.location.post_office.name);
-                            $('#state').text(res.candidate.location.state.name);
-                            $('#current_address').text(res.candidate.location.current_address);
-                            $('#permanent_address').text(res.candidate.location.permanent_address);
 
+
+                            if(res.candidate.passport) {
+                                $('#pass_no').text(res.candidate.passport.passport_number);
+                                $('#pass_issue_date').text(res.candidate.passport.passport_issue_date);
+                                $('#pass_issue_place').text(res.candidate.passport.issue_place.name);
+                                $('#validate_year').text(res.candidate.passport.validity_years);
+                                $('#pass_note').text(res.candidate.passport.note);
+
+                                if (res.candidate.passport.passport_scan_copy) {
+                                    const filePath = res.candidate.passport.passport_scan_copy;
+                                    const fileUrl = `/${filePath}`;
+
+                                    let passportHtml = '';
+
+                                    passportHtml = `<a href="${fileUrl}" title="click to view file" target="_blank" class="mr-5"><i class="fa fa-file"></i></a>	`;
+
+                                    $('#pass_scan').html(passportHtml);
+                                }
+                            }
+
+                            if(res.candidate.location) {
+                                $('#country').text(res.candidate.location.country ? res.candidate.location.country.name : '');
+                                $('#division').text(res.candidate.location.division ? res.candidate.location.division.name : '');
+                                $('#district').text(res.candidate.location.district ? res.candidate.location.district.name : '');
+                                $('#thana').text(res.candidate.location.thana ? res.candidate.location.thana.name : '');
+                                $('#postOffice').text(res.candidate.location.post_office ? res.candidate.location.post_office.name : '');
+                                $('#state').text(res.candidate.location.state ? res.candidate.location.state.name : '');
+                                $('#current_address').text(res.candidate.location.current_address);
+                                $('#permanent_address').text(res.candidate.location.permanent_address);
+                            }
 
                             $('#candidate_ticket').text(res.assign_ticket.ticket.ticket_name);
                             $('#candidate_source').text(res.assign_ticket.ticket.source);
@@ -478,7 +504,7 @@
 
                             if (res.assign_ticket.ticket.attachment) {
                                 const filePath = res.assign_ticket.ticket.attachment;
-                                const fileUrl = `/storage/${filePath}`;
+                                const fileUrl = `/${filePath}`;
 
                                 let passportHtml = '';
 
@@ -487,29 +513,58 @@
                                 $('#candidate_ticket_attachment').html(passportHtml);
                             }
 
-                            let candidateDocsHtml = '';
+                            if (res.candidate.files) {
+                                const files = res.candidate.files;
+                                console.log(files);
 
-                            res.candidate.files.forEach(function (eachFile) {
-                                if (eachFile.file_path) {
-                                    const filePath = eachFile.file_path;
-                                    const fileUrl = `/storage/${filePath}`;
+                                const photoFileUrl        = files.candidate_photo      ? `/${files.candidate_photo}` : '';
+                                const verificationFileUrl = files.police_verification  ? `/${files.police_verification}` : '';
+                                const certificationFileUrl= files.other_certification  ? `/${files.other_certification}` : '';
+                                const optionalFileUrl     = files.optional_file        ? `/${files.optional_file}` : '';
 
-                                    // Format file_type: "passport_copy" => "Passport Copy"
-                                    const formattedType = eachFile.file_type
-                                        .replace(/_/g, ' ')                // replace underscores with spaces
-                                        .replace(/\b\w/g, char => char.toUpperCase()); // capitalize each word
+                                let candidateDocsHtml = '';
 
+                                if (photoFileUrl) {
                                     candidateDocsHtml += `
             <tr>
-                <td>${formattedType}</td>
+                <td>Candidate Photo</td>
                 <td>:</td>
-                <td><a href="${fileUrl}" target="_blank"><i class="fa fa-eye"></i></a></td>
-            </tr>
-        `;
+                <td>
+                    <a href="${photoFileUrl}" target="_blank"><i class="fa fa-eye"></i>
+                         </a>
+                </td>
+            </tr>`;
                                 }
-                            });
 
-                            $('#related_docs').html(candidateDocsHtml);
+                                if (verificationFileUrl) {
+                                    candidateDocsHtml += `
+            <tr>
+                <td>Police Verification</td>
+                <td>:</td>
+                <td><a href="${verificationFileUrl}" target="_blank"><i class="fa fa-eye"></i></a></td>
+            </tr>`;
+                                }
+
+                                if (certificationFileUrl) {
+                                    candidateDocsHtml += `
+            <tr>
+                <td>Other Certification</td>
+                <td>:</td>
+                <td><a href="${certificationFileUrl}" target="_blank"><i class="fa fa-eye"></i></a></td>
+            </tr>`;
+                                }
+
+                                if (optionalFileUrl) {
+                                    candidateDocsHtml += `
+            <tr>
+                <td>Optional File/Files</td>
+                <td>:</td>
+                <td><a href="${optionalFileUrl}" target="_blank"><i class="fa fa-eye"></i></a></td>
+            </tr>`;
+                                }
+
+                                $('#related_docs1').html(candidateDocsHtml);
+                            }
 
 
 
