@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Process;
 
+use App\Models\Admin\Process\AgentTransaction;
 use App\Traits\FileUpload;
 use App\Models\Admin\Gender;
 use Illuminate\Http\Request;
@@ -81,8 +82,8 @@ class CandidateController extends Controller
 
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="' . route('admin.candidates.show', $row->id) . '">View Profile</a>
-                            <a class="dropdown-item" href="#">View Transactions</a>
-                            <a class="dropdown-item" href="#">Make Transaction</a>
+                                 <a href="#" class="dropdown-item view-transaction-btn" data-toggle="modal" data-target="#candidateTransactionListModal" data-id="'.$row->id.'" data-name="'.$agent.'">View Transactions</a>
+                            <a href="#" class="dropdown-item make-agent-transaction-btn" data-toggle="modal" data-target="#agentTransactionModal" data-id="'.$row->id.'" data-name="'.$agent.'" data-referral_agent_id="'.$row->referral_agent_id.'">Make Transaction</a>
                         </div>
                     </div>';
                 })
@@ -153,7 +154,8 @@ class CandidateController extends Controller
 
         $candidateTypes = CandidateType::where('status', 1)->pluck('name', 'id')->toArray();
         $transactionPurposes = \App\Models\Admin\Process\CandidateTransaction::$transactionPurposes;
-        return view('backend.pages.process.candidates.index', compact('candidateTypes', 'transactionPurposes'));
+        $careCandidates = Candidate::with(['personalInfo', 'candidateType'])->get();
+        return view('backend.pages.process.candidates.index', compact('candidateTypes', 'transactionPurposes', 'careCandidates'));
     }
 
     public function activeIndex(Request $request)
@@ -523,6 +525,54 @@ class CandidateController extends Controller
     }
 
     public function getCandidateTransactions(Request $request, $candidate_id)
+    {
+        $transactions = \App\Models\Admin\Process\CandidateTransaction::where('candidate_id', $candidate_id)
+            ->orderByDesc('id')
+            ->get();
+
+        // Map to required columns
+        $data = $transactions->map(function($t) {
+            return [
+                'id' => $t->id,
+                'transaction_type' => ucfirst($t->transaction_type),
+                'transaction_purpose' => $t->transaction_purpose,
+                'payment_method' => $t->payment_method,
+                'currency' => $t->currency,
+                'amount' => $t->amount,
+                'amount_bdt' => $t->amount_bdt,
+                'transaction_note' => $t->transaction_note ?? '',
+                'note' => $t->note ?? '',
+                'date' => $t->created_at ? $t->created_at->format('Y-m-d') : '',
+            ];
+        });
+
+        return response()->json(['data' => $data]);
+    }
+
+    public function storeAgentTransaction(Request $request)
+    {
+        $validated = $request->validate([
+            'candidate_id' => 'required|exists:candidates,id',
+            'agent_id' => 'required|exists:agents,id',
+            'care_candidate_id' => 'required|exists:candidates,id',
+            'transaction_type' => 'required|string',
+            'payment_method' => 'required|string',
+            'currency' => 'required|string',
+            'amount' => 'required|numeric',
+            'amount_bdt' => 'required|numeric',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240',
+            'transaction_note' => 'nullable|string',
+            'note' => 'nullable|string',
+        ]);
+        $data = $validated;
+        if ($request->hasFile('attachment')) {
+            $data['attachment'] = $this->uploadFile('candidate', $request->file('attachment'), 'agent/transaction');
+        }
+        $transaction = AgentTransaction::create($data);
+        return response()->json(['status' => 'success', 'transaction' => $transaction]);
+    }
+
+    public function getAgentTransactions(Request $request, $candidate_id)
     {
         $transactions = \App\Models\Admin\Process\CandidateTransaction::where('candidate_id', $candidate_id)
             ->orderByDesc('id')

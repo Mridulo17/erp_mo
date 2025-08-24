@@ -117,6 +117,8 @@
 @include('backend.pages.process.candidates.partials.candidate_comments_modal')
 @include('backend.pages.process.candidates.partials.candidate_transaction_list_modal')
 @include('backend.pages.process.candidates.partials.candidate_transaction_modal', ['transactionPurposes' => $transactionPurposes])
+@include('backend.pages.process.candidates.partials.agent_transaction_list_modal')
+@include('backend.pages.process.candidates.partials.agent_transaction_modal', ['careCandidates' => $careCandidates])
 @endsection
 
 @section('script')
@@ -518,6 +520,21 @@
         $('#candidateTransactionModal').modal('show');
     });
 
+    $(document).on('click', '.make-agent-transaction-btn', function(e) {
+        e.preventDefault();
+        var candidateId = $(this).data('id');
+        var agentId = $(this).data('referral_agent_id');
+        var agentName = $(this).data('name') || '';
+
+        // Set the modal title
+        $('#agentTransactionModalLabel').text('Make New Transaction with - ' + agentName);
+
+        $('#agent_transaction_candidate_id').val(candidateId);
+        $('#agent_candidate_id').val(agentId);
+        $('#agentTransactionForm')[0].reset();
+        $('#agentTransactionModal').modal('show');
+    });
+
     // fetch currency rates
     let currentRate = null; // Global variable
     function fetchCurrencyRates() {
@@ -561,6 +578,48 @@
     $('#amount').on('input change', function () {
         updateCurrencyInfoAndAmount();
     });
+    // fetch currency rates for agent
+    function fetchCurrencyRates1() {
+        let dataExchangeApiKey = "{{ config('services.exchange.key') }}";
+        let currency = $('#currency_select1').val();
+        $.ajax({
+            url: `https://v6.exchangerate-api.com/v6/${dataExchangeApiKey}/latest/${currency}`,
+            method: 'GET',
+            success: function(data) {
+                let rate = data.conversion_rates['BDT'];
+                currentRate = rate; // save globally
+
+                // Update currency rate display
+                $('#currency_rate_info1').text(`(1 ${currency} = ${rate} BDT)`);
+
+                updateCurrencyInfoAndAmount1();
+            },
+            error: function() {
+                console.warn("Failed to fetch currency rates.");
+            }
+        });
+    };
+
+    function updateCurrencyInfoAndAmount1() {
+        let amount = parseFloat($('#amount1').val()) || 0;
+
+        if (currentRate === null) {
+            $('#amount_bdt1').val('');
+            return;
+        }
+
+        // Calculate BDT amount
+        let bdt = (amount * currentRate).toFixed(2);
+        $('#amount_bdt1').val(bdt);
+    }
+
+    $('#currency_select1').on('input change', function () {
+        fetchCurrencyRates1();
+    });
+
+    $('#amount1').on('input change', function () {
+        updateCurrencyInfoAndAmount1();
+    });
 
     $(document).on('submit', '#candidateTransactionForm', function(e) {
         e.preventDefault();
@@ -592,6 +651,87 @@
                         showConfirmButton: false
                     });
                     $('#candidateTransactionModal').modal('hide');
+                    form[0].reset();
+                } else {
+                    // Handle other server-side errors (not validation)
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.message || 'Failed to save transaction.'
+                    });
+                }
+            },
+            error: function(xhr) {
+                $btn.prop('disabled', false).text('Save Transaction');
+                if (xhr.status === 422) {
+                    // Validation error
+                    let errors = xhr.responseJSON.errors;
+                    for (let field in errors) {
+                        let input = $('[name="' + field + '"]');
+
+                        if (input.length) {
+                            input.addClass('is-invalid');
+
+                            // If it's a select2, place error after the select2 container
+                            if (input.hasClass('select2-hidden-accessible')) {
+                                let select2Container = input.next('.select2');
+                                if (select2Container.length) {
+                                    select2Container.after('<div class="invalid-feedback d-block">' + errors[field][0] + '</div>');
+                                } else {
+                                    // fallback
+                                    input.after('<div class="invalid-feedback d-block">' + errors[field][0] + '</div>');
+                                }
+                            }
+                            // If inside an input-group (e.g., for datepicker/icons)
+                            else if (input.closest('.input-group').length) {
+                                input.closest('.input-group').after('<div class="invalid-feedback d-block">' + errors[field][0] + '</div>');
+                            } else {
+                                input.after('<div class="invalid-feedback d-block">' + errors[field][0] + '</div>');
+                            }
+                        }
+                    }
+                } else {
+                    // Other errors
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: xhr.responseJSON?.message || 'Failed to save transaction.'
+                    });
+                }
+            }
+        });
+    });
+
+    $(document).on('submit', '#agentTransactionForm', function(e) {
+        e.preventDefault();
+
+        var form = $(this);
+        var formData = new FormData(this);
+
+        // Clear previous errors
+        form.find('.invalid-feedback').text('');
+        form.find('.is-invalid').removeClass('is-invalid');
+
+        var $btn = form.find('button[type="submit"]');
+        $btn.prop('disabled', true).text('Saving...');
+
+        $.ajax({
+            url: '/admin/agent/transaction',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                $btn.prop('disabled', false).text('Save Transaction');
+                if (response.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Transaction saved successfully!',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    $('#agentTransactionModal').modal('hide');
                     form[0].reset();
                 } else {
                     // Handle other server-side errors (not validation)

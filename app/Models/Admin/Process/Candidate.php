@@ -79,4 +79,9 @@ class Candidate extends Model
         return $this->hasMany(CandidateTransaction::class);
     }
 
+    public function agentTransactions()
+    {
+        return $this->hasMany(AgentTransaction::class);
+    }
+
 }

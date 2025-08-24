@@ -220,6 +220,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::post('candidates/update-candidate-photo', [CandidateController::class, 'updateCandidatePhoto'])->name('candidates.updateCandidatePhoto');
     Route::post('candidates/transaction', [CandidateController::class, 'storeCandidateTransaction'])->name('candidates.storeTransaction');
     Route::get('candidates/{candidate_id}/transactions', [CandidateController::class, 'getCandidateTransactions'])->name('candidates.transactions');
+    Route::post('agent/transaction', [CandidateController::class, 'storeAgentTransaction'])->name('agent.storeTransaction');
+    Route::get('agent/{agent_id}/transactions', [CandidateController::class, 'getAgentTransactions'])->name('agent.transactions');
     Route::post('candidates/type-transfer', [CandidateController::class, 'typeTransfer'])->name('candidates.typeTransfer');
     Route::post('candidates/commission-setup', [CandidateController::class, 'commissionSetup'])->name('candidates.commission-setup');
     Route::get('candidates/comment/{id}', [CandidateController::class, 'getCandidateComment'])->name('candidates.getComment');
