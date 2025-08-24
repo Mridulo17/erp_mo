@@ -112,6 +112,7 @@
     </div>
 </div>
 @include('backend.pages.process.candidates.partials.candidate_profile_modal')
+@include('backend.pages.process.candidates.partials.agent_profile_modal')
 @include('backend.pages.process.candidates.partials.candidate_commission_setup_modal')
 @include('backend.pages.process.candidates.partials.candidate_type_transfer_modal', ['candidateTypes' => $candidateTypes])
 @include('backend.pages.process.candidates.partials.candidate_comments_modal')
@@ -221,6 +222,28 @@
             },
             error: function() {
                 $('#modalContent').html('<p class="text-danger">Failed to load candidate profile.</p>');
+            }
+        });
+    });
+
+    $(document).on('click', '.view-agent-profile-btn', function(e) {
+        e.preventDefault();
+        const agentId = $(this).data('id');
+
+        // Optional: show loading
+        $('#agentModalContent').html('<p>Loading...</p>');
+
+        // Fetch candidate details
+        $.ajax({
+            url: '/admin/show-agent-profile/' + agentId,
+            type: 'GET',
+            success: function(response) {
+                console.log(response);
+
+                $('#agentModalContent').html(response);
+            },
+            error: function() {
+                $('#agentModalContent').html('<p class="text-danger">Failed to load agent profile.</p>');
             }
         });
     });

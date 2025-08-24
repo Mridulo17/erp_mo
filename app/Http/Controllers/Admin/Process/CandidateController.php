@@ -81,7 +81,7 @@ class CandidateController extends Controller
                         </a>
 
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="' . route('admin.candidates.show', $row->id) . '">View Profile</a>
+                            <a href="#" class="dropdown-item view-agent-profile-btn" data-toggle="modal" data-target="#agentProfileModal" data-id="'.$row->referral_agent_id.'">View Profile</a>
                                  <a href="#" class="dropdown-item view-agent-transaction-btn" data-toggle="modal" data-target="#agentTransactionListModal" data-id="'.$row->id.'" data-name="'.$agent.'">View Transactions</a>
                             <a href="#" class="dropdown-item make-agent-transaction-btn" data-toggle="modal" data-target="#agentTransactionModal" data-id="'.$row->id.'" data-name="'.$agent.'" data-referral_agent_id="'.$row->referral_agent_id.'">Make Transaction</a>
                         </div>
@@ -413,6 +413,13 @@ class CandidateController extends Controller
         ]);
 
         return view('backend.pages.process.candidates.partials.candidate_profile_modal_data', compact('candidate', 'countries'));
+    }
+
+    public function showAgentProfile($agent_id)
+    {
+        $agent = Agent::with(['country'])->where('id', $agent_id)->first();
+
+        return view('backend.pages.process.candidates.partials.agent_profile_modal_data', compact('agent'));
     }
 
     public function edit(Candidate $candidate)

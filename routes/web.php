@@ -222,6 +222,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('candidates/{candidate_id}/transactions', [CandidateController::class, 'getCandidateTransactions'])->name('candidates.transactions');
     Route::post('agent/transaction', [CandidateController::class, 'storeAgentTransaction'])->name('agent.storeTransaction');
     Route::get('agent/{agent_id}/transactions', [CandidateController::class, 'getAgentTransactions'])->name('agent.transactions');
+    Route::get('show-agent-profile/{agent_id}', [CandidateController::class, 'showAgentProfile'])->name('show-agent-profile');
     Route::post('candidates/type-transfer', [CandidateController::class, 'typeTransfer'])->name('candidates.typeTransfer');
     Route::post('candidates/commission-setup', [CandidateController::class, 'commissionSetup'])->name('candidates.commission-setup');
     Route::get('candidates/comment/{id}', [CandidateController::class, 'getCandidateComment'])->name('candidates.getComment');
