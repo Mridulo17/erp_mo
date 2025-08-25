@@ -44,7 +44,9 @@ class ExpenseCategoryController extends Controller
             $openingBalanceSheetPath = null;
 
             if ($request->hasFile('opening_balance_sheet')) {
-                $openingBalanceSheetPath = $request->file('opening_balance_sheet')->store('expense_categories', 'public');
+                $file = $request->file('opening_balance_sheet');
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $openingBalanceSheetPath = $file->storeAs('uploads/expense_categories', $filename, 'public');
             }
 
             ExpenseCategory::create([
@@ -114,6 +116,7 @@ class ExpenseCategoryController extends Controller
             if ($request->has('remove_file') && $request->remove_file) {
                 if ($expenseCategory->opening_balance_sheet) {
                     Storage::disk('public')->delete($expenseCategory->opening_balance_sheet);
+                    $expenseCategory->opening_balance_sheet = null; // Clear DB field
                 }
             }
 
@@ -124,10 +127,11 @@ class ExpenseCategoryController extends Controller
                 if ($expenseCategory->opening_balance_sheet) {
                     Storage::disk('public')->delete($expenseCategory->opening_balance_sheet);
                 }
-                $openingBalanceSheetPath = $request->file('opening_balance_sheet')->store('expense_categories', 'public');
+                $file = $request->file('opening_balance_sheet');
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $openingBalanceSheetPath = $file->storeAs('uploads/expense_categories', $filename, 'public');
+                $expenseCategory->opening_balance_sheet = $openingBalanceSheetPath;
             }
-
-            $expenseCategory->opening_balance_sheet = $openingBalanceSheetPath;
             $expenseCategory->note = $request->note;
             $expenseCategory->status = $request->status === 'Enabled' ? 'Enabled' : 'Disabled';
 

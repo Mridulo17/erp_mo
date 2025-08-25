@@ -165,7 +165,6 @@ class VisaController extends Controller
             }
 
             // If a new file was uploaded
-            $demandLetterPath = null;
             if ($request->hasFile('demand_letter')) {
 
                 if ($visa->demand_letter) {

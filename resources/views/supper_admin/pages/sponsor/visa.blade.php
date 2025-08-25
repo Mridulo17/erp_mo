@@ -446,7 +446,7 @@
                             } else {
                                 $('#existing-file-preview').empty();
                                 $('#remove-file-section').addClass('d-none');
-                                $('#remove_file').prop('checked', false);
+                                $('#remove_file').prop('checked', false);-0
                             }
                             $('#provide_food').prop('checked', res.provide_food == '1');
                             $('#provide_accommodation').prop('checked', res.provide_accommodation == '1');
