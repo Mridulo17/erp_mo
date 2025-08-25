@@ -36,7 +36,7 @@ class ExpenseController extends Controller
                 'expense_category_id'      => 'required|integer',
                 'expense_item_id'      => 'required|integer',
                 'payment_method'    => 'required|in:Bank Account,Cash in Hand,Mobile Banking,Office Assets',
-                'currency_id'      => 'required|integer',
+                'currency'      => 'required',
                 'amount'      => 'required',
                 'bdt_amount'      => 'required',
                 'attachment' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240' // 10MB max
@@ -45,14 +45,16 @@ class ExpenseController extends Controller
             $attachmentPath = null;
 
             if ($request->hasFile('attachment')) {
-                $attachmentPath = $request->file('attachment')->store('expenses', 'public');
+                $file = $request->file('attachment');
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $attachmentPath = $file->storeAs('uploads/expenses', $filename, 'public');
             }
 
             Expense::create([
                 'expense_category_id'      => $request->input('expense_category_id'),
                 'expense_item_id'      => $request->input('expense_item_id'),
                 'payment_method'      => $request->input('payment_method'),
-                'currency_id'      => $request->input('currency_id'),
+                'currency'      => $request->input('currency'),
                 'amount'      => $request->input('amount'),
                 'bdt_amount'      => $request->input('bdt_amount'),
                 'attachment'         => $attachmentPath,
@@ -96,7 +98,7 @@ class ExpenseController extends Controller
                 'expense_category_id'      => 'required|integer',
                 'expense_item_id'      => 'required|integer',
                 'payment_method'    => 'required|in:Bank Account,Cash in Hand,Mobile Banking,Office Assets',
-                'currency_id'      => 'required|integer',
+                'currency'      => 'required',
                 'amount'      => 'required',
                 'bdt_amount'      => 'required',
                 'attachment' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240' // 10MB max
@@ -106,7 +108,7 @@ class ExpenseController extends Controller
             $expense->expense_category_id = $request->expense_category_id;
             $expense->expense_item_id = $request->expense_item_id;
             $expense->payment_method = $request->payment_method;
-            $expense->currency_id = $request->currency_id;
+            $expense->currency = $request->currency;
             $expense->amount = $request->amount;
             $expense->bdt_amount = $request->bdt_amount;
 
@@ -114,6 +116,7 @@ class ExpenseController extends Controller
             if ($request->has('remove_file') && $request->remove_file) {
                 if ($expense->attachment) {
                     Storage::disk('public')->delete($expense->attachment);
+                    $expense->attachment = null; // Clear DB field
                 }
             }
 
@@ -124,10 +127,11 @@ class ExpenseController extends Controller
                 if ($expense->attachment) {
                     Storage::disk('public')->delete($expense->attachment);
                 }
-                $attachmentPath = $request->file('attachment')->store('expenses', 'public');
+                $file = $request->file('attachment');
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $attachmentPath = $file->storeAs('uploads/expenses', $filename, 'public');
+                $expense->attachment = $attachmentPath;
             }
-
-            $expense->attachment = $attachmentPath;
             $expense->month_year = $request->month_year;
             $expense->expiry_date = $request->expiry_date;
             $expense->transaction_note = $request->transaction_note;

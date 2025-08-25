@@ -12,7 +12,7 @@ class Expense extends Model
             'expense_category_id',
             'expense_item_id',
             'payment_method',
-            'currency_id',
+            'currency',
             'amount',
             'bdt_amount',
             'attachment',
@@ -29,10 +29,5 @@ class Expense extends Model
     public function expenseItem()
     {
         return $this->belongsTo(ExpenseItem::class);
-    }
-
-    public function currency()
-    {
-        return $this->belongsTo(Currency::class);
     }
 }
