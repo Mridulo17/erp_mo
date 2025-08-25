@@ -68,7 +68,7 @@ class VisaController extends Controller
                 'visa_qty'  => $request->input('visa_qty'),
                 'type'  => $request->input('type'),
                 'gender'  => $request->input('gender'),
-                'currency_id'  => $request->input('currency_id'),
+                'currency'  => $request->input('currency'),
                 'monthly_salary'  => $request->input('monthly_salary'),
                 'salary_bdt_amount'  => $request->input('bdt_price')*$request->input('monthly_salary'),
                 'purchase_amount'  => $request->input('purchase_amount'),
@@ -121,7 +121,7 @@ class VisaController extends Controller
                 'sponsor_id'      => 'required|integer',
                 'job_list_id'      => 'required|integer',
                 'country_id'      => 'required|integer',
-                'currency_id'      => 'required|integer',
+                'currency'      => 'required',
                 'age_from'      => 'required',
                 'age_to'      => 'required',
                 'bdt_price'      => 'nullable',
@@ -143,7 +143,7 @@ class VisaController extends Controller
             $visa->visa_qty = $request->visa_qty;
             $visa->type = $request->type;
             $visa->gender = $request->gender;
-            $visa->currency_id = $request->currency_id;
+            $visa->currency = $request->currency;
             $visa->monthly_salary = $request->monthly_salary;
             $visa->salary_bdt_amount = $request->monthly_salary * $request->bdt_price;
             $visa->purchase_amount = $request->purchase_amount;

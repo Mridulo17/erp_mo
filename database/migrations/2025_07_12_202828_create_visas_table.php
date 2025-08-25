@@ -26,9 +26,8 @@ return new class extends Migration
             $table->integer('visa_qty');
             $table->enum('type', ['Air Ticket', 'Business Visa', 'Hazz & Umrah', 'Manpower', 'Patient', 'Tourist', 'Visa Processing', 'Worker'])->nullable();
             $table->enum('gender', ['Male', 'Female', 'Haji']);
-            $table->integer('currency_id')->unsigned()->nullable();
-            $table->foreign('currency_id')->references('id')->on('currencies')->onDelete('cascade');
-           $table->decimal('monthly_salary', 25, 2)->nullable();
+            $table->string('currency')->default('BDT');
+            $table->decimal('monthly_salary', 25, 2)->nullable();
             $table->decimal('salary_bdt_amount', 25, 2)->nullable();
             $table->integer('purchase_currency_id')->unsigned()->nullable();
             $table->decimal('purchase_amount', 25, 2)->nullable();
