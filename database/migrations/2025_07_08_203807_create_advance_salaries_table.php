@@ -19,8 +19,7 @@ return new class extends Migration
             $table->foreign('employee_id')->references('id')->on('employees')->cascadeOnUpdate()->restrictOnDelete();
             $table->string('month');
             $table->enum('payment_account', ['Bank Account', 'Cash in Hand', 'Mobile Banking', 'Office Assets']);
-            $table->integer('currency_id')->unsigned();
-            $table->foreign('currency_id')->references('id')->on('currencies')->onDelete('cascade');
+            $table->string('currency')->default('BDT');
             $table->decimal('amount', 25, 2);
             $table->decimal('bdt_amount', 25, 2);
             $table->string('attachment')->nullable();

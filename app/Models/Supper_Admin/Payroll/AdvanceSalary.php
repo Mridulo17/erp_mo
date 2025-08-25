@@ -15,7 +15,7 @@ class AdvanceSalary extends Model
             'employee_id',
             'month',
             'payment_account',
-            'currency_id',
+            'currency',
             'amount',
             'bdt_amount',
             'attachment',
@@ -29,9 +29,5 @@ class AdvanceSalary extends Model
     public function employee()
     {
         return $this->belongsTo(Employee::class);
-    }
-    public function currency()
-    {
-        return $this->belongsTo(Currency::class);
     }
 }
