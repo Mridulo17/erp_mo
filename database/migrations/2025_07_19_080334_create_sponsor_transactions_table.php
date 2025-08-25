@@ -17,8 +17,7 @@ return new class extends Migration
             $table->foreign('sponsor_id')->references('id')->on('sponsors')->cascadeOnUpdate()->restrictOnDelete();
             $table->enum('transaction_type', ['Received Payment', 'Give Payment']);
             $table->enum('payment_method', ['Bank Account', 'Cash in Hand', 'Mobile Banking', 'Office Assets']);
-            $table->integer('currency_id')->unsigned();
-            $table->foreign('currency_id')->references('id')->on('currencies')->cascadeOnUpdate()->restrictOnDelete();
+            $table->string('currency')->default('BDT');
             $table->decimal('amount', 25, 2);
             $table->decimal('bdt_amount', 25, 2);
             $table->unsignedBigInteger('candidate_id')->nullable();

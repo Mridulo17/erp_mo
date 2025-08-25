@@ -178,7 +178,7 @@ class SponsorController extends Controller
                 'sponsor_id'      => 'required|integer',
                 'transaction_type'    => 'required|in:Received Payment,Give Payment',
                 'payment_method'    => 'required|in:Bank Account,Cash in Hand,Mobile Banking,Office Assets',
-                'currency_id'      => 'required|integer',
+                'currency'      => 'required',
                 'amount'      => 'required',
                 'bdt_amount'      => 'required',
                 'attachment' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240' // 10MB max
@@ -187,7 +187,9 @@ class SponsorController extends Controller
             $attachmentPath = null;
 
             if ($request->hasFile('attachment')) {
-                $attachmentPath = $request->file('attachment')->store('sponsor-transactions', 'public');
+                $file = $request->file('attachment');
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $attachmentPath = $file->storeAs('uploads/sponsor-transactions', $filename, 'public');
             }
             $sponsor = Sponsor::where('id', $request->input('sponsor_id'))->first();
             $sponsor->update(['balance' => $sponsor->balance + $request->input('bdt_amount')]);
@@ -195,7 +197,7 @@ class SponsorController extends Controller
                 'sponsor_id'      => $request->input('sponsor_id'),
                 'transaction_type'      => $request->input('transaction_type'),
                 'payment_method'      => $request->input('payment_method'),
-                'currency_id'      => $request->input('currency_id'),
+                'currency'      => $request->input('currency'),
                 'amount'      => $request->input('amount'),
                 'candidate_id'      => $request->input('candidate_id'),
                 'bdt_amount'      => $request->input('bdt_amount'),
