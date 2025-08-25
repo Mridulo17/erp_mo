@@ -36,7 +36,9 @@ class LeaveController extends Controller
             $attachmentPath = null;
 
             if ($request->hasFile('attachment')) {
-                $attachmentPath = $request->file('attachment')->store('leaves', 'public');
+                $file = $request->file('attachment');
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $attachmentPath = $file->storeAs('uploads/leaves', $filename, 'public');
             }
             $leave = Leave::create([
                 'department_id'      => $request->input('department_id'),
