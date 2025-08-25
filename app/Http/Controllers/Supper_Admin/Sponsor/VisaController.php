@@ -31,7 +31,7 @@ class VisaController extends Controller
                 'sponsor_id'      => 'required|integer',
                 'job_list_id'      => 'required|integer',
                 'country_id'      => 'required|integer',
-                'currency_id'      => 'required|integer',
+                'currency'      => 'required',
                 'age_from'      => 'required',
                 'age_to'      => 'required',
                 'visa_qty'      => 'required',
@@ -46,11 +46,15 @@ class VisaController extends Controller
             $attachmentPath = null;
 
             if ($request->hasFile('demand_letter')) {
-                $demandLetterPath = $request->file('demand_letter')->store('visas', 'public');
+                $file = $request->file('demand_letter');
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $demandLetterPath = $file->storeAs('uploads/visas', $filename, 'public');
             }
 
             if ($request->hasFile('attachment')) {
-                $attachmentPath = $request->file('attachment')->store('visas', 'public');
+                $file = $request->file('attachment');
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $attachmentPath = $file->storeAs('uploads/visas', $filename, 'public');
             }
 
             Visa::create([
@@ -151,10 +155,12 @@ class VisaController extends Controller
             $visa->candidate_bdt_price = $request->candidate_price * $request->bdt_price;
             $visa->commission_amount = $request->commission_amount;
             $visa->commission_bdt_amount = $request->bdt_price * $request->commission_amount;
+
             // If user asked to remove file
             if ($request->has('remove_file1') && $request->remove_file1) {
                 if ($visa->demand_letter) {
                     Storage::disk('public')->delete($visa->demand_letter);
+                    $visa->demand_letter = null; // Clear DB field
                 }
             }
 
@@ -165,13 +171,17 @@ class VisaController extends Controller
                 if ($visa->demand_letter) {
                     Storage::disk('public')->delete($visa->demand_letter);
                 }
-                $demandLetterPath = $request->file('demand_letter')->store('visas', 'public');
+                $file = $request->file('demand_letter');
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $demandLetterPath = $file->storeAs('uploads/visas', $filename, 'public');
+                $visa->demand_letter = $demandLetterPath;
             }
 
             // If user asked to remove file
             if ($request->has('remove_file') && $request->remove_file) {
                 if ($visa->attachment) {
                     Storage::disk('public')->delete($visa->attachment);
+                    $visa->attachment = null; // Clear DB field
                 }
             }
 
@@ -182,11 +192,12 @@ class VisaController extends Controller
                 if ($visa->sponsor_photo) {
                     Storage::disk('public')->delete($visa->attachment);
                 }
-                $attachmentPath = $request->file('attachment')->store('visas', 'public');
+                $file = $request->file('attachment');
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $attachmentPath = $file->storeAs('uploads/visas', $filename, 'public');
+                $visa->attachment = $attachmentPath;
             }
 
-            $visa->demand_letter = $demandLetterPath;
-            $visa->attachment = $attachmentPath;
             $visa->note = $request->note;
             $visa->provide_food = $request->provide_food === '1' ? '1' : '0';
             $visa->provide_accommodation = $request->provide_accommodation === '1' ? '1' : '0';
