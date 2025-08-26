@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\permission\PermissionButtonController;
 use App\Http\Controllers\Admin\Process\AirlineOfficeController;
 use App\Http\Controllers\Admin\Process\AsignJobToOfficeController;
 use App\Http\Controllers\Admin\Process\CandidateController;
+use App\Http\Controllers\Admin\Process\CandidateDynamicFormController;
 use App\Http\Controllers\Admin\Process\CandidateTypeController;
 use App\Http\Controllers\Admin\Process\JobCategoryController;
 use App\Http\Controllers\Admin\Process\JobListController;
@@ -216,6 +217,10 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('delegates', DelegateController::class);
     Route::resource('delegateOffice', DelegateOfficeController::class);
     Route::resource('candidateTypes', CandidateTypeController::class);
+    Route::resource('candidate-dynamic-forms', CandidateDynamicFormController::class);
+    Route::post('fields/add', [CandidateDynamicFormController::class, 'addField'])->name('fields.add');
+    Route::post('fields/copy', [CandidateDynamicFormController::class, 'copy'])->name('fields.copy');
+    Route::delete('fields/{id}', [CandidateDynamicFormController::class, 'fieldDestroy'])->name('fields.destroy');
     Route::resource('candidates', CandidateController::class);
     Route::post('candidates/update-candidate-photo', [CandidateController::class, 'updateCandidatePhoto'])->name('candidates.updateCandidatePhoto');
     Route::post('candidates/transaction', [CandidateController::class, 'storeCandidateTransaction'])->name('candidates.storeTransaction');

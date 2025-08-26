@@ -159,6 +159,7 @@
 					</a>
 					<ul class="treeview-menu">
 						<li><a href="{{route('admin.candidateTypes.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Candidate Type</a></li>
+						<li><a href="{{route('admin.candidate-dynamic-forms.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Dynamic Form</a></li>
 						<li><a href="{{route('admin.processCategory.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Process Category</a></li>
 						<li><a href="{{route('admin.jobCategory.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Job Category</a></li>
 						<li><a href="{{route('admin.jobLists.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Job List</a></li>
