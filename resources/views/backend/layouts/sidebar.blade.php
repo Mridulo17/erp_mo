@@ -142,20 +142,6 @@
                           <li class="{{ Request::routeIs('admin.assign-tickets.*') ? 'active' : '' }}"><a href="{{ route('admin.assign-tickets.index') }}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Assign Ticket</a></li>
                       </ul>
                   </li>
-				<li class="treeview">
-					<a href="#">
-					  <i class="fas fa-running"><span class="path1"></span><span class="path2"></span></i>
-					  <span>Sponsor</span>
-					  <span class="pull-right-container">
-						<i class="fa fa-angle-right pull-right"></i>
-					  </span>
-					</a>
-					<ul class="treeview-menu">
-						<li><a href=""><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Manage Sponsor</a></li>
-						<li><a href=""><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Sponsor Visa</a></li>
-						<li><a href=""><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Marketing Visa</a></li>
-					</ul>
-				</li>
 
 				{{-- <li class="treeview">
 					<a href="#">
@@ -173,6 +159,7 @@
 					</a>
 					<ul class="treeview-menu">
 						<li><a href="{{route('admin.candidateTypes.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Candidate Type</a></li>
+						<li><a href="{{route('admin.candidate-dynamic-forms.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Dynamic Form</a></li>
 						<li><a href="{{route('admin.processCategory.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Process Category</a></li>
 						<li><a href="{{route('admin.jobCategory.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Job Category</a></li>
 						<li><a href="{{route('admin.jobLists.index')}}"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Job List</a></li>

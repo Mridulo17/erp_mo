@@ -34,7 +34,7 @@ class TravellingAndDearnessController extends Controller
                 'date'      => 'required|string',
                 'transport_type'    => 'required|in:One Way,Up Down',
                 'payment_account'    => 'required|in:Bank Account,Cash in Hand,Mobile Banking,Office Assets',
-                'currency_id'      => 'required|integer',
+                'currency'      => 'required',
                 'amount'      => 'required',
                 'bdt_amount'      => 'required',
                 'attachment' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240' // 10MB max
@@ -42,7 +42,9 @@ class TravellingAndDearnessController extends Controller
             $attachmentPath = null;
 
             if ($request->hasFile('attachment')) {
-                $attachmentPath = $request->file('attachment')->store('advance_salaries', 'public');
+                $file = $request->file('attachment');
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $attachmentPath = $file->storeAs('uploads/ta_da', $filename, 'public');
             }
 
             $travellingAndDearness = TravellingAndDearness::create([
@@ -53,7 +55,7 @@ class TravellingAndDearnessController extends Controller
                 'date'      => $request->input('date'),
                 'transport_type'      => $request->input('transport_type'),
                 'payment_account'      => $request->input('payment_account'),
-                'currency_id'      => $request->input('currency_id'),
+                'currency'      => $request->input('currency'),
                 'amount'      => $request->input('amount'),
                 'bdt_amount'      => $request->input('bdt_amount'),
                 'attachment'         => $attachmentPath,

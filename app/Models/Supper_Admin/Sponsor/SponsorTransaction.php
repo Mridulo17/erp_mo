@@ -15,7 +15,7 @@ class SponsorTransaction extends Model
             'sponsor_id',
             'transaction_type',
             'payment_method',
-            'currency_id',
+            'currency',
             'amount',
             'bdt_amount',
             'candidate_id',
@@ -29,10 +29,6 @@ class SponsorTransaction extends Model
         return $this->belongsTo(Sponsor::class);
     }
 
-    public function currency()
-    {
-        return $this->belongsTo(Currency::class);
-    }
     public function candidate()
     {
         return $this->belongsTo(Candidate::class);

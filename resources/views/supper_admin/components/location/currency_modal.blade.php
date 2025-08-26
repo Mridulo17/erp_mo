@@ -31,6 +31,10 @@
                         <label for="symbol" class="font-weight-bold text-dark" style="font-size: 14px;">Currency Symbol</label>
                         <input type="text" id="symbol" name="symbol" class="form-control" placeholder="Enter state Code" required>
                     </div>
+                    <div class="form-group">
+                        <label for="bdt_amount" class="font-weight-bold text-dark" style="font-size: 14px;">BDT Amount</label>
+                        <input type="number" step="any" id="bdt_amount" name="bdt_amount" class="form-control" placeholder="Enter BDT Amount" required>
+                    </div>
                     <div class="form-group form-check">
                         <input type="checkbox" id="status" name="status" class="form-check-input" value="Active" checked>
                         <label class="form-check-label" for="status">Active</label>

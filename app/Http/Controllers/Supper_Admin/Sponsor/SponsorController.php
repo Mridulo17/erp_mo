@@ -49,7 +49,9 @@ class SponsorController extends Controller
             $openingBalanceSheetPath = null;
 
             if ($request->hasFile('sponsor_photo')) {
-                $openingBalanceSheetPath = $request->file('sponsor_photo')->store('sponsors', 'public');
+                $file = $request->file('sponsor_photo');
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $openingBalanceSheetPath = $file->storeAs('uploads/sponsors', $filename, 'public');
             }
 
             Sponsor::create([
@@ -119,24 +121,28 @@ class SponsorController extends Controller
             $sponsor->email = $request->email;
             $sponsor->opening_balance = $request->opening_balance;
             $sponsor->nid = $request->nid;
+
             // If user asked to remove file
             if ($request->has('remove_file') && $request->remove_file) {
                 if ($sponsor->sponsor_photo) {
                     Storage::disk('public')->delete($sponsor->sponsor_photo);
+                    $sponsor->sponsor_photo = null; // Clear DB field
                 }
             }
 
-            // If a new file was uploaded
-            $openingBalanceSheetPath = null;
+// If a new file was uploaded
             if ($request->hasFile('sponsor_photo')) {
-
+                // Delete old file if exists
                 if ($sponsor->sponsor_photo) {
                     Storage::disk('public')->delete($sponsor->sponsor_photo);
                 }
-                $openingBalanceSheetPath = $request->file('sponsor_photo')->store('sponsors', 'public');
-            }
 
-            $sponsor->sponsor_photo = $openingBalanceSheetPath;
+                $file = $request->file('sponsor_photo');
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $sponsorPhotoPath = $file->storeAs('uploads/sponsors', $filename, 'public');
+
+                $sponsor->sponsor_photo = $sponsorPhotoPath; // Save new file path
+            }
             $sponsor->address = $request->address;
             $sponsor->note = $request->note;
             $sponsor->status = $request->status === 'Enabled' ? 'Enabled' : 'Disabled';
@@ -172,7 +178,7 @@ class SponsorController extends Controller
                 'sponsor_id'      => 'required|integer',
                 'transaction_type'    => 'required|in:Received Payment,Give Payment',
                 'payment_method'    => 'required|in:Bank Account,Cash in Hand,Mobile Banking,Office Assets',
-                'currency_id'      => 'required|integer',
+                'currency'      => 'required',
                 'amount'      => 'required',
                 'bdt_amount'      => 'required',
                 'attachment' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240' // 10MB max
@@ -181,7 +187,9 @@ class SponsorController extends Controller
             $attachmentPath = null;
 
             if ($request->hasFile('attachment')) {
-                $attachmentPath = $request->file('attachment')->store('sponsor-transactions', 'public');
+                $file = $request->file('attachment');
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $attachmentPath = $file->storeAs('uploads/sponsor-transactions', $filename, 'public');
             }
             $sponsor = Sponsor::where('id', $request->input('sponsor_id'))->first();
             $sponsor->update(['balance' => $sponsor->balance + $request->input('bdt_amount')]);
@@ -189,7 +197,7 @@ class SponsorController extends Controller
                 'sponsor_id'      => $request->input('sponsor_id'),
                 'transaction_type'      => $request->input('transaction_type'),
                 'payment_method'      => $request->input('payment_method'),
-                'currency_id'      => $request->input('currency_id'),
+                'currency'      => $request->input('currency'),
                 'amount'      => $request->input('amount'),
                 'candidate_id'      => $request->input('candidate_id'),
                 'bdt_amount'      => $request->input('bdt_amount'),

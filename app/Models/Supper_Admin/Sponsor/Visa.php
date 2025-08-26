@@ -23,7 +23,7 @@ class Visa extends Model
             'visa_qty',
             'type',
             'gender',
-            'currency_id',
+            'currency',
             'monthly_salary',
             'salary_bdt_amount',
             'purchase_amount',
@@ -55,9 +55,5 @@ class Visa extends Model
     public function country()
     {
         return $this->belongsTo(Country::class);
-    }
-    public function currency()
-    {
-        return $this->belongsTo(Currency::class);
     }
 }

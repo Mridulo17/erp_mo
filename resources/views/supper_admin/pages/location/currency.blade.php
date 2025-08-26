@@ -61,10 +61,11 @@
                     <tr>
                         <th style="">Action</th>
                         <th style="">Serial</th>
-                        <th style="">Contry</th>
+                        <th style="">Country</th>
                         <th style="">Currency Name</th>
                         <th style="">Code</th>
                         <th style="">Symbol</th>
+                        <th style="">BDT Amount</th>
                         <th style="">Status</th>
                         <th style="">Created At</th>
                     </tr>
@@ -82,7 +83,7 @@
                                     <a href="#" class="dropdown-item editBlogButton" data-toggle="modal" data-target="#modal-center" data-id="{{ $serivice->id }}">
                                         <i class="fa fa-edit"></i> Edit
                                     </a>
-                                    
+
                                     <!-- Delete Form inside Dropdown -->
                                     <button type="button"
                                             class="dropdown-item text-danger deleteStateBtn"
@@ -92,12 +93,13 @@
                                 </div>
                             </div>
                         </td>
-                        
+
                         <td>{{ $key + 1 }}</td>
                         <td class="wrap-text">{{ $serivice->country->name  }}</td>
                         <td>{{ $serivice->name}}</td>
                         <td class="wrap-text">{{ $serivice->code ?? "N/A"  }}</td>
                         <td class="wrap-text">{{ $serivice->symbol ?? "N/A"  }}</td>
+                        <td>{{ $serivice->bdt_amount}}</td>
                         <td>
                             <span class="badge {{ $serivice->status == 'Active' ? 'badge-success' : 'badge-danger' }}">
                                 {{ $serivice->status == 'Active' ? 'Active' : 'Inactive' }}
@@ -109,7 +111,7 @@
                     @endforeach
                 </tbody>
             </table>
-            
+
         </div>
     </div>
 </div>
@@ -162,14 +164,14 @@
                 $('#currencyFrom').on('submit', function (e) {
                     e.preventDefault();
 
-                    let isEdit = $('#currency_id').val() !== ''; 
-                    let formData = new FormData(this); 
-                    let id = $('#currency_id').val(); 
-                    let url = isEdit 
-                        ? `{{ route('supper_admin.currencies.update', ['currency' => '__id__']) }}`.replace('__id__', id) 
+                    let isEdit = $('#currency_id').val() !== '';
+                    let formData = new FormData(this);
+                    let id = $('#currency_id').val();
+                    let url = isEdit
+                        ? `{{ route('supper_admin.currencies.update', ['currency' => '__id__']) }}`.replace('__id__', id)
                         : `{{ route('supper_admin.currencies.store') }}`;
 
-                    let method = isEdit ? 'POST' : 'POST'; 
+                    let method = isEdit ? 'POST' : 'POST';
                     if (isEdit) {
                         formData.append('_method', 'PUT');
                     }
@@ -225,6 +227,7 @@
                             $('#name').val(res.name);
                             $('#code').val(res.code);
                             $('#symbol').val(res.symbol);
+                            $('#bdt_amount').val(res.bdt_amount);
                             $('#status').prop('checked', res.status === 'Active');
                             $('#modalTitle').text('Edit State');
                             $('#modal-center').modal('show');

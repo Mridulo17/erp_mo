@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Process;
 
+use App\Models\Admin\Process\AgentTransaction;
 use App\Traits\FileUpload;
 use App\Models\Admin\Gender;
 use Illuminate\Http\Request;
@@ -55,11 +56,16 @@ class CandidateController extends Controller
 
                         <div class="dropdown-menu">
                             <a href="#" class="dropdown-item view-profile-btn" data-toggle="modal" data-target="#candidateProfileModal" data-id="'.$row->id.'">View Profile</a>
+                            <a href="#" class="dropdown-item candidate-commission-setup-btn" data-toggle="modal" data-target="#candidateCommissionSetupModal" data-id="'.$row->id.'" data-commission="'.$row->commission.'" data-name="'.$name.'">Commission Setup</a>
                             <a href="#" class="dropdown-item view-transaction-btn" data-toggle="modal" data-target="#candidateTransactionListModal" data-id="'.$row->id.'" data-name="'.$name.'">View Transactions</a>
                             <a href="#" class="dropdown-item make-transaction-btn" data-toggle="modal" data-target="#candidateTransactionModal" data-id="'.$row->id.'" data-name="'.$name.'">Make Transaction</a>
                             <a href="#" class="dropdown-item candidate-type-transfer-btn" data-toggle="modal" data-target="#candidateTypeTransferModal" data-id="'.$row->id.'" data-current-type-id="'.$row->candidate_type_id.'" data-current-type="'.($row->candidateType?->name ?? '').'">Type Transfer</a>
                             <a class="dropdown-item" href="#">Print Dynamic Form</a>
-                            <a class="dropdown-item" href="#">Applications Logs</a>
+                            <a href="#" class="dropdown-item deleteBonusBtn" data-id="'.$row->id.'">Delete</a>
+                            <a class="dropdown-item" href="'.($row->files?->candidate_photo ? asset($row->files->candidate_photo) : '#').'" target="_blank">
+    Candidate Photo
+</a>
+
                             <a href="#" class="dropdown-item text-success candidate-comments-btn" data-toggle="modal" data-target="#candidateCommentsModal" data-id="'.$row->id.'">Comments</a>
                         </div>
                     </div>';
@@ -78,9 +84,9 @@ class CandidateController extends Controller
                         </a>
 
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="' . route('admin.candidates.show', $row->id) . '">View Profile</a>
-                            <a class="dropdown-item" href="#">View Transactions</a>
-                            <a class="dropdown-item" href="#">Make Transaction</a>
+                            <a href="#" class="dropdown-item view-agent-profile-btn" data-toggle="modal" data-target="#agentProfileModal" data-id="'.$row->referral_agent_id.'">View Profile</a>
+                                 <a href="#" class="dropdown-item view-agent-transaction-btn" data-toggle="modal" data-target="#agentTransactionListModal" data-id="'.$row->id.'" data-name="'.$agent.'">View Transactions</a>
+                            <a href="#" class="dropdown-item make-agent-transaction-btn" data-toggle="modal" data-target="#agentTransactionModal" data-id="'.$row->id.'" data-name="'.$agent.'" data-referral_agent_id="'.$row->referral_agent_id.'">Make Transaction</a>
                         </div>
                     </div>';
                 })
@@ -151,7 +157,8 @@ class CandidateController extends Controller
 
         $candidateTypes = CandidateType::where('status', 1)->pluck('name', 'id')->toArray();
         $transactionPurposes = \App\Models\Admin\Process\CandidateTransaction::$transactionPurposes;
-        return view('backend.pages.process.candidates.index', compact('candidateTypes', 'transactionPurposes'));
+        $careCandidates = Candidate::with(['personalInfo', 'candidateType'])->get();
+        return view('backend.pages.process.candidates.index', compact('candidateTypes', 'transactionPurposes', 'careCandidates'));
     }
 
     public function activeIndex(Request $request)
@@ -236,7 +243,7 @@ class CandidateController extends Controller
                 if ($request->hasFile('arrival_seal')) {
                     $data['arrival_seal'] = $this->uploadFile('candidate', $request->file('arrival_seal'), 'candidate/arrival_seal');
                 }
-                
+
                 if (isset($data['travelled_country_id']) && is_array($data['travelled_country_id'])) {
                     $data['travelled_country_id'] = json_encode($data['travelled_country_id']);
                 }
@@ -411,6 +418,13 @@ class CandidateController extends Controller
         return view('backend.pages.process.candidates.partials.candidate_profile_modal_data', compact('candidate', 'countries'));
     }
 
+    public function showAgentProfile($agent_id)
+    {
+        $agent = Agent::with(['country'])->where('id', $agent_id)->first();
+
+        return view('backend.pages.process.candidates.partials.agent_profile_modal_data', compact('agent'));
+    }
+
     public function edit(Candidate $candidate)
     {
         //
@@ -420,12 +434,6 @@ class CandidateController extends Controller
     {
         //
     }
-
-    public function destroy(Candidate $candidate)
-    {
-        //
-    }
-
     public function updateCandidatePhoto(Request $request)
     {
         $request->validate([
@@ -442,7 +450,7 @@ class CandidateController extends Controller
             $candidateFile = new \App\Models\Admin\Process\CandidateFile();
             $candidateFile->candidate_id = $candidate->id;
         }
-        
+
         if ($request->hasFile('candidate_photo')) {
             $path = $this->uploadFile('candidate', $request->file('candidate_photo'), 'candidate/files');
             $candidateFile->candidate_photo = $path;
@@ -464,6 +472,20 @@ class CandidateController extends Controller
 
         $candidate = Candidate::findOrFail($request->candidate_id);
         $candidate->candidate_type_id = $request->candidate_type_id;
+        $candidate->save();
+
+        return response()->json(['status' => 'success']);
+    }
+
+    public function commissionSetup(Request $request)
+    {
+        $request->validate([
+            'candidate_id' => 'required|exists:candidates,id',
+            'commission' => 'required',
+        ]);
+
+        $candidate = Candidate::findOrFail($request->candidate_id);
+        $candidate->commission = $request->commission;
         $candidate->save();
 
         return response()->json(['status' => 'success']);
@@ -535,5 +557,84 @@ class CandidateController extends Controller
         });
 
         return response()->json(['data' => $data]);
+    }
+
+    public function storeAgentTransaction(Request $request)
+    {
+        $validated = $request->validate([
+            'candidate_id' => 'required|exists:candidates,id',
+            'agent_id' => 'required|exists:agents,id',
+            'care_candidate_id' => 'required|exists:candidates,id',
+            'transaction_type' => 'required|string',
+            'payment_method' => 'required|string',
+            'currency' => 'required|string',
+            'amount' => 'required|numeric',
+            'amount_bdt' => 'required|numeric',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240',
+            'transaction_note' => 'nullable|string',
+            'note' => 'nullable|string',
+        ]);
+        $data = $validated;
+        if ($request->hasFile('attachment')) {
+            $data['attachment'] = $this->uploadFile('candidate', $request->file('attachment'), 'agent/transaction');
+        }
+        $transaction = AgentTransaction::create($data);
+        return response()->json(['status' => 'success', 'transaction' => $transaction]);
+    }
+
+    public function getAgentTransactions(Request $request, $candidate_id)
+    {
+        $transactions = AgentTransaction::where('candidate_id', $candidate_id)
+            ->orderByDesc('id')
+            ->get();
+
+        // Map to required columns
+        $data = $transactions->map(function($t) {
+            return [
+                'id' => $t->id,
+                'transaction_type' => ucfirst($t->transaction_type),
+                'payment_method' => $t->payment_method,
+                'currency' => $t->currency,
+                'amount' => $t->amount,
+                'amount_bdt' => $t->amount_bdt,
+                'transaction_note' => $t->transaction_note ?? '',
+                'note' => $t->note ?? '',
+                'date' => $t->created_at ? $t->created_at->format('Y-m-d') : '',
+            ];
+        });
+
+        return response()->json(['data' => $data]);
+    }
+
+    public function destroy(string $id)
+    {
+        try {
+            $candidate = Candidate::findOrFail($id);
+
+            if(isset($candidate->personalInfo)){
+                $candidate->personalInfo()->delete();
+            }
+            if(isset($candidate->experiences)){
+                $candidate->experiences()->delete();
+            }
+            if(isset($candidate->passport)){
+                $candidate->passport()->delete();
+            }
+
+            if(isset($candidate->location)){
+                $candidate->location()->delete();
+            }
+
+            if(isset($candidate->files)){
+                $candidate->files()->delete();
+            }
+            if(isset($candidate->transactions)){
+                $candidate->transactions()->delete();
+            }
+            $candidate->delete();
+            return response()->json(['status' => 'success', 'message' => 'Candidate deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'fail', 'message' => $e->getMessage()]);
+        }
     }
 }

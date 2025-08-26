@@ -247,7 +247,9 @@ class SalaryGenerateController extends Controller
             $attachmentPath = null;
 
             if ($request->hasFile('attachment')) {
-                $attachmentPath = $request->file('attachment')->store('salary-distribution', 'public');
+                $file = $request->file('attachment');
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $attachmentPath = $file->storeAs('uploads/salary-distribution', $filename, 'public');
             }
             $employeeSalary = SalaryGenerateEmployee::where('employee_id', $request->employee_id)->where('month_year', $request->month_year)->first();
             $employeeSalary->is_paid = 'Received';

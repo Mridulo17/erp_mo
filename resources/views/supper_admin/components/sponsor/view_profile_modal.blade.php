@@ -22,7 +22,9 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-4">
-                            <img id="profile_preview" src="" style="" class="image-responsve">
+                            <img id="profile_preview" src=""  alt="Sponsor Image"
+                                 class="img-responsive img-thumbnail rounded-circle"
+                                 style="width: 250px; height: 250px; object-fit: cover;">
                         </div>
                         <div class="col-sm-8">
                             <table class="table table-sm candidate_details_table">

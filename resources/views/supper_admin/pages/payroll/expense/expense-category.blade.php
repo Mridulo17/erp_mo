@@ -230,7 +230,7 @@
                                 const ext = filePath.split('.').pop().toLowerCase();
 
                                 // Prepend Laravel's public storage path
-                                const fileUrl = `/storage/${filePath}`;
+                                const fileUrl = `/${filePath}`;
 
                                 let previewHtml = '';
 

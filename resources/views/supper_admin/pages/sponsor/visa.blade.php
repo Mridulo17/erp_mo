@@ -117,7 +117,7 @@
                             <td class="wrap-text">{{ $bonus->age_from  }} - {{ $bonus->age_to  }}</td>
                             <td>0.00</td>
                             <td>{{ $bonus->visa_qty  }}</td>
-                            <td class="wrap-text">{{ $bonus->currency ? $bonus->currency->name : '' }}</td>
+                            <td class="wrap-text">{{ $bonus->currency }}</td>
                             <td class="wrap-text">{{ $bonus->purchase_amount  }}</td>
                             <td class="wrap-text">0.00</td>
                             <td>
@@ -260,14 +260,48 @@
                     });
                 }
 
+                // fetch currency rates
+                let currentRate = null; // Global variable
+                function fetchCurrencyRates() {
+                    let dataExchangeApiKey = "{{ config('services.exchange.key') }}";
+                    let currency = $('#currency_select').val();
+                    $.ajax({
+                        url: `https://v6.exchangerate-api.com/v6/${dataExchangeApiKey}/latest/${currency}`,
+                        method: 'GET',
+                        success: function(data) {
+                            let rate = data.conversion_rates['BDT'];
+                            currentRate = rate; // save globally
 
-                $('#currencySelect').on('change', function () {
-                    const selectedOption = $(this).find('option:selected');
-                    const bdt_amount = selectedOption.data('bdt_amount');
-                    const name = selectedOption.data('name');
-                    $('#currency_details').text("(1 " + name + " = " + bdt_amount + " BDT)");
-                    $('#bdt_price').val(bdt_amount);
+                            // Update currency rate display
+                            $('#currency_rate_info').text(`(1 ${currency} = ${rate} BDT)`);
+
+                            updateCurrencyInfoAndAmount();
+                        },
+                        error: function() {
+                            console.warn("Failed to fetch currency rates.");
+                        }
+                    });
+                };
+
+                function updateCurrencyInfoAndAmount() {
+                    if (currentRate === null) {
+                        $('#bdt_price').val('');
+                        return;
+                    }
+
+                    // Calculate BDT amount
+                    let bdt = currentRate.toFixed(2);
+                    $('#bdt_price').val(bdt);
+                }
+
+                $('#currency_select').on('input change', function () {
+                    fetchCurrencyRates();
                 });
+
+                $('#amount').on('input change', function () {
+                    updateCurrencyInfoAndAmount();
+                });
+
 
                 $('#jobSelect').on('change', function () {
                     const selectedOption = $(this).find('option:selected');
@@ -354,7 +388,7 @@
                             $('#sponsorSelect').val(res.sponsor_id).trigger('change');
                             $('#jobSelect').val(res.job_list_id).trigger('change');
                             $('#countrySelect').val(res.country_id).trigger('change');
-                            $('#currencySelect').val(res.currency_id).trigger('change');
+                            $('#currency_select').val(res.currency).trigger('change');
                             $('#issue_date').val(res.issue_date);
                             $('#age_from').val(res.age_from);
                             $('#age_to').val(res.age_to);
@@ -374,7 +408,7 @@
                                 const ext = filePath.split('.').pop().toLowerCase();
 
                                 // Prepend Laravel's public storage path
-                                const fileUrl = `/storage/${filePath}`;
+                                const fileUrl = `/${filePath}`;
 
                                 let previewHtml = '';
 
@@ -397,7 +431,7 @@
                                 const ext = filePath.split('.').pop().toLowerCase();
 
                                 // Prepend Laravel's public storage path
-                                const fileUrl = `/storage/${filePath}`;
+                                const fileUrl = `/${filePath}`;
 
                                 let previewHtml = '';
 
@@ -412,7 +446,7 @@
                             } else {
                                 $('#existing-file-preview').empty();
                                 $('#remove-file-section').addClass('d-none');
-                                $('#remove_file').prop('checked', false);
+                                $('#remove_file').prop('checked', false);-0
                             }
                             $('#provide_food').prop('checked', res.provide_food == '1');
                             $('#provide_accommodation').prop('checked', res.provide_accommodation == '1');

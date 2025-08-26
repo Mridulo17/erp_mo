@@ -34,6 +34,7 @@ class CurrencyController extends Controller
                 'name'          => 'required|string|max:255',
                 'code'          => 'required|string|max:255',
                 'symbol'        => 'required|string|max:3',
+                'bdt_amount'        => 'required',
                 'country_id'    => 'required|exists:countries,id',
                 'status'        => 'required|in:Active,Inactive'
             ]);
@@ -43,6 +44,7 @@ class CurrencyController extends Controller
                 'name'          => $request->input('name'),
                 'code'          => $request->input('code'),
                 'symbol'        => $request->input('symbol'),
+                'bdt_amount'    => $request->input('bdt_amount'),
                 'country_id'    => $request->input('country_id'),
                 'user_id'       => $user_id,
                 'status'        => $request->input('status')
@@ -74,6 +76,7 @@ class CurrencyController extends Controller
         $currencies->name        = $request->name;
         $currencies->code        = $request->code;
         $currencies->symbol      = $request->symbol;
+        $currencies->bdt_amount      = $request->bdt_amount;
         $currencies->country_id  = $request->country_id;
         $currencies->status      = $request->status ? 'Active' : 'Inactive';
         $currencies->save();

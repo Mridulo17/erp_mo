@@ -18,7 +18,7 @@ class TravellingAndDearness extends Model
             'date',
             'transport_type',
             'payment_account',
-            'currency_id',
+            'currency',
             'amount',
             'bdt_amount',
             'attachment',
@@ -32,10 +32,6 @@ class TravellingAndDearness extends Model
     public function employee()
     {
         return $this->belongsTo(Employee::class);
-    }
-    public function currency()
-    {
-        return $this->belongsTo(Currency::class);
     }
 
     public function travellingAndDearnessVehicleTypes()

@@ -30,7 +30,7 @@ class AdvanceSalaryController extends Controller
                 'employee_id'      => 'required|integer',
                 'month'      => 'required|string',
                 'payment_account'    => 'required|in:Bank Account,Cash in Hand,Mobile Banking,Office Assets',
-                'currency_id'      => 'required|integer',
+                'currency'      => 'required',
                 'amount'      => 'required',
                 'bdt_amount'      => 'required',
                 'attachment' => 'nullable|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:10240' // 10MB max
@@ -38,7 +38,9 @@ class AdvanceSalaryController extends Controller
             $attachmentPath = null;
 
             if ($request->hasFile('attachment')) {
-                $attachmentPath = $request->file('attachment')->store('advance_salaries', 'public');
+                $file = $request->file('attachment');
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $attachmentPath = $file->storeAs('uploads/advance_salaries', $filename, 'public');
             }
 
             AdvanceSalary::create([
@@ -46,7 +48,7 @@ class AdvanceSalaryController extends Controller
                 'employee_id'      => $request->input('employee_id'),
                 'month'      => $request->input('month'),
                 'payment_account'      => $request->input('payment_account'),
-                'currency_id'      => $request->input('currency_id'),
+                'currency'      => $request->input('currency'),
                 'amount'      => $request->input('amount'),
                 'bdt_amount'      => $request->input('bdt_amount'),
                 'attachment'         => $attachmentPath,

@@ -112,10 +112,14 @@
     </div>
 </div>
 @include('backend.pages.process.candidates.partials.candidate_profile_modal')
+@include('backend.pages.process.candidates.partials.agent_profile_modal')
+@include('backend.pages.process.candidates.partials.candidate_commission_setup_modal')
 @include('backend.pages.process.candidates.partials.candidate_type_transfer_modal', ['candidateTypes' => $candidateTypes])
 @include('backend.pages.process.candidates.partials.candidate_comments_modal')
 @include('backend.pages.process.candidates.partials.candidate_transaction_list_modal')
 @include('backend.pages.process.candidates.partials.candidate_transaction_modal', ['transactionPurposes' => $transactionPurposes])
+@include('backend.pages.process.candidates.partials.agent_transaction_list_modal')
+@include('backend.pages.process.candidates.partials.agent_transaction_modal', ['careCandidates' => $careCandidates])
 @endsection
 
 @section('script')
@@ -202,7 +206,7 @@
 <script>
     $(document).on('click', '.view-profile-btn', function(e) {
         e.preventDefault();
-        const candidateId = $(this).data('id');    
+        const candidateId = $(this).data('id');
 
         // Optional: show loading
         $('#modalContent').html('<p>Loading...</p>');
@@ -213,11 +217,33 @@
             type: 'GET',
             success: function(response) {
                 console.log(response);
-                
+
                 $('#modalContent').html(response);
             },
             error: function() {
                 $('#modalContent').html('<p class="text-danger">Failed to load candidate profile.</p>');
+            }
+        });
+    });
+
+    $(document).on('click', '.view-agent-profile-btn', function(e) {
+        e.preventDefault();
+        const agentId = $(this).data('id');
+
+        // Optional: show loading
+        $('#agentModalContent').html('<p>Loading...</p>');
+
+        // Fetch candidate details
+        $.ajax({
+            url: '/admin/show-agent-profile/' + agentId,
+            type: 'GET',
+            success: function(response) {
+                console.log(response);
+
+                $('#agentModalContent').html(response);
+            },
+            error: function() {
+                $('#agentModalContent').html('<p class="text-danger">Failed to load agent profile.</p>');
             }
         });
     });
@@ -267,6 +293,75 @@
         $('#transfer_candidate_id').val(candidateId);
         $('#current_candidate_type').val(currentType);
         $('#candidateTypeTransferModal').modal('show');
+    });
+
+    $(document).on('click', '.candidate-commission-setup-btn', function(e) {
+        e.preventDefault();
+        var candidateId = $(this).data('id');
+        var currentCommission = $(this).data('commission') || '';
+        var name = $(this).data('name') || '';
+        $('#commission_candidate_id').val(candidateId);
+        $('#current_candidate_commission').val(currentCommission);
+        $('#candidate_name_modal_title').text(name);
+        $('#candidateCommissionSetupModal').modal('show');
+    });
+
+    // Handle form submit
+    $(document).on('submit', '#candidateCommissionSetupForm', function(e) {
+        e.preventDefault();
+        var formData = $(this).serialize();
+        $.ajax({
+            url: '/admin/candidates/commission-setup',
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                if(response.status === 'success') {
+                    $('#candidateCommissionSetupModal').modal('hide');
+                    Swal.fire({
+                        position: "center",
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Candidate commission setup successfully!',
+                        customClass: {
+                            popup: 'swal2-popup',
+                            title: 'swal2-title',
+                            confirmButton: 'swal2-btn'
+                        }
+                    });
+
+                    // Reload the page
+                    setTimeout(function() {
+                        // location.reload();
+                        dtTable.ajax.reload(null, false); // reload yajra datatable
+                    }, 1000);
+                } else {
+                    Swal.fire({
+                        position: "center",
+                        icon: 'error',
+                        title: 'Failed',
+                        text: 'Failed to setup candidate commission.',
+                        customClass: {
+                            popup: 'swal2-popup',
+                            title: 'swal2-title',
+                            confirmButton: 'swal2-btn'
+                        }
+                    });
+                }
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    position: "center",
+                    icon: 'error',
+                    title: 'Error',
+                    text: (xhr.responseJSON?.message || 'Unknown error'),
+                    customClass: {
+                        popup: 'swal2-popup',
+                        title: 'swal2-title',
+                        confirmButton: 'swal2-btn'
+                    }
+                });
+            }
+        });
     });
 
     // Handle form submit
@@ -322,6 +417,41 @@
                         popup: 'swal2-popup',
                         title: 'swal2-title',
                         confirmButton: 'swal2-btn'
+                    }
+                });
+            }
+        });
+    });
+
+    $(document).on('click', '.deleteBonusBtn', function () {
+        const id = $(this).data('id');
+        const url = '{{ route("admin.candidates.destroy", ":id") }}'.replace(':id', id);
+
+        Swal.fire({
+            title: 'Delete Candidate?',
+            text: "This action cannot be undone.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Delete'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        _method: 'DELETE',
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function (response) {
+                        if (response.status === 'success') {
+                            Swal.fire('Deleted!', response.message, 'success');
+                            fetchTickets();
+                        } else {
+                            Swal.fire('Error!', response.message, 'error');
+                        }
+                    },
+                    error: function () {
+                        Swal.fire('Error!', 'Failed to delete the ticket.', 'error');
                     }
                 });
             }
@@ -413,15 +543,30 @@
         $('#candidateTransactionModal').modal('show');
     });
 
+    $(document).on('click', '.make-agent-transaction-btn', function(e) {
+        e.preventDefault();
+        var candidateId = $(this).data('id');
+        var agentId = $(this).data('referral_agent_id');
+        var agentName = $(this).data('name') || '';
+
+        // Set the modal title
+        $('#agentTransactionModalLabel').text('Make New Transaction with - ' + agentName);
+
+        $('#agent_transaction_candidate_id').val(candidateId);
+        $('#agent_candidate_id').val(agentId);
+        $('#agentTransactionForm')[0].reset();
+        $('#agentTransactionModal').modal('show');
+    });
+
     // fetch currency rates
     let currentRate = null; // Global variable
     function fetchCurrencyRates() {
-        let dataExchangeApiKey = "{{ config('services.exchange.key') }}";        
+        let dataExchangeApiKey = "{{ config('services.exchange.key') }}";
         let currency = $('#currency_select').val();
         $.ajax({
             url: `https://v6.exchangerate-api.com/v6/${dataExchangeApiKey}/latest/${currency}`,
             method: 'GET',
-            success: function(data) {                
+            success: function(data) {
                 let rate = data.conversion_rates['BDT'];
                 currentRate = rate; // save globally
 
@@ -438,7 +583,7 @@
 
     function updateCurrencyInfoAndAmount() {
         let amount = parseFloat($('#amount').val()) || 0;
-    
+
         if (currentRate === null) {
             $('#amount_bdt').val('');
             return;
@@ -538,6 +683,131 @@
         });
     });
 
+    // fetch currency rates for agent
+    function fetchCurrencyRates1() {
+        let dataExchangeApiKey = "{{ config('services.exchange.key') }}";
+        let currency = $('#currency_select1').val();
+        $.ajax({
+            url: `https://v6.exchangerate-api.com/v6/${dataExchangeApiKey}/latest/${currency}`,
+            method: 'GET',
+            success: function(data) {
+                let rate = data.conversion_rates['BDT'];
+                currentRate = rate; // save globally
+
+                // Update currency rate display
+                $('#currency_rate_info1').text(`(1 ${currency} = ${rate} BDT)`);
+
+                updateCurrencyInfoAndAmount1();
+            },
+            error: function() {
+                console.warn("Failed to fetch currency rates.");
+            }
+        });
+    };
+
+    function updateCurrencyInfoAndAmount1() {
+        let amount = parseFloat($('#amount1').val()) || 0;
+
+        if (currentRate === null) {
+            $('#amount_bdt1').val('');
+            return;
+        }
+
+        // Calculate BDT amount
+        let bdt = (amount * currentRate).toFixed(2);
+        $('#amount_bdt1').val(bdt);
+    }
+
+    $('#currency_select1').on('input change', function () {
+        fetchCurrencyRates1();
+    });
+
+    $('#amount1').on('input change', function () {
+        updateCurrencyInfoAndAmount1();
+    });
+
+
+    $(document).on('submit', '#agentTransactionForm', function(e) {
+        e.preventDefault();
+
+        var form = $(this);
+        var formData = new FormData(this);
+
+        // Clear previous errors
+        form.find('.invalid-feedback').text('');
+        form.find('.is-invalid').removeClass('is-invalid');
+
+        var $btn = form.find('button[type="submit"]');
+        $btn.prop('disabled', true).text('Saving...');
+
+        $.ajax({
+            url: '/admin/agent/transaction',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                $btn.prop('disabled', false).text('Save Transaction');
+                if (response.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Transaction saved successfully!',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    $('#agentTransactionModal').modal('hide');
+                    form[0].reset();
+                } else {
+                    // Handle other server-side errors (not validation)
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.message || 'Failed to save transaction.'
+                    });
+                }
+            },
+            error: function(xhr) {
+                $btn.prop('disabled', false).text('Save Transaction');
+                if (xhr.status === 422) {
+                    // Validation error
+                    let errors = xhr.responseJSON.errors;
+                    for (let field in errors) {
+                        let input = $('[name="' + field + '"]');
+
+                        if (input.length) {
+                            input.addClass('is-invalid');
+
+                            // If it's a select2, place error after the select2 container
+                            if (input.hasClass('select2-hidden-accessible')) {
+                                let select2Container = input.next('.select2');
+                                if (select2Container.length) {
+                                    select2Container.after('<div class="invalid-feedback d-block">' + errors[field][0] + '</div>');
+                                } else {
+                                    // fallback
+                                    input.after('<div class="invalid-feedback d-block">' + errors[field][0] + '</div>');
+                                }
+                            }
+                            // If inside an input-group (e.g., for datepicker/icons)
+                            else if (input.closest('.input-group').length) {
+                                input.closest('.input-group').after('<div class="invalid-feedback d-block">' + errors[field][0] + '</div>');
+                            } else {
+                                input.after('<div class="invalid-feedback d-block">' + errors[field][0] + '</div>');
+                            }
+                        }
+                    }
+                } else {
+                    // Other errors
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: xhr.responseJSON?.message || 'Failed to save transaction.'
+                    });
+                }
+            }
+        });
+    });
+
     $(document).on('input change', 'input, select, textarea', function () {
         $(this).removeClass('is-invalid');
         $(this).siblings('.invalid-feedback').remove(); // if siblings
@@ -572,7 +842,7 @@
             type: 'GET',
             success: function(response) {
                 console.log(response);
-                
+
                 var rows = '';
                 if (response.data.length > 0) {
                     $.each(response.data, function(i, t) {
@@ -605,6 +875,65 @@
             },
             error: function() {
                 $('#candidateTransactionTable tbody').html('<tr><td colspan=\"8\">Failed to load data.</td></tr>');
+            }
+        });
+    });
+
+    $(document).on('click', '.view-agent-transaction-btn', function() {
+        var candidateId = $(this).data('id');
+        var candidateName = $(this).data('name') || '';
+
+        // Set the modal title
+        $('#agentTransactionListModalLabel').text('Related transaction about - ' + candidateName);
+
+        $('#agentTransactionListModal').modal('show');
+
+        // Destroy previous DataTable if exists
+        if ($.fn.DataTable.isDataTable('#agentTransactionTable')) {
+            $('#agentTransactionTable').DataTable().destroy();
+        }
+
+        // Clear table body before loading
+        $('#agentTransactionTable tbody').html('<tr><td colspan=\"8\">Loading...</td></tr>');
+
+        // Fetch data via AJAX and initialize DataTable
+        $.ajax({
+            url: '/admin/agent/' + candidateId + '/transactions',
+            type: 'GET',
+            success: function(response) {
+                console.log(response);
+
+                var rows = '';
+                if (response.data.length > 0) {
+                    $.each(response.data, function(i, t) {
+                        rows += '<tr>' +
+                            '<td>' + t.id + '</td>' +
+                            '<td>' + t.transaction_type + '</td>' +
+                            '<td>' + t.payment_method + '</td>' +
+                            '<td>' + t.amount_bdt + '</td>' +
+                            '<td>' + t.transaction_note + '</td>' +
+                            '<td>' + t.date + '</td>' +
+                            '</tr>';
+                    });
+                } else {
+                    rows = '<tr><td colspan=\"8\">No transactions found.</td></tr>';
+                }
+                $('#agentTransactionTable tbody').html(rows);
+
+                // Initialize DataTable
+                $('#agentTransactionTable').DataTable({
+                    responsive: true,
+                    ordering: true,
+                    pageLength: 5,
+                    lengthMenu: [5, 10, 25, 50],
+                    language: {
+                        search: "_INPUT_",
+                        searchPlaceholder: "Search transactions..."
+                    }
+                });
+            },
+            error: function() {
+                $('#agentTransactionTable tbody').html('<tr><td colspan=\"8\">Failed to load data.</td></tr>');
             }
         });
     });

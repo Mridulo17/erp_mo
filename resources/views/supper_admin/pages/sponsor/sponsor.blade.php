@@ -282,29 +282,50 @@
                     });
                 }
 
-                fetchCurrencies();
-
-                function fetchCurrencies() {
+                // fetch currency rates
+                let currentRate = null; // Global variable
+                function fetchCurrencyRates() {
+                    let dataExchangeApiKey = "{{ config('services.exchange.key') }}";
+                    let currency = $('#currency_select').val();
                     $.ajax({
-                        url: "{{ route('supper_admin.currency.active') }}",
-                        method: "GET",
-                        success: function (data) {
-                            let select = $('#currencySelect');
-                            select.empty();
-                            select.append('<option value="" disabled selected>Choose Currency</option>');
-                            data.forEach(function (currency) {
-                                select.append(
-                                    '<option data-bdt_amount="' + currency.bdt_amount + '" data-name="' + currency.name + '" value="' + currency.id + '">' +
-                                    currency.name + '</option>'
-                                );
-                            });
+                        url: `https://v6.exchangerate-api.com/v6/${dataExchangeApiKey}/latest/${currency}`,
+                        method: 'GET',
+                        success: function(data) {
+                            let rate = data.conversion_rates['BDT'];
+                            currentRate = rate; // save globally
 
+                            // Update currency rate display
+                            $('#currency_rate_info').text(`(1 ${currency} = ${rate} BDT)`);
+                            $('#amount_currency').text("(" + currency + ")");
+
+                            updateCurrencyInfoAndAmount();
                         },
-                        error: function (xhr) {
-                            console.error("Failed to fetch currencies:", xhr);
+                        error: function() {
+                            console.warn("Failed to fetch currency rates.");
                         }
                     });
+                };
+
+                function updateCurrencyInfoAndAmount() {
+                    let amount = parseFloat($('#amount').val()) || 0;
+
+                    if (currentRate === null) {
+                        $('#bdt_amount').val('');
+                        return;
+                    }
+
+                    // Calculate BDT amount
+                    let bdt = (amount * currentRate).toFixed(2);
+                    $('#bdt_amount').val(bdt);
                 }
+
+                $('#currency_select').on('input change', function () {
+                    fetchCurrencyRates();
+                });
+
+                $('#amount').on('input change', function () {
+                    updateCurrencyInfoAndAmount();
+                });
 
                 // English Number to Words
                 function numberToEnglishWords(num) {
@@ -456,17 +477,9 @@
                     return convert(num) + ' টাকা মাত্র';
                 }
 
-                $('#currencySelect').on('change', function () {
-                    const selectedOption = $(this).find('option:selected');
-                    const bdt_amount = selectedOption.data('bdt_amount');
-                    const name = selectedOption.data('name');
-                    $('#currency_details').text("(1 " + name + " = " + bdt_amount + " BDT)");
-                    $('#amount_currency').text("(" + name + ")");
+                $('#currency_select').on('change', function () {
                     $('#amount').off('keyup').on('keyup', function () {
                         var amount = parseFloat($('#amount').val()) || 0;
-                        const calculatedAmount = Math.round(amount * bdt_amount);
-
-                        $('#bdt_amount').val(calculatedAmount);
 
                         const bangla = numberToBanglaWords(amount);
                         const english = numberToEnglishWords(amount);
@@ -616,7 +629,7 @@
 
                 });
 
-                const storageBaseUrl = "{{ asset('storage') }}/";
+                const storageBaseUrl = "{{ asset('') }}";
 
                 $(document).on('click', '.transactionButton', function () {
                     const id = $(this).data('id');
@@ -670,10 +683,13 @@
                             if (res.sponsor_photo) {
                                 $('#preview').attr('src', storageBaseUrl + res.sponsor_photo);
                                 $('#preview').show();
+                                $('#remove-file-section').removeClass('d-none');
                             } else {
                                 console.log('No image path found');  // Log if no image is found
                                 $('#preview').attr('src', '');
                                 $('#preview').hide();
+                                $('#remove-file-section').addClass('d-none');
+                                $('#remove_file').prop('checked', false);
                             }
                             $('#status').prop('checked', res.status === 'Enabled');
                             $('#modalTitle').text('Edit Sponsor');

@@ -517,14 +517,12 @@
                             // Show existing file
                             if (res.attachment) {
                                 const filePath = res.attachment;
-                                const ext = filePath.split('.').pop().toLowerCase();
-                                const fileUrl = `/storage/${filePath}`;
 
                                 let previewHtml = '';
 
-                                previewHtml = `<a href="${fileUrl}" title="click to view file" target="_blank" class="mr-5"><i class="fa fa-file"></i></a>`;
+                                previewHtml = `<a href="/${filePath}" title="click to view file" target="_blank" class="mr-5"><i class="fa fa-file"></i></a>`;
 
-                                $('#existing-file-preview').html(previewHtml);
+                                $('#existing-file-preview1').html(previewHtml);
                             }
 
                             const time = res.flight_time;
