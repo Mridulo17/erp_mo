@@ -54,6 +54,7 @@
         </div>
 
         @include('backend.components.process.dynamic_form_modal')
+        @include('backend.components.process.setup_field_position_modal')
 
         <div class="box-body">
             <div class="table-responsive">
@@ -79,6 +80,10 @@
                                         <i class="fa fa-bars"></i> Action
                                     </button>
                                     <div class="dropdown-menu">
+                                        <a href="#" class="dropdown-item setupButton" data-toggle="modal"
+                                           data-target="#setup-field-position" data-id="{{ $item->id }}">
+                                            <i class="fa fa-edit"></i> Setup Fields Position
+                                        </a>
                                         <!-- Edit Button inside Dropdown -->
                                         <a href="#" class="dropdown-item editBlogButton" data-toggle="modal"
                                            data-target="#modal-center" data-id="{{ $item->id }}">
@@ -466,6 +471,22 @@
                             // Preselect in Select2
                             $('#field_name').val(selectedFields).trigger('change');
 
+                        },
+                        error: function () {
+                            Swal.fire('Error', 'Could not load dynamic form data.', 'error');
+                        }
+                    });
+                });
+                $(document).on('click', '.setupButton', function () {
+                    const id = $(this).data('id');
+                    const url = '{{ route("admin.candidate-dynamic-forms.edit", ":id") }}'.replace(':id', id);
+
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        success: function (res) {
+                            $('#form_name_show').text(res.form_name);
+                            $('#setup-field-position').modal('show');
                         },
                         error: function () {
                             Swal.fire('Error', 'Could not load dynamic form data.', 'error');
