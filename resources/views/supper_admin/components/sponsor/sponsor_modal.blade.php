@@ -67,6 +67,11 @@
                         <div id="imagePreviewContainer" style="margin-top: 10px;">
                             <img id="preview" src="" style="max-width: 100px; display: none;" />
                         </div>
+                        <!-- Remove file toggle -->
+                        <div id="remove-file-section" class="form-check mt-2 d-none">
+                            <input type="checkbox" class="form-check-input" id="remove_file" name="remove_file" value="1">
+                            <label class="form-check-label" for="remove_file">Remove existing file</label>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="address" class="font-weight-bold text-dark" style="font-size: 14px;">Address</label>

@@ -683,10 +683,13 @@
                             if (res.sponsor_photo) {
                                 $('#preview').attr('src', storageBaseUrl + res.sponsor_photo);
                                 $('#preview').show();
+                                $('#remove-file-section').removeClass('d-none');
                             } else {
                                 console.log('No image path found');  // Log if no image is found
                                 $('#preview').attr('src', '');
                                 $('#preview').hide();
+                                $('#remove-file-section').addClass('d-none');
+                                $('#remove_file').prop('checked', false);
                             }
                             $('#status').prop('checked', res.status === 'Enabled');
                             $('#modalTitle').text('Edit Sponsor');

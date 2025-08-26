@@ -432,6 +432,8 @@
                     $('#modal-center').modal('show');
                 });
 
+                const storageBaseUrl = "{{ asset('') }}";
+
                 $(document).on('click', '.editBlogButton', function () {
                     const id = $(this).data('id');
                     const url = '{{ route("admin.candidate-dynamic-forms.edit", ":id") }}'.replace(':id', id);
@@ -441,12 +443,28 @@
                         type: 'GET',
                         success: function (res) {
                             $('#dynamic_form_id').val(id);
-                            $('#expense_item_name').val(res.expense_item_name);
+                            $('#form_name').val(res.form_name);
                             $('#note').val(res.note);
                             $('#status').prop('checked', res.status === 'Enabled');
-                            $('#modalTitle').text('Edit expense item');
+
+                            if (res.background_image) {
+                                $('#preview').attr('src', storageBaseUrl + res.background_image);
+                                $('#preview').show();
+                                $('#remove-file-section').removeClass('d-none');
+                            } else {
+                                console.log('No image path found');  // Log if no image is found
+                                $('#preview').attr('src', '');
+                                $('#preview').hide();
+                                $('#remove-file-section').addClass('d-none');
+                                $('#remove_file').prop('checked', false);
+                            }
+
+                            $('#modalTitle').text('Edit Dynamic form');
                             $('#modal-center').modal('show');
-                            $('#categorySelect').val(res.expense_category_id).trigger('change');
+                            let selectedFields = res.candidate_dynamic_form_fields.map(f => f.field_name);
+
+                            // Preselect in Select2
+                            $('#field_name').val(selectedFields).trigger('change');
 
                         },
                         error: function () {
