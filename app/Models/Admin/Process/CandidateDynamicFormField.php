@@ -9,8 +9,7 @@ class CandidateDynamicFormField extends Model
     protected $fillable =
         [
             'candidate_dynamic_form_id',
-            'field_name',
-            'updated_field_name'
+            'field_name'
         ];
 
     public function candidateDynamicForm()

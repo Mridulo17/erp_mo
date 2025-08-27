@@ -10,7 +10,8 @@ class UpdatedCandidateDynamicFormField extends Model
         [
             'candidate_dynamic_form_id',
             'field_name',
-            'updated_field_name'
+            'top',
+            'left'
         ];
 
     public function candidateDynamicForm()

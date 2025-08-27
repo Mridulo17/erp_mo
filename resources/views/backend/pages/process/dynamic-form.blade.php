@@ -239,6 +239,7 @@
 
     @section('script')
         <script>
+
             function fetchDynamicForms() {
                 $.ajax({
                     url: '{{ route("admin.candidate-dynamic-forms.index") }}',
@@ -260,6 +261,56 @@
             // When the modal is hidden
             $('#modal-center').on('hidden.bs.modal', function () {
                 $('.wrapper').attr('aria-hidden', 'true');
+            });
+
+            $(".draggable").draggable({
+                containment: "#print-area-2",
+                stop: function (e, ui) {
+                    let payload = [];
+
+                    $('.draggable').each(function () {
+                        console.log('ddd');
+                        let $el = $(this);
+                        let pos = $el.position();
+                        payload.push({
+                            field_id: $el.attr('field-id'),
+                            field_name: $el.attr('field-name'),
+                            form_id: $el.attr('form-id'),
+                            top: pos.top,
+                            left: pos.left
+                        });
+                    });
+
+                    if (payload.length) {
+                        $.post({
+                            url: '{{ route("admin.candidate.dynamic.form.save") }}',
+                            data: {
+                                dragable_position_save: 'active',
+                                information: payload,
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function (data) {
+                                let value = (typeof data === "string") ? JSON.parse(data) : data;
+                                $('.message_data').html(value.message);
+                            }
+                        });
+                    }
+                }
+            });
+
+            // Print only A4 page
+            $('#print_button_new').click(function () {
+                let printContent = document.getElementById('print-area-2').outerHTML;
+                let WinPrint = window.open('', '', 'width=900,height=650');
+                WinPrint.document.write('<html><head><title>Print</title>');
+                WinPrint.document.write('<style>body{margin:0;} page[size="A4"]{width:21cm;height:29.7cm;}</style>');
+                WinPrint.document.write('</head><body>');
+                WinPrint.document.write(printContent);
+                WinPrint.document.write('</body></html>');
+                WinPrint.document.close();
+                WinPrint.focus();
+                WinPrint.print();
+                WinPrint.close();
             });
 
             function add_new_field(fieldName, formId) {
@@ -477,15 +528,16 @@
                         }
                     });
                 });
-                $(document).on('click', '.setupButton', function () {
+
+                $(document).on('click', '.setupButton', function (e) {
+                    e.preventDefault();
                     const id = $(this).data('id');
-                    const url = '{{ route("admin.candidate-dynamic-forms.edit", ":id") }}'.replace(':id', id);
+                    const url = '{{ route("admin.candidate-dynamic-forms.edit", ":id") }}'.replace(':id', id);;
 
                     $.ajax({
                         url: url,
                         type: 'GET',
                         success: function (res) {
-                            $('#form_name_show').text(res.form_name);
                             $('#setup-field-position').modal('show');
                         },
                         error: function () {
@@ -530,6 +582,7 @@
                 });
 
             });
+
         </script>
 
     @endsection

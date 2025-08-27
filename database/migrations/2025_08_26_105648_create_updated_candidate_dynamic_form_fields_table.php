@@ -19,6 +19,8 @@ return new class extends Migration
                 ->onDelete('restrict')
                 ->onUpdate('cascade');
             $table->string('field_name');
+            $table->integer('top')->nullable();
+            $table->integer('left')->nullable();
             $table->timestamps();
         });
     }

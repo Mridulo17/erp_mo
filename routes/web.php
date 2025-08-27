@@ -218,6 +218,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('delegateOffice', DelegateOfficeController::class);
     Route::resource('candidateTypes', CandidateTypeController::class);
     Route::resource('candidate-dynamic-forms', CandidateDynamicFormController::class);
+    Route::post('/candidate-form/position-save', [CandidateDynamicFormController::class, 'savePositions'])
+        ->name('candidate.dynamic.form.save');
     Route::post('fields/add', [CandidateDynamicFormController::class, 'addField'])->name('fields.add');
     Route::post('fields/copy', [CandidateDynamicFormController::class, 'copy'])->name('fields.copy');
     Route::delete('fields/{id}', [CandidateDynamicFormController::class, 'fieldDestroy'])->name('fields.destroy');
