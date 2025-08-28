@@ -94,7 +94,12 @@ class CandidateDynamicFormController extends Controller
      */
     public function show(CandidateDynamicForm $candidateDynamicForm)
     {
-        //
+        $candidateDynamicForm->load([
+            'candidateDynamicFormFields',
+            'updatedCandidateDynamicFormFields',
+        ]);
+
+        return view('backend.components.process.setup_field_position_data_modal', compact('candidateDynamicForm'));
     }
 
     /**
@@ -240,6 +245,35 @@ class CandidateDynamicFormController extends Controller
             'status' => 'success',
             'message' => 'Field deleted successfully'
         ]);
+    }
+
+    public function savePositions(Request $request)
+    {
+        if ($request->has('dragable_position_save') && $request->dragable_position_save === 'active') {
+            $information = $request->input('information');
+
+            if (is_array($information)) {
+                foreach ($information as $item) {
+                    UpdatedCandidateDynamicFormField::where('field_name', $item['field_name'])
+                        ->where('id', $item['field_id'])
+                        ->where('candidate_dynamic_form_id', $item['form_id'])
+                        ->update([
+                            'top'  => intval($item['top']),
+                            'left' => intval($item['left']),
+                        ]);
+                }
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Field positions saved successfully!'
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Invalid request.'
+        ], 400);
     }
 
 }
