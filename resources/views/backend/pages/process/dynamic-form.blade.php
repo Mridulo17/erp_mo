@@ -58,8 +58,8 @@
 
         <div class="box-body">
             <div class="table-responsive">
-                <table id="customDataTable" style="table-layout: fixed; width: 100%;"
-                       class="table table-bordered table-hover display nowrap margin-top-10 w-p100">
+                <table id="customDataTable"
+                       class="table table-bordered table-hover display nowrap">
                     <thead>
                     <tr>
                         <th style="">Action</th>
