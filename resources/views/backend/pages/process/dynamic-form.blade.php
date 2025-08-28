@@ -8,6 +8,75 @@
             word-wrap: break-word !important;
             word-break: break-word !important;
         }
+        page[size="A4"] {
+            background: white;
+            width: 21cm;
+            height: 29.7cm;
+            display: block;
+            margin: 0 auto;
+            margin-bottom: 0.5cm;
+            box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
+
+            page[size="A4"] {
+                background: white;
+                width: 21cm;
+                height: 29.7cm;
+                display: block;
+                margin: 0 auto;
+                margin-bottom: 0.5cm;
+                box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
+                background: url(http://erp.mahfuza-overseas.com/mahfuza_v2/assets/uploads/documents/human_resource/files_2023_12_03_1997361296435514606.jpg);
+                background-repeat: no-repeat;
+                background-size: contain;
+                background-position: top;
+            }
+            @media print {
+                body, page[size="A4"] {
+                    margin: 0;
+                    box-shadow: 0;
+                }
+            }
+            .draggable{
+                color: rgb(255, 0, 0);
+                border-bottom: dotted;
+                width: fit-content;
+                font-weight: bolder;
+            }
+
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: top;
+            position: relative; /* important for draggable positioning */
+        }
+
+        @media print {
+            body, page[size="A4"] {
+                margin: 0;
+                box-shadow: none;
+            }
+            .draggable {
+                color: black !important;
+                border: none !important;
+                font-weight: normal !important;
+            }
+            .print_button_container {
+                display: none !important;
+            }
+        }
+
+        .draggable {
+            position: absolute;
+            color: rgb(255, 0, 0);
+            border-bottom: dotted;
+            font-weight: bolder;
+            width: fit-content;
+            cursor: move;
+        }
+
+        .print_button_container {
+            margin: 10px 0;
+            text-align: right;
+        }
     </style>
 @endsection
 
@@ -263,56 +332,6 @@
                 $('.wrapper').attr('aria-hidden', 'true');
             });
 
-            $(".draggable").draggable({
-                containment: "#print-area-2",
-                stop: function (e, ui) {
-                    let payload = [];
-
-                    $('.draggable').each(function () {
-                        console.log('ddd');
-                        let $el = $(this);
-                        let pos = $el.position();
-                        payload.push({
-                            field_id: $el.attr('field-id'),
-                            field_name: $el.attr('field-name'),
-                            form_id: $el.attr('form-id'),
-                            top: pos.top,
-                            left: pos.left
-                        });
-                    });
-
-                    if (payload.length) {
-                        $.post({
-                            url: '{{ route("admin.candidate.dynamic.form.save") }}',
-                            data: {
-                                dragable_position_save: 'active',
-                                information: payload,
-                                _token: '{{ csrf_token() }}'
-                            },
-                            success: function (data) {
-                                let value = (typeof data === "string") ? JSON.parse(data) : data;
-                                $('.message_data').html(value.message);
-                            }
-                        });
-                    }
-                }
-            });
-
-            // Print only A4 page
-            $('#print_button_new').click(function () {
-                let printContent = document.getElementById('print-area-2').outerHTML;
-                let WinPrint = window.open('', '', 'width=900,height=650');
-                WinPrint.document.write('<html><head><title>Print</title>');
-                WinPrint.document.write('<style>body{margin:0;} page[size="A4"]{width:21cm;height:29.7cm;}</style>');
-                WinPrint.document.write('</head><body>');
-                WinPrint.document.write(printContent);
-                WinPrint.document.write('</body></html>');
-                WinPrint.document.close();
-                WinPrint.focus();
-                WinPrint.print();
-                WinPrint.close();
-            });
-
             function add_new_field(fieldName, formId) {
                 if (!fieldName) return;
 
@@ -538,12 +557,79 @@
                         url: url,
                         type: 'GET',
                         success: function (res) {
+                            $('#form_title').text(res.form_name);
+
+                            let fieldsHtml = '';
+                            res.updated_candidate_dynamic_form_fields.forEach(function (field) {
+                                fieldsHtml += `<div class="draggable ui-draggable ui-draggable-handle"
+                                     data-id="${field.id}"
+                                     data-field_name="${field.field_name}"
+                                     data-form_id="${res.id}"
+                                     style="top: ${field.top ?? 0}px; left: ${field.left ?? 0}px;">
+                                    ${field.field_name}
+                                </div>`;
+                            });
+                            $('#dynamic_form_fields').html(fieldsHtml);
+
                             $('#setup-field-position').modal('show');
                         },
                         error: function () {
                             Swal.fire('Error', 'Could not load dynamic form data.', 'error');
                         }
                     });
+                });
+
+                $(".draggable").draggable({
+                    containment: "#print-area-2",
+                    stop: function (e, ui) {
+                        let payload = [];
+
+                        $('.draggable').each(function () {
+                            console.log('ddd');
+                            const id = $(this).data('id');
+                            const field_name = $(this).data('field_name');
+                            const form_id = $(this).data('form_id');
+                            let $el = $(this);
+                            let pos = $el.position();
+                            payload.push({
+                                field_id: id,
+                                field_name: field_name,
+                                form_id: form_id,
+                                top: pos.top,
+                                left: pos.left
+                            });
+                        });
+
+                        if (payload.length) {
+                            $.post({
+                                url: '{{ route("admin.candidate.dynamic.form.save") }}',
+                                data: {
+                                    dragable_position_save: 'active',
+                                    information: payload,
+                                    _token: '{{ csrf_token() }}'
+                                },
+                                success: function (data) {
+                                    let value = (typeof data === "string") ? JSON.parse(data) : data;
+                                    $('.message_data').html(value.message);
+                                }
+                            });
+                        }
+                    }
+                });
+
+                // Print only A4 page
+                $('#print_button_new').click(function () {
+                    let printContent = document.getElementById('print-area-2').outerHTML;
+                    let WinPrint = window.open('', '', 'width=900,height=650');
+                    WinPrint.document.write('<html><head><title>Print</title>');
+                    WinPrint.document.write('<style>body{margin:0;} page[size="A4"]{width:21cm;height:29.7cm;}</style>');
+                    WinPrint.document.write('</head><body>');
+                    WinPrint.document.write(printContent);
+                    WinPrint.document.write('</body></html>');
+                    WinPrint.document.close();
+                    WinPrint.focus();
+                    WinPrint.print();
+                    WinPrint.close();
                 });
 
                 $(document).on('click', '.deletecountryBtn', function () {
